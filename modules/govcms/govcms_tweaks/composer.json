@@ -1,0 +1,15 @@
+{
+    "name": "govcms/govcms-tweaks",
+    "description": "Connects govCMS with Acquia Cloud Site Factory.",
+    "autoload": {
+        "psr-0": {
+            "Govcms": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sean Hamlin",
+            "email": "sean.hamlin@acquia.com"
+        }
+    ]
+}

@@ -1,0 +1,203 @@
+<?php
+
+/**
+ * @file
+ * govCMS Akamai Fast Purge
+ */
+
+use Akamai\Open\EdgeGrid\Client;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\ClientException;
+
+define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
+
+/**
+ * Implements hook_menu().
+ */
+function govcms_akamai_fast_purge_menu() {
+  $items = [];
+
+  $items['admin/config/services/akamai-fast-purge'] = [
+    'title' => 'Akamai Fast Purge',
+    'description' => 'Configuration for govCMS Akamai Fast Purge module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['govcms_akamai_fast_purge_form'],
+    'access arguments' => ['access administration pages'],
+    'type' => MENU_NORMAL_ITEM,
+  ];
+
+  return $items;
+}
+
+/**
+ * Page callback: Akamai Fast Purge settings
+ *
+ * @see govcms_akamai_fast_purge_menu()
+ */
+function govcms_akamai_fast_purge_form($form, &$form_state) {
+  $form['govcms_akamai_fast_purge_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable file purge on creation, update and deletion'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_enabled', TRUE),
+  ];
+
+  $extensions = variable_get('govcms_akamai_fast_purge_extensions', ['pdf']);
+  $form['govcms_akamai_fast_purge_extensions'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Extensions to purge'),
+    '#description' => t('The files having these extensions will be purged. Enter one extension per line.'),
+    '#default_value' => implode("\n", $extensions),
+  );
+
+  // Do not expose this as an option as the key
+  // should not be known to UI viewer.
+
+  // $form['govcms_akamai_fast_purge_credentials_path'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('API Credentials Path'),
+  //   '#default_value' => variable_get('govcms_akamai_fast_purge_credentials_path'),
+  //   '#size' => 120,
+  //   '#maxlength' => 120,
+  //   '#description' => t('Path to credentials for Akamai API, also known as <b>.edgerc</b> file.'),
+  //   '#required' => TRUE,
+  // );
+
+  $form['#validate'][] = 'govcms_akamai_fast_purge_validate';
+
+  return system_settings_form($form);
+}
+
+/**
+ * Form validation to transform the extensions into an array.
+ */
+function govcms_akamai_fast_purge_validate($form, &$form_state) {
+  if (!empty($form_state['values']['govcms_akamai_fast_purge_extensions'])) {
+    $extensions = explode("\n", trim($form_state['values']['govcms_akamai_fast_purge_extensions']));
+    $form_state['values']['govcms_akamai_fast_purge_extensions'] = $extensions;
+  }
+  else {
+    $form_state['values']['govcms_akamai_fast_purge_extensions'] = [];
+  }
+}
+
+/**
+ * Implements hook_file_insert().
+ */
+function govcms_akamai_fast_purge_file_insert($file) {
+  _govcms_akamai_fast_purge_trigger($file);
+}
+
+/**
+ * Implements hook_file_update().
+ */
+function govcms_akamai_fast_purge_file_update($file) {
+  // We only need to purge the url if the file is being replaced.
+  if (empty($file->replace_upload)) {
+    return;
+  }
+  _govcms_akamai_fast_purge_trigger($file);
+}
+
+/**
+ * Implements hook_file_delete().
+ */
+function govcms_akamai_fast_purge_file_delete($file) {
+  _govcms_akamai_fast_purge_trigger($file);
+}
+
+/**
+ * Trigger the Akamai Fast Purge if needed.
+ *
+ * @param $file
+ *  The file object to be purged.
+ */
+function _govcms_akamai_fast_purge_trigger($file) {
+  $purge_enabled = variable_get('govcms_akamai_fast_purge_enabled', TRUE);
+  if (!$purge_enabled) {
+    return;
+  }
+
+  $path = drupal_realpath($file->uri);
+  $parts = pathinfo($path);
+  $extension = $parts['extension'];
+  $purge_extensions = variable_get('govcms_akamai_fast_purge_extensions', ['pdf']);
+  if (!in_array($extension, $purge_extensions)) {
+    return;
+  }
+
+  $credentials_path = variable_get('govcms_akamai_fast_purge_credentials_path');
+  if (!$credentials_path) {
+    drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
+    return;
+  }
+
+  // Make the actual API call.
+  _govcms_akamai_fast_purge_api_call($file, $credentials_path);
+}
+
+/**
+ * Make the API call to Akamai Purge.
+ * @see https://github.com/akamai/AkamaiOPEN-edgegrid-php-client
+ * @see https://developer.akamai.com/api/purge/ccu/resources.html
+ *
+ * @param $file
+ * @param $credentials_path
+ */
+function _govcms_akamai_fast_purge_api_call($file, $credentials_path) {
+  module_load_include('phar', 'govcms_akamai_fast_purge', 'includes/akamai-open-edgegrid-client-1.0.0');
+  $client = Client::createFromEdgeRcFile('default', $credentials_path);
+
+  $api_network = variable_get('govcms_akamai_fast_purge_api_network', 'staging');
+  $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
+
+  $purge_url = file_create_url($file->uri);
+  $api_request_options = [
+    'json' => [
+      'objects' => [
+        $purge_url
+      ],
+    ],
+    'handler' => _govcms_akamai_fast_purge_get_request_handler($client),
+    'debug' => TRUE
+  ];
+
+  watchdog(GAFP_WATCHDOG_TYPE, 'Purging Url: @url', ['@url' => $purge_url]);
+  try {
+    /** @var \GuzzleHttp\Psr7\Response $response */
+    $response = $client->request('POST', $api_request_url, $api_request_options);
+    $responseContent = $response->getBody()->getContents();
+    watchdog(GAFP_WATCHDOG_TYPE, 'Request Completed - Full response: @response', ['@response' => $responseContent]);
+  }
+  catch (ClientException $e) {
+    $responseContent = $e->getResponse()->getBody()->getContents();
+    watchdog(GAFP_WATCHDOG_TYPE, 'Request Failed: @err_msg | Full response: @response', ['@err_msg' => $e->getMessage(), '@response' => $responseContent], WATCHDOG_ERROR);
+  }
+}
+
+/**
+ * Creates a request handler
+ *
+ * @param \Akamai\Open\EdgeGrid\Client $client
+ *
+ * @return mixed
+ */
+function _govcms_akamai_fast_purge_get_request_handler(Client $client) {
+  // Grab the client's handler instance.
+  $clientHandler = $client->getConfig('handler');
+
+  // Create a middleware that echoes parts of the request.
+  $tapMiddleware = Middleware::tap(function (Request $request) {
+    // Prepare the message to write to watchdog.
+    $message = "Sending Request - Path [@path] | Headers [@headers]";
+    $message_vars = ['@path' => $request->getUri()->getPath(), '@headers' => ''];
+
+    // Print out the headers.
+    foreach ($request->getHeaders() as $name => $values) {
+      $message_vars['@headers'] .= $name . ': ' . implode(', ', $values) . "; ";
+    }
+    watchdog(GAFP_WATCHDOG_TYPE, $message, $message_vars);
+  });
+
+  return $tapMiddleware($clientHandler);
+}

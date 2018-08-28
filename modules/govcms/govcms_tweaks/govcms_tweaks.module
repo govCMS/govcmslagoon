@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * @file
+ * Module file for the govCMS tweaks module.
+ */
+
+/**
+ * Implements hook_boot().
+ */
+function govcms_tweaks_boot() {
+  try {
+    // We need to ensure that our autoloader is available as early as possible.
+    govcms_tweaks_register_autoloader();
+  }
+  catch (\RuntimeException $e) {
+    if (!drupal_is_cli()) {
+      watchdog_exception('acsf', $e);
+    }
+  }
+}
+
+/**
+ * Registers the autoloader for all third-party packages.
+ *
+ * This was taken from the composer_manager module. It provides client code
+ * with a convenient helper function to make sure that the autoloader is
+ * available in cases like updates and installs.
+ */
+function govcms_tweaks_register_autoloader() {
+  static $registered = FALSE;
+  if (!$registered) {
+    $autoloader = __DIR__ . '/vendor/autoload.php';
+    if (!file_exists($autoloader)) {
+      $message = t('Autoloader not found: @file.', ['@file' => $autoloader]);
+      throw new \RuntimeException($message);
+    }
+    $registered = TRUE;
+    require $autoloader;
+  }
+}
+
+/**
+ * Implements hook_acsf_registry().
+ */
+function govcms_tweaks_acsf_registry() {
+  // Run after the 'AcsfDuplicationScrubConfigurationHandler' class.
+  $scrub_handlers = [
+    '\Govcms\Acsf\AcsfDuplicationScrubSearchApiHandler' => 15,
+  ];
+  foreach ($scrub_handlers as $class => $weight) {
+    $events[] = array(
+      'type' => 'site_duplication_scrub',
+      'class' => $class,
+      'weight' => $weight,
+    );
+  }
+  return ['events' => $events];
+}
+
+/**
+ * Implements hook_openid_response().
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+ */
+function govcms_tweaks_openid_response($response, $account) {
+  // If the password policy module (1.x) is enabled it will force
+  // ACSF admins to change a password they can't set. This is a work
+  // around to prevent that from happening.
+  // Check db table exists as proof that we're
+  // using version 1.x of Password Policy.
+  if (module_exists('acsf_openid') && module_exists('password_policy') && db_table_exists('password_policy_force_change')) {
+    $openid_uid = $account->uid;
+
+    // Make sure to remove the force change password.
+    db_update('password_policy_force_change')
+        ->fields(array('force_change' => '0'))
+        ->condition('uid', $openid_uid)
+        ->execute();
+
+    // Check password_policy_expiration to delete.
+    db_delete('password_policy_expiration')
+        ->condition('uid', $openid_uid)
+        ->execute();
+  }
+}
