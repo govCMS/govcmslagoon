@@ -1,0 +1,104 @@
+version: '2.3'
+
+x-volumes:
+  &default-volumes
+    volumes:
+      - ./modules:/app/profiles/govcms/modules/temporary:${VOLUME_FLAGS:-delegated} ### Removed automatically in CI.
+      - /app/sites/default/files
+
+x-environment:
+  &default-environment
+    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-saas.docker.amazee.io}
+
+services:
+
+  cli:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.govcms7-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+    << : *default-volumes
+    environment:
+      << : *default-environment
+
+  test:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.test-saas
+      args:
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/test-saas
+    << : *default-volumes
+    depends_on:
+      - cli
+    environment:
+      << : *default-environment
+
+  nginx:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.nginx-drupal-saas
+      args:
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/nginx-drupal-saas
+    << : *default-volumes
+    environment:
+      << : *default-environment
+      LAGOON_LOCALDEV_URL: ${LOCALDEV_URL_NGINX:-http://govcms-nginx.docker.amazee.io}
+    networks:
+      - amazeeio-network
+      - default
+
+  php:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.php
+      args:
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/php-saas
+    environment:
+      << : *default-environment
+
+  mariadb:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.mariadb-drupal-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/mariadb-drupal-saas
+    ports:
+      - "3306" # Find port on host with `docker-compose port mariadb 3306`
+    environment:
+      << : *default-environment
+
+  redis:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.redis-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/redis-saas
+    environment:
+      << : *default-environment
+
+  solr:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.solr-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/solr-saas
+    ports:
+      - "8983" # Find port on host with `docker-compose port solr 8983`
+    environment:
+      << : *default-environment
+
+  varnish:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.varnish-drupal-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/varnish-drupal
+    environment:
+      << : *default-environment
+      VARNISH_BYPASS: "true"
+    networks:
+      - amazeeio-network
+      - default
+
+networks:
+  amazeeio-network:
+    external: true

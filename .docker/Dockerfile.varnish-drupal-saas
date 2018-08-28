@@ -1,0 +1,2 @@
+FROM govcmsdev/varnish-drupal
+ENV LAGOON_PROJECT=govcms

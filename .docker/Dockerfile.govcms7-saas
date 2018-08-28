@@ -1,0 +1,3 @@
+FROM govcmsdev/govcms7
+
+COPY modules/ /app/profiles/govcms/modules/temporary
