@@ -2,19 +2,19 @@
 
 /**
  * @file
- *   Integration between your Drupal site and Lagoon solr.
+ * Integration between your Drupal site and Lagoon Solr.
  */
 
 /**
-* Implements hook_default_search_api_server().
-*/
+ * Implements hook_default_search_api_server().
+ */
 function lagoon_search_default_search_api_server() {
- $items = array();
+  $items = [];
 
- $host = variable_get('lagoon_solr_host', 'solr');
- $path = variable_get('lagoon_solr_path', '/solr/drupal');
+  $host = variable_get('lagoon_solr_host', 'solr');
+  $path = variable_get('lagoon_solr_path', '/solr/drupal');
 
- $items['lagoon_solr'] = entity_import('search_api_server', '{
+  $items['lagoon_solr'] = entity_import('search_api_server', '{
    "name" : "Lagoon Solr",
    "machine_name" : "lagoon_solr",
    "description" : "",
@@ -33,6 +33,5 @@ function lagoon_search_default_search_api_server() {
    "rdf_mapping" : []
  }');
 
- return $items;
-
+  return $items;
 }
