@@ -34,3 +34,12 @@
 ## Commands
 
 Additional commands are listed in `.ahoy.yml`.
+
+## Releasing production version
+Once this repo is read to production release, the following actions needs to be taken:
+- Replace `govcmsdev` with `govcms` in all files
+- Remove `DOCKERHUB_NAMESPACE=govcmsdev` line from `.edv.default` file
+- Remove `Dockerfile.govcms7-saas-acsf` file
+- Remove `acsf` image from `docker-compose.yml`
+- Remove `DEPLOY_ANY_BRANCH` env variable from CircleCI UI
+- Remove this block 

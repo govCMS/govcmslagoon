@@ -1,0 +1,11 @@
+ARG CLI_IMAGE
+FROM ${CLI_IMAGE} as cli
+
+FROM govcmsdev/govcms7
+
+COPY --from=cli /app /app
+
+COPY modules/ /app/sites/all/modules/
+
+RUN drush dl \
+  registry_rebuild
