@@ -1,5 +1,5 @@
 FROM govcmsdev/govcms7
 
-RUN drush dl \
+RUN drush dl --destination=sites/all/modules/contrib -y \
     redis \
     stage_file_proxy
