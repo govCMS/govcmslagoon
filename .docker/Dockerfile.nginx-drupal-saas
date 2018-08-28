@@ -3,4 +3,8 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/nginx-drupal
 
+# redirects
+COPY .docker/images/nginx/acsf_redirects.conf /etc/nginx/helpers/global_redirects.conf
+RUN fix-permissions /etc/nginx
+
 COPY --from=cli /app /app
