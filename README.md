@@ -1,5 +1,7 @@
 # GovCMS SaaS project
 
+[![CircleCI](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas.svg?style=svg)](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas)
+
 ## Requirements
 
 * [Docker](https://docs.docker.com/install/)

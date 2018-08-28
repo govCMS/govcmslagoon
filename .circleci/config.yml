@@ -13,9 +13,6 @@ jobs:
           name: Docker-compose validate
           command: docker-compose config -q
       - run:
-          name: Validate composer files
-          command: composer validate -d tests --ansi --strict
-      - run:
           name: Update codebase to follow CI configuration
           command: |
             sed -i -e "/###/d" docker-compose.yml

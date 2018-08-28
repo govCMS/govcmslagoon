@@ -3,7 +3,7 @@ version: '2.3'
 x-volumes:
   &default-volumes
     volumes:
-      - ./modules:/app/profiles/govcms/modules/temporary:${VOLUME_FLAGS:-delegated} ### Removed automatically in CI.
+      - ./modules:/app/profiles/govcms/modules/migration:${VOLUME_FLAGS:-delegated} ### Removed automatically in CI.
       - /app/sites/default/files
 
 x-environment:
@@ -52,7 +52,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.php
+      dockerfile: $PWD/.docker/Dockerfile.php-saas
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
     image: ${DOCKERHUB_NAMESPACE:-govcms}/php-saas
