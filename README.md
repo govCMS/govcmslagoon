@@ -1,6 +1,6 @@
 # GovCMS SaaS project
 
-[![CircleCI](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas.svg?style=svg)](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas)
+[![CircleCI](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas.svg?style=svg&circle-token=b356e4c11fbbf32973d909ee37e048da981fc663)](https://circleci.com/gh/salsadigitalauorg/GovCMS-saas)
 
 ## Requirements
 
