@@ -21,6 +21,19 @@ services:
     environment:
       << : *default-environment
 
+  acsf:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.govcms7-saas-acsf
+      args:
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+    image: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas-acsf
+    << : *default-volumes
+    depends_on:
+      - cli
+    environment:
+      << : *default-environment
+
   test:
     build:
       context: .
