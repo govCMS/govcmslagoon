@@ -1,3 +1,7 @@
 FROM govcmsdev/govcms7
 
+RUN drush dl \
+    redis \
+    stage_file_proxy
+
 COPY modules/ /app/profiles/govcms/modules/migration
