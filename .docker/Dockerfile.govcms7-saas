@@ -3,3 +3,5 @@ FROM govcmsdev/govcms7
 RUN drush dl --destination=sites/all/modules/contrib -y \
     redis \
     stage_file_proxy
+
+COPY modules/govcms /app/sites/all/modules/
