@@ -24,10 +24,10 @@ services:
   acsf:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.govcms7-acsf
+      dockerfile: $PWD/.docker/Dockerfile.acsf
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7-acsf
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/acsf
     << : *default-volumes
     depends_on:
       - cli
