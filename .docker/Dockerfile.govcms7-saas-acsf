@@ -7,5 +7,6 @@ COPY --from=cli /app /app
 
 RUN drush dl \
   registry_rebuild \
-  && drush dl -y --destination=sites/all/modules/acsf acsf-7.x-1.42 \
   && fix-permissions /home/.drush
+
+COPY modules-acsf/ /app/sites/all/modules/acsf/
