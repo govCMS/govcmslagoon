@@ -9,4 +9,4 @@ RUN drush dl \
   registry_rebuild \
   && rm -rf /home/.drush
 
-COPY modules/ /app/sites/all/modules/
+COPY modules-acsf/ /app/sites/all/modules/acsf/

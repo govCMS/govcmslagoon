@@ -5,6 +5,6 @@ RUN drush dl --destination=sites/all/modules/contrib -y \
     stage_file_proxy \
     && rm -rf /home/.drush
 
-COPY modules/govcms /app/sites/all/modules/
+COPY modules/ /app/sites/all/modules/
 
 COPY .docker/images/code/settings.php /app/sites/default/settings.php
