@@ -6,6 +6,7 @@ FROM govcmsdev/govcms7
 COPY --from=cli /app /app
 
 RUN drush dl \
-  registry_rebuild
+  registry_rebuild \
+  && rm -rf /home/.drush
 
 COPY modules/ /app/sites/all/modules/
