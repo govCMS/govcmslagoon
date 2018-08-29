@@ -8,15 +8,15 @@ x-volumes:
 
 x-environment:
   &default-environment
-    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-saas.docker.amazee.io}
+    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-lagoon.docker.amazee.io}
 
 services:
 
   cli:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
+      dockerfile: $PWD/.docker/Dockerfile.govcms7
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
     << : *default-volumes
     environment:
       << : *default-environment
@@ -24,10 +24,10 @@ services:
   acsf:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.govcms7-saas-acsf
+      dockerfile: $PWD/.docker/Dockerfile.govcms7-acsf
       args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas-acsf
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7-acsf
     << : *default-volumes
     depends_on:
       - cli
@@ -37,10 +37,10 @@ services:
   test:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.test-saas
+      dockerfile: $PWD/.docker/Dockerfile.test
       args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/test-saas
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test
     << : *default-volumes
     depends_on:
       - cli
@@ -50,14 +50,14 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.nginx-drupal-saas
+      dockerfile: $PWD/.docker/Dockerfile.nginx-drupal
       args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/nginx-drupal-saas
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/nginx-drupal
     << : *default-volumes
     environment:
       << : *default-environment
-      LAGOON_LOCALDEV_URL: ${LOCALDEV_URL_NGINX:-http://govcms-nginx.docker.amazee.io}
+      LAGOON_LOCALDEV_URL: ${LOCALDEV_URL_NGINX:-http://govcms-lagoon-nginx.docker.amazee.io}
     networks:
       - amazeeio-network
       - default
@@ -65,18 +65,18 @@ services:
   php:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.php-saas
+      dockerfile: $PWD/.docker/Dockerfile.php
       args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/php-saas
+        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php
     environment:
       << : *default-environment
 
   mariadb:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.mariadb-drupal-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/mariadb-drupal-saas
+      dockerfile: $PWD/.docker/Dockerfile.mariadb-drupal
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/mariadb-drupal
     ports:
       - "3306" # Find port on host with `docker-compose port mariadb 3306`
     environment:
@@ -85,18 +85,16 @@ services:
   redis:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.redis-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/redis-saas
+      dockerfile: $PWD/.docker/Dockerfile.redis
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/redis
     environment:
       << : *default-environment
 
   solr:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.solr-saas
-      args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcms}/govcms7-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/solr-saas
+      dockerfile: $PWD/.docker/Dockerfile.solr
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/solr
     ports:
       - "8983" # Find port on host with `docker-compose port solr 8983`
     environment:
@@ -105,8 +103,8 @@ services:
   varnish:
     build:
       context: .
-      dockerfile: $PWD/.docker/Dockerfile.varnish-drupal-saas
-    image: ${DOCKERHUB_NAMESPACE:-govcms}/varnish-drupal
+      dockerfile: $PWD/.docker/Dockerfile.varnish-drupal
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/varnish-drupal
     environment:
       << : *default-environment
       VARNISH_BYPASS: "true"
