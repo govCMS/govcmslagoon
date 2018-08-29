@@ -6,3 +6,5 @@ RUN drush dl --destination=sites/all/modules/contrib -y \
     && rm -rf /home/.drush
 
 COPY modules/govcms /app/sites/all/modules/
+
+COPY .docker/images/code/settings.php /app/sites/default/settings.php
