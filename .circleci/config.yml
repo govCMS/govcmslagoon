@@ -6,7 +6,7 @@ jobs:
       - image: integratedexperts/circleci2-builder
         environment:
           COMPOSER_ALLOW_SUPERUSER: 1
-          COMPOSE_PROJECT_NAME: govcms
+          COMPOSE_PROJECT_NAME: govcmslagoon
     steps:
       - checkout
       - run:
