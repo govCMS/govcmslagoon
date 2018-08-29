@@ -5,8 +5,6 @@ FROM govcmsdev/govcms7
 
 COPY --from=cli /app /app
 
-RUN drush dl \
-  registry_rebuild \
+RUN drush dl -y registry_rebuild \
+  && drush dl -y --destination=sites/all/modules acsf-7.x-1.42 \
   && fix-permissions /home/.drush
-
-COPY modules-acsf/ /app/sites/all/modules/acsf/
