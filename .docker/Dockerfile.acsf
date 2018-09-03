@@ -7,5 +7,8 @@ COPY --from=cli /app /app
 
 RUN drush dl -y registry_rebuild \
   && drush dl -y --destination=sites/all/modules acsf-7.x-1.42 \
+  && drush dl -y --destination=sites/all/modules/contrib \
+  memcache \
+  memory_profiler \
   && fix-permissions /home/.drush \
   && find /app/sites/all/modules/acsf -name "*.info" -print0 | xargs -0 sed -i -e "/dependencies/d"
