@@ -74,6 +74,9 @@ if (getenv('LAGOON')) {
   $drupal_hash_salt = hash('sha256', getenv('LAGOON_PROJECT'));
 }
 
+### Disable HTTP request status check in docker.
+$conf['drupal_http_request_fails'] = FALSE;
+
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
   include __DIR__ . '/all.settings.php';
