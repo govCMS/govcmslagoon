@@ -65,6 +65,12 @@ if (getenv('LAGOON')) {
   $conf['cache_default_class'] = 'Redis_Cache';
 }
 
+### Public and private files paths.
+if (getenv('LAGOON')) {
+  $conf['file_public_path'] = 'sites/default/files';
+  $conf['file_private_path'] = 'sites/default/files/private';
+}
+
 ### Temp directory
 if (getenv('TMP')) {
   $conf['file_temporary_path'] = getenv('TMP');
