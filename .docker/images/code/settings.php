@@ -26,7 +26,8 @@ if (getenv('LAGOON')) {
     'password' => getenv('MARIADB_PASSWORD') ?: 'drupal',
     'host' => getenv('MARIADB_HOST') ?: 'mariadb',
     'port' => 3306,
-    'prefix' => '',
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_general_ci',
   ];
 }
 
