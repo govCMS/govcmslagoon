@@ -4,7 +4,8 @@ RUN apk add python \
     && drush dl --destination=sites/all/modules/contrib -y \
     redis \
     stage_file_proxy \
-    && fix-permissions /home/.drush
+    && fix-permissions /home/.drush \
+    && rm -rf /app/robots.txt
 
 COPY modules/ /app/sites/all/modules/
 

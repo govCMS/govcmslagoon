@@ -1,6 +1,6 @@
 # GovCMS Lagoon project
 
-[![CircleCI](https://circleci.com/gh/salsadigitalauorg/govcmslagoon.svg?style=svg&circle-token=b356e4c11fbbf32973d909ee37e048da981fc663)](https://circleci.com/gh/salsadigitalauorg/govcmslagoon)
+[![CircleCI](https://circleci.com/gh/govCMS/govcmslagoon.svg?style=svg&circle-token=b356e4c11fbbf32973d909ee37e048da981fc663)](https://circleci.com/gh/govCMS/govcmslagoon)
 
 ## Requirements
 

@@ -26,7 +26,8 @@ if (getenv('LAGOON')) {
     'password' => getenv('MARIADB_PASSWORD') ?: 'drupal',
     'host' => getenv('MARIADB_HOST') ?: 'mariadb',
     'port' => 3306,
-    'prefix' => '',
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_general_ci',
   ];
 }
 
@@ -64,6 +65,12 @@ if (getenv('LAGOON')) {
   $conf['cache_default_class'] = 'Redis_Cache';
 }
 
+### Public and private files paths.
+if (getenv('LAGOON')) {
+  $conf['file_public_path'] = 'sites/default/files';
+  $conf['file_private_path'] = 'sites/default/files/private';
+}
+
 ### Temp directory
 if (getenv('TMP')) {
   $conf['file_temporary_path'] = getenv('TMP');
@@ -73,6 +80,9 @@ if (getenv('TMP')) {
 if (getenv('LAGOON')) {
   $drupal_hash_salt = hash('sha256', getenv('LAGOON_PROJECT'));
 }
+
+### Disable HTTP request status check in docker.
+$conf['drupal_http_request_fails'] = FALSE;
 
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
