@@ -1,4 +1,7 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
+##
+# Sanitize codebase.
+#
 
 APP_DIR=${APP_DIR:-/app}
 

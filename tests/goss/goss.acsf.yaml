@@ -1,6 +1,6 @@
 ---
 gossfile:
-  ../govcms7/goss.yml: {}
+  goss.govcms7.yaml: {}
 
 file:
   /home/.drush/registry_rebuild:

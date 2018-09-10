@@ -27,11 +27,8 @@ jobs:
             ahoy -v build
             docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
       - run:
-          name: Test container
-          command: |
-            GOSS_FILES_PATH=tests/goss/govcms7 dgoss run -i govcmslagoon/govcms7:latest
-            goss render tests/goss/test/goss.yml | GOSS_FILES_PATH=tests/goss/test dgoss run -i govcmslagoon/acsf:latest
-            goss render tests/goss/acsf/goss.yml | GOSS_FILES_PATH=tests/goss/acsf dgoss run -i govcmslagoon/test:latest
+          name: Run tests for containers
+          command: ./tests/goss/run_all.sh
       - run:
           name: Push Docker images to Dockerhub
           command: |
@@ -40,6 +37,8 @@ jobs:
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               export $(grep -v '^#' .env | xargs)
               ahoy push
+            else
+              echo "Skipping deployment"
             fi
 workflows:
   version: 2

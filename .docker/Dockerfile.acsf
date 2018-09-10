@@ -3,6 +3,8 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/govcms7
 
+RUN rm -Rf /app
+
 COPY --from=cli /app /app
 
 RUN drush dl -y registry_rebuild \
