@@ -12,3 +12,17 @@ file:
   /app/robots.txt:
     exists: false
     filetype: file
+  /app/sites/all/modules/govcms_akamai_fast_purge:
+    exists: true
+    filetype: directory
+  /app/sites/all/modules/govcms_tweaks:
+    exists: true
+    filetype: directory
+  /app/sites/all/modules/lagoon:
+    exists: true
+    filetype: directory
+  /app/sites/default/settings.php:
+    exists: true
+    filetype: file
+    contains:
+    - "Lagoon Drupal 7 configuration file."
