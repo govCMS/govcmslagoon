@@ -1,0 +1,49 @@
+---
+gossfile:
+  goss.govcms7.yaml: {}
+
+file:
+  /home/.drush/registry_rebuild:
+    exists: true
+    filetype: directory
+  /app/sites/all/modules/contrib/memcache:
+    exists: true
+    filetype: directory
+  /app/sites/all/modules/contrib/memory_profiler:
+    exists: true
+    filetype: directory
+
+  /app/sites/all/modules/acsf:
+    exists: true
+    filetype: directory
+  /app/sites/all/modules/acsf/acsf.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+  /app/sites/all/modules/acsf/acsf_duplication/acsf_duplication.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+  /app/sites/all/modules/acsf/acsf_openid/acsf_openid.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+  /app/sites/all/modules/acsf/acsf_pingdom/acsf_pingdom.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+  /app/sites/all/modules/acsf/acsf_theme/acsf_theme.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+  /app/sites/all/modules/acsf/acsf_variables/acsf_variables.info:
+    exists: true
+    filetype: file
+    contains:
+    - "!dependencies"
+

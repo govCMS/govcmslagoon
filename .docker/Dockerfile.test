@@ -3,6 +3,6 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/test
 
-COPY --from=cli /app /app
+RUN rm -Rf /app
 
-COPY modules/ /app/profiles/govcms/modules/migration
+COPY --from=cli /app /app
