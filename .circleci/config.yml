@@ -27,6 +27,9 @@ jobs:
             ahoy -v build
             docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
       - run:
+          name: Test container
+          command: dgoss run -i govcmslagoon/govcms7:latest
+      - run:
           name: Push Docker images to Dockerhub
           command: |
             if [ "${DEPLOY_ANY_BRANCH}" != "" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
