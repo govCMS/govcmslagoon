@@ -28,7 +28,10 @@ jobs:
             docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
       - run:
           name: Test container
-          command: dgoss run -i govcmslagoon/govcms7:latest
+          command: |
+            GOSS_FILES_PATH=tests/goss/govcms7 dgoss run -i govcmslagoon/govcms7:latest
+            goss render tests/goss/test/goss.yml | GOSS_FILES_PATH=tests/goss/test dgoss run -i govcmslagoon/acsf:latest
+            goss render tests/goss/acsf/goss.yml | GOSS_FILES_PATH=tests/goss/acsf dgoss run -i govcmslagoon/test:latest
       - run:
           name: Push Docker images to Dockerhub
           command: |
