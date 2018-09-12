@@ -3,6 +3,7 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/test
 
-RUN rm -Rf /app
-
 COPY --from=cli /app /app
+
+RUN /app/sanitize.sh \
+  && rm -rf /app/sanitize.sh

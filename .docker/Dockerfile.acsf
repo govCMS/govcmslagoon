@@ -3,8 +3,6 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/govcms7
 
-RUN rm -Rf /app
-
 COPY --from=cli /app /app
 
 RUN drush dl -y registry_rebuild \
@@ -13,4 +11,6 @@ RUN drush dl -y registry_rebuild \
   memcache \
   memory_profiler \
   && fix-permissions /home/.drush \
-  && find /app/sites/all/modules/acsf -name "*.info" -print0 | xargs -0 sed -i -e "/dependencies/d"
+  && find /app/sites/all/modules/acsf -name "*.info" -print0 | xargs -0 sed -i -e "/dependencies/d" \
+  && /app/sanitize.sh \
+  && rm -rf /app/sanitize.sh
