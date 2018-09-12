@@ -14,10 +14,92 @@
  *   For settings only for the development environment (dev servers, docker).
  * - settings.local.php
  *   For settings only for the local environment, this file will not be commited in GIT!
- *
  */
 
-### Lagoon Database connection
+// @see https://govdex.gov.au/jira/browse/GOVCMS-993
+// @see https://github.com/drupal/drupal/blob/7.x/sites/default/default.settings.php#L518
+// @see https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/drupal_fast_404/7.x
+$conf['404_fast_paths_exclude'] = '/\/(?:styles)|(?:system\/files)\//';
+$conf['404_fast_paths'] = '/\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
+
+// Allow custom themes to provide custom 404 pages.
+// By placing a file called 404.html in the root of their theme repository.
+// 404 pages must be less than 512KB to be used. This is a performance
+// measure to ensure transfer, memory usage and disk reads are manageable.
+class govCms404Page {
+
+  const MAX_FILESIZE = 5132288;
+
+  protected $filepath;
+
+  protected $default;
+
+  public function __construct($fast_404_html) {
+    $this->filepath = conf_path() . '/themes/site/404.html';
+    $this->default = $fast_404_html;
+  }
+
+  public function __toString() {
+    // filesize() will check the file exists. So as long as
+    // we suppress the output, it won't be an issue to not
+    // check for the presence of a file first.
+    $filesize = @filesize($this->filepath);
+    if ($filesize === FALSE || $filesize > self::MAX_FILESIZE) {
+      return $this->default;
+    }
+
+    return file_get_contents($this->filepath);
+  }
+}
+
+$conf['404_fast_html'] = new govCms404Page($conf['404_fast_html']);
+
+// Ensure redirects created with the redirect module are able to set appropriate
+// caching headers to ensure that Varnish and Akamai can cache the HTTP 301.
+$conf['page_cache_invoke_hooks'] = TRUE;
+$conf['redirect_page_cache'] = TRUE;
+
+// Ensure the token UI does not use a lot of PHP memoryto build the token UI
+// tree of tokens.
+$conf['token_tree_recursion_limit'] = 1;
+
+// Ensure that administrators do not block drush access through the UI.
+$conf['shield_allow_cli'] = 1;
+
+// Configure seckit to emit the HSTS headers when a user is likely visiting
+// govCMS using a domain with valid SSL.
+//
+// This includes:
+//  - "*-site.test.govcms.gov.au" domains (TEST)
+//  - "*-site.govcms.gov.au" domains (PROD)
+//  - "*.gov.au" domains (PROD)
+//  - "*.org.au" domains (PROD)
+//
+// When the domain likely does not have valid SSL, then HSTS is disabled
+// explicitly (to prevent the database values being used).
+//
+// @see https://govdex.gov.au/jira/browse/GOVCMS-1109
+// @see http://cgit.drupalcode.org/seckit/tree/includes/seckit.form.inc#n397
+//
+if (preg_match("~^.+(\.gov\.au|\.org\.au)$~i", $_SERVER['HTTP_HOST'])) {
+  $conf['seckit_ssl']['hsts'] = 1;
+  $conf['seckit_ssl']['hsts_max_age'] = 31536000;
+  $conf['seckit_ssl']['hsts_subdomains'] = FALSE;
+}
+else {
+  $conf['seckit_ssl']['hsts'] = 0;
+  $conf['seckit_ssl']['hsts_max_age'] = 0;
+  $conf['seckit_ssl']['hsts_subdomains'] = FALSE;
+}
+
+// Inject the Akamai fast purge credentials into the module
+// govcms_akamai_fast_purge.
+$dot_edgerc = $_ENV['HOME'] . '/.edgerc';
+if (file_exists($dot_edgerc)) {
+  $conf['govcms_akamai_fast_purge_credentials_path'] = $dot_edgerc;
+}
+
+// Lagoon Database connection
 if (getenv('LAGOON')) {
   $databases['default']['default'] = [
     'driver' => 'mysql',
@@ -31,16 +113,16 @@ if (getenv('LAGOON')) {
   ];
 }
 
-### Contrib path.
+// Contrib path.
 $contrib_path = 'sites/all/modules/contrib';
 
-### Lagoon Solr connection
+// Lagoon Solr connection
 if (getenv('LAGOON')) {
   $conf['lagoon_solr_host'] = (getenv('SOLR_HOST') ?: 'solr');
   $conf['lagoon_solr_path'] = '/solr/' . (getenv('SOLR_CORE') ?: 'drupal');
 }
 
-### Lagoon Varnish & reverse proxy settings
+// Lagoon Varnish & reverse proxy settings
 if (getenv('LAGOON')) {
   $varnish_control_port = getenv('VARNISH_CONTROL_PORT') ?: '6082';
   $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
@@ -55,7 +137,7 @@ if (getenv('LAGOON')) {
   $conf['varnish_version'] = 4;
 }
 
-### Redis configuration.
+// Redis configuration.
 if (getenv('LAGOON')) {
   $conf['redis_client_interface'] = 'PhpRedis';
   $conf['redis_client_host'] = 'redis';
@@ -65,23 +147,23 @@ if (getenv('LAGOON')) {
   $conf['cache_default_class'] = 'Redis_Cache';
 }
 
-### Public and private files paths.
+// Public and private files paths.
 if (getenv('LAGOON')) {
   $conf['file_public_path'] = 'sites/default/files';
   $conf['file_private_path'] = 'sites/default/files/private';
 }
 
-### Temp directory
+// Temp directory
 if (getenv('TMP')) {
   $conf['file_temporary_path'] = getenv('TMP');
 }
 
-### Hash Salt
+// Hash Salt
 if (getenv('LAGOON')) {
   $drupal_hash_salt = hash('sha256', getenv('LAGOON_PROJECT'));
 }
 
-### Disable HTTP request status check in docker.
+// Disable HTTP request status check in docker.
 $conf['drupal_http_request_fails'] = FALSE;
 
 // Loading settings for all environment types.
