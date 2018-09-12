@@ -6,7 +6,7 @@
 TEST_DIR=${TEST_DIR:-tests/goss}
 
 fails=0
-for file in $TEST_DIR/*.yaml; do
+for file in $TEST_DIR/goss.*.yaml; do
   prefix=$TEST_DIR/goss.
   service=${file/$prefix/}
   service=${service/.yaml/}
