@@ -1,4 +1,7 @@
 ---
+gossfile:
+  sanitise.yaml: {}
+
 file:
   /app/sites/all/modules/contrib:
     exists: true
@@ -29,62 +32,3 @@ file:
     filetype: file
     contains:
     - "Lagoon Drupal 7 configuration file."
-
-  # Sanitisation.
-  /app/install.php:
-    exists: false
-  /app/INSTALL.txt:
-    exists: false
-  /app/COPYRIGHT.txt:
-    exists: false
-  /app/LICENSE.txt:
-    exists: false
-  /app/MAINTAINERS.txt:
-    exists: false
-  /app/UPGRADE.txt:
-    exists: false
-  /app/web.config:
-    exists: false
-  /app/robots.txt:
-    exists: false
-  /app/.editorconfig:
-    exists: false
-  /app/favicon.ico:
-    exists: false
-
-  /app/profiles/govcms/libraries/backbone/tests:
-    exists: false
-  /app/profiles/govcms/libraries/backbone/test:
-    exists: false
-  /app/profiles/govcms/libraries/chosen/tests:
-    exists: false
-  /app/profiles/govcms/libraries/chosen/test:
-    exists: false
-  /app/profiles/govcms/libraries/ckeditor/tests:
-    exists: false
-  /app/profiles/govcms/libraries/ckeditor/test:
-    exists: false
-  /app/profiles/govcms/libraries/html5placeholder/tests:
-    exists: false
-  /app/profiles/govcms/libraries/html5placeholder/test:
-    exists: false
-  /app/profiles/govcms/libraries/modernizr/tests:
-    exists: false
-  /app/profiles/govcms/libraries/modernizr/test:
-    exists: false
-  /app/profiles/govcms/libraries/performx/tests:
-    exists: false
-  /app/profiles/govcms/libraries/performx/test:
-    exists: false
-  /app/profiles/govcms/libraries/superfish/tests:
-    exists: false
-  /app/profiles/govcms/libraries/superfish/test:
-    exists: false
-  /app/profiles/govcms/libraries/swiftmailer/tests:
-    exists: false
-  /app/profiles/govcms/libraries/swiftmailer/test:
-    exists: false
-  /app/profiles/govcms/libraries/underscore/tests:
-    exists: false
-  /app/profiles/govcms/libraries/underscore/test:
-    exists: false

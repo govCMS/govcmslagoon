@@ -1,6 +1,6 @@
 ---
 gossfile:
-  goss.govcms7.yaml: {}
+  sanitise.yaml: {}
 
 file:
   /home/.drush/registry_rebuild:

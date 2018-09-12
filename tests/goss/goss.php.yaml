@@ -1,4 +1,7 @@
 ---
+gossfile:
+  sanitise.yaml: {}
+
 command:
   which clamscan:
     exit-status: 0
