@@ -3,8 +3,9 @@ FROM ${CLI_IMAGE} as cli
 
 FROM govcmsdev/nginx-drupal
 
-# redirects
-COPY .docker/images/nginx/acsf_redirects.conf /etc/nginx/helpers/global_redirects.conf
+# nginx config.
+COPY .docker/images/nginx/helpers/ /etc/nginx/helpers/
+COPY .docker/images/nginx/x_frame_options.conf /etc/nginx/conf.d/drupal/location_drupal_append_x_frame_options.conf;
 RUN fix-permissions /etc/nginx
 
 COPY --from=cli /app /app
