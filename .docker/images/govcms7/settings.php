@@ -52,7 +52,7 @@ class govCms404Page {
   }
 }
 
-$conf['404_fast_html'] = new govCms404Page($conf['404_fast_html']);
+$conf['404_fast_html'] = new govCms404Page(variable_get('404_fast_html'));
 
 // Ensure redirects created with the redirect module are able to set appropriate
 // caching headers to ensure that Varnish and Akamai can cache the HTTP 301.
@@ -94,7 +94,7 @@ else {
 
 // Inject the Akamai fast purge credentials into the module
 // govcms_akamai_fast_purge.
-$dot_edgerc = $_ENV['HOME'] . '/.edgerc';
+$dot_edgerc = '/.edgerc';
 if (file_exists($dot_edgerc)) {
   $conf['govcms_akamai_fast_purge_credentials_path'] = $dot_edgerc;
 }
