@@ -5,4 +5,5 @@ FROM govcmsdev/test
 
 COPY --from=cli /app /app
 
-COPY modules/ /app/profiles/govcms/modules/migration
+RUN /app/sanitize.sh \
+  && rm -rf /app/sanitize.sh

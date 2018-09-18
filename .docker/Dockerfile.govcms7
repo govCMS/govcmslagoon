@@ -1,12 +1,17 @@
 FROM govcmsdev/govcms7
 
+COPY .docker/sanitize.sh /app/sanitize.sh
+
 RUN apk add python \
     && drush dl --destination=sites/all/modules/contrib -y \
+    fast_404 \
     redis \
     stage_file_proxy \
+    && mkdir -p /app/sites/default/files/private \
     && fix-permissions /home/.drush \
-    && rm -rf /app/robots.txt
+    && chmod +x /app/sanitize.sh \
+    && /app/sanitize.sh
 
 COPY modules/ /app/sites/all/modules/
 
-COPY .docker/images/code/settings.php /app/sites/default/settings.php
+COPY .docker/images/govcms7/settings.php /app/sites/default/settings.php
