@@ -181,6 +181,11 @@ if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
   }
 }
 
+// Inject Google Analytics snippet on all production sites.
+if (getenv('LAGOON_ENVIRONMENT_TYPE') && getenv('LAGOON_ENVIRONMENT_TYPE') == 'production') {
+  $conf['googleanalytics_codesnippet_after'] = "ga('create', 'UA-54970022-1', 'auto', {'name': 'govcms'}); ga('govcms.send', 'pageview');";
+}
+
 // Last: this servers specific settings files.
 if (file_exists(__DIR__ . '/settings.local.php')) {
   include __DIR__ . '/settings.local.php';
