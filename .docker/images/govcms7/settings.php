@@ -19,7 +19,7 @@
 // @see https://govdex.gov.au/jira/browse/GOVCMS-993
 // @see https://github.com/drupal/drupal/blob/7.x/sites/default/default.settings.php#L518
 // @see https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/drupal_fast_404/7.x
-$conf['404_fast_paths_exclude'] = '/\/(?:styles)|(?:system\/files)\//';
+$conf['404_fast_paths_exclude'] = '/\/(?:styles)|(?:robots.txt)|(?:system\/files)\//';
 $conf['404_fast_paths'] = '/\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
 
 // Allow custom themes to provide custom 404 pages.
