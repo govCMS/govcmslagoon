@@ -16,11 +16,16 @@
  *   For settings only for the local environment, this file will not be commited in GIT!
  */
 
+// Contrib path.
+$contrib_path = 'sites/all/modules/contrib';
+
 // @see https://govdex.gov.au/jira/browse/GOVCMS-993
 // @see https://github.com/drupal/drupal/blob/7.x/sites/default/default.settings.php#L518
 // @see https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/drupal_fast_404/7.x
-$conf['404_fast_paths_exclude'] = '/\/(?:styles)|(?:system\/files)\//';
-$conf['404_fast_paths'] = '/\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
+include_once($contrib_path . '/fast_404/fast_404.inc');
+$conf['fast_404_exts'] = '/^(?!robots)^(?!sites\/default\/files).*\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
+$conf['fast_404_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
+$conf['fast_404_string_whitelisting'] = array('robots.txt');
 
 // Allow custom themes to provide custom 404 pages.
 // By placing a file called 404.html in the root of their theme repository.
@@ -52,7 +57,8 @@ class govCms404Page {
   }
 }
 
-$conf['404_fast_html'] = new govCms404Page(variable_get('404_fast_html'));
+$conf['404_fast_html'] = new govCms404Page($conf['fast_404_html']);
+fast_404_ext_check();
 
 // Ensure redirects created with the redirect module are able to set appropriate
 // caching headers to ensure that Varnish and Akamai can cache the HTTP 301.
@@ -112,9 +118,6 @@ if (getenv('LAGOON')) {
     'collation' => 'utf8mb4_general_ci',
   ];
 }
-
-// Contrib path.
-$contrib_path = 'sites/all/modules/contrib';
 
 // Lagoon Solr connection
 if (getenv('LAGOON')) {
