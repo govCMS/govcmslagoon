@@ -15,4 +15,4 @@ RUN apk add python \
 
 COPY modules/ /app/sites/all/modules/
 
-COPY .docker/images/govcms7/settings.php /app/sites/default/settings.php
+COPY .docker/images/govcms7/settings/ /app/sites/default/
