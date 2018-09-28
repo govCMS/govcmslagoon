@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+##
+# GovCMS 7 Drupal deployment script.
+#
+
+# Run database updates if drupal is installed.
+if [[ $(drush core-status bootstrap --pipe) != "" ]]; then
+    drush updb -y
+    drush cc all
+else
+    echo "Drupal not installed."
+fi
