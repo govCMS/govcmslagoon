@@ -7,3 +7,14 @@ COPY --from=cli /app /app
 
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
+
+RUN wget https://github.com/govCMS/audit-site/archive/7.x-2.x-beta5.tar.gz \
+    && tar -C /tmp -xzvf 7.x-2.x-beta5.tar.gz \
+    && rm 7.x-2.x-beta5.tar.gz \
+    && mkdir -p /app/sites/all/druitiny \
+    && mv /tmp/audit-site-7.x-2.x-beta5/* /app/sites/all/druitiny \
+    && rm -Rf /tmp/audit-site-7.x-2.x-beta5 \
+    && rm -Rf /app/sites/all/druitiny/Profiles \
+    && php -d memory_limit=-1 /usr/local/bin/composer --working-dir=/app/sites/all/druitiny/ install --ignore-platform-reqs
+
+COPY .docker/images/test/ci.profile.yml /app/sites/all/druitiny/profiles/

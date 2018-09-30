@@ -1,3 +1,29 @@
 ---
 gossfile:
   sanitise.yaml: {}
+
+file:
+  /app/sites/all/druitiny/profiles/ci.profile.yml:
+    exists: true
+  /app/sites/all/druitiny/vendor/bin/drutiny:
+    exists: true
+  /app/sites/all/druitiny/Policies:
+    exists: false
+    filetype: directory
+
+command:
+  cd /app/sites/all/druitiny && ./vendor/bin/drutiny:
+    exit-status: 0
+    stdout:
+    - Available commands
+    - profile:list
+    stderr: []
+    timeout: 10000
+
+  cd /app/sites/all/druitiny && ./vendor/bin/drutiny profile:list:
+    exit-status: 0
+    stdout:
+    - Profile
+    - CI Site Audit
+    stderr: []
+    timeout: 10000
