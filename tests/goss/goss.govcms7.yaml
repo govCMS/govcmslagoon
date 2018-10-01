@@ -32,3 +32,6 @@ file:
     filetype: file
     contains:
     - "Lagoon Drupal 7 configuration file."
+  /usr/bin/govcms-deploy:
+    exists: true
+    mode: "0755"
