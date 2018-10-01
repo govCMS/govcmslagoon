@@ -3,15 +3,15 @@ gossfile:
   sanitise.yaml: {}
 
 file:
-  /app/sites/all/druitiny/profiles/ci.profile.yml:
+  /app/sites/all/drutiny/profiles/ci.profile.yml:
     exists: true
-  /app/sites/all/druitiny/vendor/bin/drutiny:
+  /app/sites/all/drutiny/vendor/bin/drutiny:
     exists: true
-  /app/sites/all/druitiny/Policies:
+  /app/sites/all/drutiny/Policies:
     exists: false
 
 command:
-  druitiny:
+  drutiny:
     exit-status: 0
     stdout:
     - Available commands
@@ -19,7 +19,7 @@ command:
     stderr: []
     timeout: 10000
 
-  druitiny profile:list:
+  drutiny profile:list:
     exit-status: 0
     stdout:
     - Profile
