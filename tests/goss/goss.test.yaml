@@ -9,10 +9,9 @@ file:
     exists: true
   /app/sites/all/druitiny/Policies:
     exists: false
-    filetype: directory
 
 command:
-  cd /app/sites/all/druitiny && ./vendor/bin/drutiny:
+  druitiny:
     exit-status: 0
     stdout:
     - Available commands
@@ -20,7 +19,7 @@ command:
     stderr: []
     timeout: 10000
 
-  cd /app/sites/all/druitiny && ./vendor/bin/drutiny profile:list:
+  druitiny profile:list:
     exit-status: 0
     stdout:
     - Profile
