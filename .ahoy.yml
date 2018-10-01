@@ -65,3 +65,7 @@ commands:
     cmd: |
       export $(grep -v '^#' .env.default | xargs)
       . .docker/release.sh
+
+  audit-site:
+    usage: Run site audit
+    cmd: docker-compose exec -T test drutiny profile:run ci @self "$@"
