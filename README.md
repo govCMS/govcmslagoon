@@ -36,7 +36,7 @@
 Additional commands are listed in `.ahoy.yml`.
 
 ## Releasing production version
-Once this repo is read to production release, the following actions needs to be taken:
+Once this repo is ready for production release, the following actions needs to be taken:
 - Replace `govcmsdev` with `govcms` in all files
-- Remove `DEPLOY_ANY_BRANCH` env variable from CircleCI UI
-- Remove this block 
+- Remove `DEPLOY_ANY_BRANCH` environment variable from CircleCI UI
+- Remove this block
