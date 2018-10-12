@@ -5,6 +5,7 @@
 
 # Run database updates if drupal is installed.
 if [[ $(drush core-status bootstrap --pipe) != "" ]]; then
+    mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
     drush updb -y
     drush cc all
 else
