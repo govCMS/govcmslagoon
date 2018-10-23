@@ -33,3 +33,4 @@ find $APP_DIR -type f -iname 'API.md' -exec rm {} +
 # Remove test dirs as they can contain vulnerabilities.
 find $APP_DIR/profiles/govcms/libraries/ -type d -name test -exec rm -rf {} +
 find $APP_DIR/profiles/govcms/libraries/ -type d -name tests -exec rm -rf {} +
+find $APP_DIR/profiles/govcms/libraries/ -type d -name samples -exec rm -rf {} +

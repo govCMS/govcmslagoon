@@ -55,3 +55,5 @@ file:
     exists: false
   /app/profiles/govcms/libraries/underscore/test:
     exists: false
+  /app/profiles/govcms/libraries/ckeditor/samples:
+    exists: false  
