@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the GovCMS Lagoon module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function govcms_lagoon_install() {
+  // Ensure ClamAV is using executable mode and set binary path.
+  variable_set('clamav_mode', 1);
+  variable_set('clamav_executable_path', '/usr/bin/clamscan');
+}

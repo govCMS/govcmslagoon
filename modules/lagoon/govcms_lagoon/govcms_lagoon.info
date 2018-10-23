@@ -1,0 +1,10 @@
+name = GovCMS Lagoon
+description = "Provide dependent modules and platform configuration for GovCMS on Lagoon."
+package = Lagoon
+core = 7.x
+
+dependencies[] = redis
+dependencies[] = fast_404
+dependencies[] = clamav
+dependencies[] = robotstxt
+dependencies[] = lagoon_logs
