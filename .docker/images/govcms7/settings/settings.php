@@ -165,6 +165,10 @@ if (getenv('LAGOON')) {
 // Disable HTTP request status check in docker.
 $conf['drupal_http_request_fails'] = FALSE;
 
+// ClamAV configuration.
+$conf['clamav_mode'] = 1;
+$conf['clamav_executable_path'] = '/usr/bin/clamscan';
+
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
   include __DIR__ . '/all.settings.php';
