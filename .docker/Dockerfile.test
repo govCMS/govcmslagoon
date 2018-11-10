@@ -8,7 +8,7 @@ COPY --from=cli /app /app
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
 
-COPY .docker/images/test/drutiny /app/sites/all/drutiny/profiles/
+COPY .docker/images/test/* /app/sites/all/drutiny/profiles/
 
 ENV SITE_AUDIT_VERSION 7.x-3.x
 RUN wget https://github.com/govcms/audit-site/archive/$SITE_AUDIT_VERSION.tar.gz \
