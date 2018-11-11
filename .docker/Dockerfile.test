@@ -8,7 +8,7 @@ COPY --from=cli /app /app
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
 
-COPY .docker/images/test/* /app/sites/all/drutiny/profiles/
+COPY .docker/images/test/drutiny /usr/bin/drutiny
 
 ENV SITE_AUDIT_VERSION 7.x-3.x
 RUN wget https://github.com/govcms/audit-site/archive/$SITE_AUDIT_VERSION.tar.gz \
@@ -18,5 +18,7 @@ RUN wget https://github.com/govcms/audit-site/archive/$SITE_AUDIT_VERSION.tar.gz
     && mv /tmp/audit-site-$SITE_AUDIT_VERSION/* /app/sites/all/drutiny \
     && rm -Rf /tmp/audit-site-$SITE_AUDIT_VERSION \
     && php -d memory_limit=-1 /usr/local/bin/composer --working-dir=/app/sites/all/drutiny/ install --ignore-platform-reqs \
-    && mv /app/sites/all/drutiny/profiles/drutiny /usr/bin/drutiny \
     && chmod +x /usr/bin/drutiny
+
+# Add custom drutiny profiles into test for local testing
+COPY .docker/images/test/*.yml /app/sites/all/drutiny/Profiles
