@@ -6,6 +6,17 @@
 # Ensure tmp folder always exists.
 mkdir -p /app/sites/default/files/private/tmp/
 
+# Non production environments.
+if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
+    # Import production database on inital deployment.
+    if ! drush status --fields=bootstrap | grep -q "Successful"; then
+        drush sql-sync @govcms-prod @self -y
+    fi
+
+    # Enable stage file proxy.
+    drush en stage_file_proxy -y
+fi
+
 # Run database updates if drupal is installed.
 if drush status --fields=bootstrap | grep -q "Successful"; then
     mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
