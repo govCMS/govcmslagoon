@@ -3,6 +3,7 @@ FROM govcmsdev/govcms7
 COPY .docker/sanitize.sh /app/sanitize.sh
 
 COPY .docker/images/govcms7/scripts /usr/bin/
+COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 
 RUN apk add python \
     && drush dl --destination=sites/all/modules/contrib -y \
