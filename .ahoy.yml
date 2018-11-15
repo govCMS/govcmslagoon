@@ -68,4 +68,4 @@ commands:
 
   audit-site:
     usage: Run site audit
-    cmd: docker-compose exec -T test drutiny profile:run ci @self "$@"
+    cmd: docker-compose exec -T test drutiny profile:run d7-full @self "$@"

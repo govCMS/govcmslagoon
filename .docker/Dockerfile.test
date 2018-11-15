@@ -8,16 +8,17 @@ COPY --from=cli /app /app
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
 
-COPY .docker/images/test/ci.profile.yml .docker/images/test/drutiny /app/sites/all/drutiny/profiles/
+COPY .docker/images/test/drutiny /usr/bin/drutiny
 
-ENV SITE_AUDIT_VERSION 7.x-2.x-beta5
-RUN wget https://github.com/govCMS/audit-site/archive/$SITE_AUDIT_VERSION.tar.gz \
+ENV SITE_AUDIT_VERSION 7.x-3.x
+RUN wget https://github.com/govcms/audit-site/archive/$SITE_AUDIT_VERSION.tar.gz \
     && tar -C /tmp -xzvf $SITE_AUDIT_VERSION.tar.gz \
     && rm $SITE_AUDIT_VERSION.tar.gz \
     && mkdir -p /app/sites/all/drutiny \
     && mv /tmp/audit-site-$SITE_AUDIT_VERSION/* /app/sites/all/drutiny \
     && rm -Rf /tmp/audit-site-$SITE_AUDIT_VERSION \
-    && rm -Rf /app/sites/all/drutiny/Profiles \
     && php -d memory_limit=-1 /usr/local/bin/composer --working-dir=/app/sites/all/drutiny/ install --ignore-platform-reqs \
-    && mv /app/sites/all/drutiny/profiles/drutiny /usr/bin/drutiny \
     && chmod +x /usr/bin/drutiny
+
+# Add custom drutiny profiles into test for local testing
+COPY .docker/images/test/*.yml /app/sites/all/drutiny/Profiles
