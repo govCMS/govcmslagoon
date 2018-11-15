@@ -185,3 +185,8 @@ if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
 if (file_exists(__DIR__ . '/settings.local.php')) {
   include __DIR__ . '/settings.local.php';
 }
+
+// Stage file proxy URL from production URL.
+if (getenv('STAGE_FILE_PROXY_URL')) {
+  $conf['stage_file_proxy_origin'] = getenv('STAGE_FILE_PROXY_URL');
+}
