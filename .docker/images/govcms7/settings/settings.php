@@ -159,7 +159,7 @@ if (getenv('LAGOON')) {
 
 // Hash Salt
 if (getenv('LAGOON')) {
-  $drupal_hash_salt = hash('sha256', getenv('LAGOON_PROJECT'));
+  $drupal_hash_salt = getenv('DRUPAL_HASH_SALT') ?: hash('sha256', getenv('LAGOON_PROJECT'));
 }
 
 // Disable HTTP request status check in docker.
