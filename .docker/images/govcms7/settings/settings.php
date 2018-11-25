@@ -143,7 +143,7 @@ if (getenv('LAGOON')) {
 // Redis configuration.
 if (getenv('LAGOON')) {
   $conf['redis_client_interface'] = 'PhpRedis';
-  $conf['redis_client_host'] = 'redis';
+  $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
   $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
   $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
   $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
