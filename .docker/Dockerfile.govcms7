@@ -13,6 +13,7 @@ RUN apk add python \
     stage_file_proxy \
     && wget https://www.drupal.org/files/issues/drupal-500_exception_on_exception-12221055-6.patch \
     && patch -p1 < drupal-500_exception_on_exception-12221055-6.patch \
+    && rm drupal-500_exception_on_exception-12221055-6.patch \
     && mkdir -p /app/sites/default/files/private \
     && fix-permissions /home/.drush \
     && chmod +x /app/sanitize.sh \
