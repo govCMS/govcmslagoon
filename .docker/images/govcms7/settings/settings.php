@@ -23,7 +23,7 @@ $contrib_path = 'sites/all/modules/contrib';
 // @see https://github.com/drupal/drupal/blob/7.x/sites/default/default.settings.php#L518
 // @see https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/drupal_fast_404/7.x
 include_once($contrib_path . '/fast_404/fast_404.inc');
-$conf['fast_404_exts'] = '/^(?!robots)^(?!sites\/default\/files).*\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
+$conf['fast_404_exts'] = '/^(?!robots)^(?!sites\/default\/files\/private).*\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
 $conf['fast_404_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
 $conf['fast_404_string_whitelisting'] = array('robots.txt');
 
