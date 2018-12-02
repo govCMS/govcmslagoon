@@ -8,7 +8,7 @@ mkdir -p /app/sites/default/files/private/tmp/
 
 # Non production environments.
 if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
-    # Import production database on inital deployment (when database is empty).
+    # Import production database on initial deployment (when database is empty).
     if tables=$(drush sqlq 'show tables;') && [ -z "$tables" ]; then
 
         # SQL sync only in Lagoon development environments.
