@@ -13,7 +13,6 @@ RUN apk add python \
     && drush dl --destination=sites/all/modules/contrib -y \
     fast_404 \
     lagoon_logs \
-    redis \
     stage_file_proxy \
     && wget https://www.drupal.org/files/issues/drupal-500_exception_on_exception-12221055-6.patch \
     && patch -p1 < drupal-500_exception_on_exception-12221055-6.patch \

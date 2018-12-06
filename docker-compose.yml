@@ -82,14 +82,6 @@ services:
     environment:
       << : *default-environment
 
-  redis:
-    build:
-      context: .
-      dockerfile: $PWD/.docker/Dockerfile.redis
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/redis
-    environment:
-      << : *default-environment
-
   solr:
     build:
       context: .
