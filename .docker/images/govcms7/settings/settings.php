@@ -141,7 +141,7 @@ if (getenv('LAGOON')) {
 }
 
 // Redis configuration.
-if (getenv('LAGOON')) {
+if ((getenv('LAGOON'))  && (getenv('ENABLE_REDIS'))) {
   $conf['redis_client_interface'] = 'PhpRedis';
   $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
   $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
