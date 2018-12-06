@@ -6,9 +6,6 @@ file:
   /app/sites/all/modules/contrib:
     exists: true
     filetype: directory
-  /app/sites/all/modules/contrib/redis:
-    exists: true
-    filetype: directory
   /app/sites/all/modules/contrib/stage_file_proxy:
     exists: true
     filetype: directory
