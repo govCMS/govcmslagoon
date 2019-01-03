@@ -14,8 +14,3 @@ COPY --from=cli /app /app
 
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
-
-RUN apk add gettext
-
-ARG X_FRAME_OPTIONS
-RUN envsubst < /etc/nginx/conf.d/drupal/location_drupal_append_x_frame_options.template > /etc/nginx/conf.d/drupal/location_drupal_append_x_frame_options.conf
