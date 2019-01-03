@@ -9,6 +9,7 @@ x-volumes:
 x-environment:
   &default-environment
     LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-lagoon.docker.amazee.io}
+    X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
 
 services:
 
@@ -53,6 +54,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.nginx-drupal
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+        X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/nginx-drupal
     << : *default-volumes
     environment:
