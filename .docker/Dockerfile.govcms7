@@ -1,9 +1,34 @@
-FROM govcmsdev/govcms7:3.4
+FROM amazeeio/php:7.1-cli-drupal as builder
+
+ENV GOVCMS_PROJECT_VERSION=7.x-3.x
+
+RUN rm -rf /app \
+    && mkdir /src \
+    && cd /src \
+    && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
+    && wget https://raw.githubusercontent.com/govCMS/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
+    && { \
+        echo "core = 7.x"; \
+        echo "api = 2"; \
+        echo "includes[] = drupal-org-core.make"; \
+        echo "projects[govcms][type] = profile"; \
+        echo "projects[govcms][download][type] = git"; \
+        echo "projects[govcms][download][url] = https://github.com/govCMS/govCMS.git"; \
+        echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
+    } | tee -a "/src/build-govcms.make" \
+    && drush make /src/build-govcms.make /app --contrib-destination
+
+FROM amazeeio/php:7.1-cli-drupal
 
 # Temporary override until lagoon PR is available in upstream image.
 # https://github.com/amazeeio/lagoon/issues/787
 ENV PHP_MAX_INPUT_VARS=2000
 
+RUN apk add gmp gmp-dev \
+    && docker-php-ext-install gmp \
+    && docker-php-ext-configure gmp
+
+COPY --from=builder /app /app
 COPY .docker/sanitize.sh /app/sanitize.sh
 
 COPY .docker/images/govcms7/scripts /usr/bin/
