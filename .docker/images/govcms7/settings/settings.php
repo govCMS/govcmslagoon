@@ -199,3 +199,8 @@ if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
   }
 
 }
+
+// X-Frame-Options must mirror environment variable if provided.
+if (getenv('X_FRAME_OPTIONS')) {
+  $conf['x_frame_options'] = getenv('X_FRAME_OPTIONS');
+}

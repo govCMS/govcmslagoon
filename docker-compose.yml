@@ -9,6 +9,7 @@ x-volumes:
 x-environment:
   &default-environment
     LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-lagoon.docker.amazee.io}
+    X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
 
 services:
 
