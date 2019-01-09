@@ -1,7 +1,7 @@
 ARG CLI_IMAGE
 FROM ${CLI_IMAGE} as cli
 
-FROM govcmsdev/php:3.4
+FROM amazeeio/php:7.1-fpm
 
 # Temporary override until lagoon PR is available in upstream image.
 # https://github.com/amazeeio/lagoon/issues/787
