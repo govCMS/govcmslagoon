@@ -13,6 +13,22 @@ use GuzzleHttp\Exception\ClientException;
 define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
 
 /**
+ * Implements hook_permission().
+ */
+function govcms_akamai_fast_purge_permission() {
+  return array(
+    'administer edgerc file path' => array(
+      'title' => t('Administer Akaimai\'s configuration file path.'),
+      'description' => t('Access and set the configuration path for Akaimai fast purge.'),
+    ),
+    'administer akaimai configuration' => array(
+      'title' => t('Administer Akamai fast purge configuration'),
+      'description' => t('Access and set the configuration for Akaimai fast purge to consume.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function govcms_akamai_fast_purge_menu() {
