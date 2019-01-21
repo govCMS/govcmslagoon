@@ -52,6 +52,7 @@ function govcms_akamai_fast_purge_menu() {
  * @see govcms_akamai_fast_purge_menu()
  */
 function govcms_akamai_fast_purge_form($form, &$form_state) {
+
   $form['govcms_akamai_fast_purge_enabled'] = [
     '#type' => 'checkbox',
     '#title' => t('Enable file purge on creation, update and deletion'),
