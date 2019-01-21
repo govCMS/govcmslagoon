@@ -189,7 +189,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
   $path = drupal_realpath($file->uri);
   $parts = pathinfo($path);
   $extension = $parts['extension'];
-  $purge_extensions = variable_get('govcms_akamai_fast_purge_extensions', ['pdf']);
+  $purge_extensions = _govcms_akamai_get_configured_extensions();
   if (!in_array($extension, $purge_extensions)) {
     return;
   }
