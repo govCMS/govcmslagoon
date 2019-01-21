@@ -47,6 +47,42 @@ function govcms_akamai_fast_purge_menu() {
 }
 
 /**
+ * Fetch a list of configured extensions.
+ *
+ * @return array
+ *   A flat array of supported extensions.
+ */
+function _govcms_akamai_get_configured_extensions() {
+  $extensions = array();
+  $support = array(
+    'pdf' => variable_get('govcms_akamai_extensions_pdf', FALSE),
+    'word' => variable_get('govcms_akamai_extensions_word', FALSE),
+    'excel' => variable_get('govcms_akamai_extensions_excel', FALSE),
+    'images' => variable_get('govcms_akamai_extensions_images', FALSE),
+  );
+  if (NULL != $support['pdf'] && 0 != $support['pdf'] && FALSE != $support['pdf']) {
+    $extensions[] = 'pdf';
+  }
+  if (NULL != $support['word'] && 0 != $support['word'] && FALSE != $support['word']) {
+    $extensions[] = 'docx';
+    $extensions[] = 'doc';
+  }
+  if (NULL != $support['excel'] && 0 != $support['excel'] && FALSE != $support['excel']) {
+    $extensions[] = 'xlsx';
+    $extensions[] = 'xls';
+  }
+  if (NULL != $support['images'] && 0 != $support['images'] && FALSE != $support['images']) {
+    $extensions[] = 'jpg';
+    $extensions[] = 'jpeg';
+    $extensions[] = 'png';
+    $extensions[] = 'gif';
+    $extensions[] = 'tiff';
+  }
+
+  return $extensions;
+}
+
+/**
  * Page callback: Akamai Fast Purge settings
  *
  * @see govcms_akamai_fast_purge_menu()
