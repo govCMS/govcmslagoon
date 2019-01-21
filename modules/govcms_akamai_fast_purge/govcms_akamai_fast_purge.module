@@ -129,6 +129,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => FALSE,
 
   $form['#validate'][] = 'govcms_akamai_fast_purge_validate';
+  $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
 
   return system_settings_form($form);
 }
