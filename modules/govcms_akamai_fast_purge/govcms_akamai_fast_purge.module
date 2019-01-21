@@ -54,6 +54,12 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Purge PDF cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_purge_pdf', FALSE),
+  );
+  $form['govcms_akamai']['extensions']['word'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Purge DOCX/DOC cache on create/update.'),
+    '#default_value' => variable_get('govcms_akamai_purge_word', FALSE),
+  );
   // Do not expose this as an option as the key
   // should not be known to UI viewer.
 
