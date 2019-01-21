@@ -95,13 +95,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#default_value' => variable_get('govcms_akamai_fast_purge_enabled', TRUE),
   ];
 
-  $extensions = variable_get('govcms_akamai_fast_purge_extensions', ['pdf']);
-  $form['govcms_akamai_fast_purge_extensions'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Extensions to purge'),
-    '#description' => t('The files having these extensions will be purged. Enter one extension per line.'),
-    '#default_value' => implode("\n", $extensions),
-  );
 
   $form['govcms_akamai']['extensions']['pdf'] = array(
     '#type' => 'checkbox',
