@@ -136,17 +136,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   return system_settings_form($form);
 }
 
-/**
- * Form validation to transform the extensions into an array.
- */
-function govcms_akamai_fast_purge_validate($form, &$form_state) {
-  if (!empty($form_state['values']['govcms_akamai_fast_purge_extensions'])) {
-    $extensions = explode("\n", trim($form_state['values']['govcms_akamai_fast_purge_extensions']));
-    $form_state['values']['govcms_akamai_fast_purge_extensions'] = $extensions;
-  }
-  else {
-    $form_state['values']['govcms_akamai_fast_purge_extensions'] = [];
-  }
 }
 
 /**
