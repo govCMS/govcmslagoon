@@ -25,6 +25,10 @@ function govcms_akamai_fast_purge_permission() {
       'title' => t('Administer Akamai fast purge configuration'),
       'description' => t('Access and set the configuration for Akaimai fast purge to consume.'),
     ),
+    'administer akamai network' => array(
+      'title' => t('Administer Akamai network'),
+      'description' => t('Access and set the configuration for Akaimai network.'),
+    ),
   );
 }
 
@@ -135,8 +139,17 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#description' => t('Path to the URL for manual purging. <em>Works once, will not save.</em>'),
   );
 
-  // Do not expose this as an option as the key
-  // should not be known to UI viewer.
+  $form['govcms_akamai_fast_purge_api_network'] = array(
+    '#type' => 'select',
+    '#title' => t('Network'),
+    '#options' => array(
+      0 => t('staging'),
+      1 => t('prod'),
+    ),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_api_network', 0),
+    '#description' => t('The Akamai network to use.'),
+    '#access' => user_access('administer akamai network'),
+  );
 
   $form['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
@@ -227,7 +240,8 @@ function _govcms_akamai_fast_purge_api_call($file, $credentials_path) {
   module_load_include('phar', 'govcms_akamai_fast_purge', 'includes/akamai-open-edgegrid-client-1.0.0');
   $client = Client::createFromEdgeRcFile('default', $credentials_path);
 
-  $api_network = variable_get('govcms_akamai_fast_purge_api_network', 'staging');
+  $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
+  $api_network = ((int) $network_selection == 1) ? 'staging' : 'prod';
   $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
 
   $purge_url = file_create_url($file->uri);
