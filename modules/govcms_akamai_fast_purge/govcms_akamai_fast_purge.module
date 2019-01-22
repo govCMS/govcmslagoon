@@ -39,7 +39,7 @@ function govcms_akamai_fast_purge_menu() {
     'description' => 'Configuration for govCMS Akamai Fast Purge module',
     'page callback' => 'drupal_get_form',
     'page arguments' => ['govcms_akamai_fast_purge_form'],
-    'access arguments' => ['access administration pages'],
+    'access arguments' => ['administer akaimai configuration'],
     'type' => MENU_NORMAL_ITEM,
   ];
 
@@ -137,7 +137,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#maxlength' => 120,
     '#description' => t('Path to credentials for Akamai API, also known as <b>.edgerc</b> file.'),
     '#required' => TRUE,
-    '#access' => FALSE,
+    '#access' => user_access('administer edgerc file path'),
   );
 
   $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
