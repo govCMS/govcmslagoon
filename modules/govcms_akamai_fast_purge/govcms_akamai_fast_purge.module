@@ -58,6 +58,7 @@ function _govcms_akamai_get_configured_extensions() {
     'pdf' => variable_get('govcms_akamai_extensions_pdf', FALSE),
     'word' => variable_get('govcms_akamai_extensions_word', FALSE),
     'excel' => variable_get('govcms_akamai_extensions_excel', FALSE),
+    'zip' => variable_get('govcms_akamai_extensions_zip', FALSE),
     'images' => variable_get('govcms_akamai_extensions_images', FALSE),
   );
   if (NULL != $support['pdf'] && 0 != $support['pdf'] && FALSE != $support['pdf']) {
@@ -70,6 +71,9 @@ function _govcms_akamai_get_configured_extensions() {
   if (NULL != $support['excel'] && 0 != $support['excel'] && FALSE != $support['excel']) {
     $extensions[] = 'xlsx';
     $extensions[] = 'xls';
+  }
+  if (NULL != $support['zip'] && 0 != $support['zip'] && FALSE != $support['zip']) {
+    $extensions[] = 'zip';
   }
   if (NULL != $support['images'] && 0 != $support['images'] && FALSE != $support['images']) {
     $extensions[] = 'jpg';
@@ -109,6 +113,11 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Purge XLSX/XLS cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_excel', FALSE),
+  );
+  $form['govcms_akamai_extensions_zip'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Purge ZIP cache on create/update.'),
+    '#default_value' => variable_get('govcms_akamai_extensions_zip', FALSE),
   );
   $form['govcms_akamai_extensions_images'] = array(
     '#type' => 'checkbox',
