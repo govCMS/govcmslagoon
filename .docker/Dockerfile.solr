@@ -1,1 +1,1 @@
-FROM govcmsdev/solr
+FROM govcmsdev/solr:3.1

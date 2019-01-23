@@ -1,7 +1,7 @@
 ARG CLI_IMAGE
 FROM ${CLI_IMAGE} as cli
 
-FROM govcmsdev/nginx-drupal
+FROM govcmsdev/nginx-drupal:3.1
 
 # nginx config.
 COPY .docker/images/nginx/helpers/ /etc/nginx/helpers/
