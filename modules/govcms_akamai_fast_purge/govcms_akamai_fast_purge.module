@@ -211,7 +211,8 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#markup' => "The following file extensions have been configured:<br />{$extensions}",
   );
 
-  return system_settings_form($form);
+  $form = system_settings_form($form);
+  return $form;
 }
 
 /**
