@@ -255,7 +255,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   // Make the actual API call.
-  _govcms_akamai_fast_purge_api_call($file, $credentials_path);
+  _govcms_akamai_fast_purge_api_call($file);
 }
 
 /**
@@ -266,9 +266,11 @@ function _govcms_akamai_fast_purge_trigger($file) {
  * @param $file
  * @param $credentials_path
  */
-function _govcms_akamai_fast_purge_api_call($file, $credentials_path) {
+function _govcms_akamai_fast_purge_api_call($file) {
+  $credentials = _govcms_akamai_fast_purge_process_edgerc();
   module_load_include('phar', 'govcms_akamai_fast_purge', 'includes/akamai-open-edgegrid-client-1.0.0');
-  $client = Client::createFromEdgeRcFile('default', $credentials_path);
+  $client = new Client();
+  $client->setAuth($credentials['default']['client_token'], $credentials['default']['client_secret'], $credentials['default']['access_token']);
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
   $api_network = ((int) $network_selection == 1) ? 'staging' : 'prod';
