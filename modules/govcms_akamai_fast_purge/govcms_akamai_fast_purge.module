@@ -170,8 +170,8 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#title' => t('Manual purge'),
     '#placeholder' => t('sites/default/files/file.pdf'),
     '#default_value' => '',
-    '#size' => 120,
-    '#maxlength' => 120,
+    '#size' => 40,
+    '#maxlength' => 256,
     '#description' => t('Path to the URL for one-time manual purging.<br /><em>Do not include the domain or preceding slash (/)</em>'),
   );
 
@@ -191,8 +191,8 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Configuration'),
     '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected',
-    '#size' => 120,
-    '#maxlength' => 120,
+    '#size' => 40,
+    '#maxlength' => 256,
     '#description' => t('The API credentials are stored in a variable inside the hosting provider, this will simply check if the expected values have been detected..'),
     '#required' => TRUE,
     '#disabled' => TRUE,
