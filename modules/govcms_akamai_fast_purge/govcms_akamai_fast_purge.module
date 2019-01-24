@@ -97,6 +97,11 @@ function _govcms_akamai_get_configured_extensions() {
  */
 function govcms_akamai_fast_purge_form($form, &$form_state) {
 
+  if (!$check = _govcms_akamai_fast_purge_detect_edgerc()) {
+    if (count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
+      drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
+    }
+  }
 
   $form['vtabs'] = array(
     '#type' => 'vertical_tabs',
