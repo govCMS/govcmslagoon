@@ -153,11 +153,11 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
-    '#title' => t('API Credentials Path'),
-    '#default_value' => variable_get('govcms_akamai_fast_purge_credentials_path', getenv('edgerc_path')),
+    '#title' => t('Configuration'),
+    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected',
     '#size' => 120,
     '#maxlength' => 120,
-    '#description' => t('Path to credentials for Akamai API, also known as <b>.edgerc</b> file.'),
+    '#description' => t('The API credentials are stored in a variable inside the hosting provider, this will simply check if the expected values have been detected..'),
     '#required' => TRUE,
     '#disabled' => TRUE,
     '#access' => user_access('administer edgerc file path'),
