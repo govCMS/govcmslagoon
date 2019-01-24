@@ -200,6 +200,13 @@ function govcms_akamai_fast_purge_file_delete($file) {
 }
 
 /**
+ * Detect if a configuration has been set.
+ */
+function _govcms_akamai_fast_purge_detect_edgerc() {
+  return (count(_govcms_akamai_fast_purge_process_edgerc()) === 1) ? TRUE : FALSE;
+}
+
+/**
  * Trigger the Akamai Fast Purge if needed.
  *
  * @param $file
