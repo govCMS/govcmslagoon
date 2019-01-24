@@ -201,6 +201,9 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   );
 
   $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
+  if (count($extensions) === 0 || $extensions === '') {
+    $extensions = '<em>No extensions have been configured.</em>';
+  }
 
   $form['support']['govcms_akamai_supported_extensions'] = array(
     '#type' => 'item',
