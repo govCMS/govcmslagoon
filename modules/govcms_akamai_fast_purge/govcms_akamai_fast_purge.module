@@ -330,7 +330,7 @@ function _govcms_akamai_fast_purge_api_call($file) {
   $client->setAuth($credentials['default']['client_token'], $credentials['default']['client_secret'], $credentials['default']['access_token']);
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
-  $api_network = ((int) $network_selection == 1) ? 'staging' : 'prod';
+  $api_network = ((int) $network_selection == 1) ? 'staging' : 'production';
   $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
 
   $purge_url = (isset($file->uri)) ? file_create_url($file->uri) : $file;
