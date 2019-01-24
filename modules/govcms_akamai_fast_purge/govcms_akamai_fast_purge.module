@@ -173,7 +173,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#disabled' => TRUE,
     '#size' => 120,
     '#maxlength' => 120,
-    '#description' => t('Path to the URL for manual purging. <em>Works once, will not save.</em>'),
+    '#description' => t('Path to the URL for one-time manual purging.<br /><em>Do not include the domain or preceding slash (/)</em>'),
   );
 
   $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
