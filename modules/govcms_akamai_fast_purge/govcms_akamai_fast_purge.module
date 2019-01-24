@@ -212,7 +212,19 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   );
 
   $form = system_settings_form($form);
+  $form['#submit'][] = 'govcms_akamai_fast_purge_form_submit';
   return $form;
+}
+
+/**
+ * Custom form submit handler for the custom purge path.
+ */
+function govcms_akamai_fast_purge_form_submit($form, $form_state) {
+  // Purge a custom path.
+  $custom_path = $form_state['values']['govcms_akamai_purge_path'];
+  if ($custom_path != "") {
+    _govcms_akamai_fast_purge_trigger($custom_path);
+  }
 }
 
 /**
