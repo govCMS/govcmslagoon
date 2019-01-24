@@ -97,38 +97,70 @@ function _govcms_akamai_get_configured_extensions() {
  */
 function govcms_akamai_fast_purge_form($form, &$form_state) {
 
-  $form['govcms_akamai_fast_purge_enabled'] = [
+
+  $form['vtabs'] = array(
+    '#type' => 'vertical_tabs',
+  );
+
+  $form['general'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#description' => t('General settings for Akamai Fast Purge integration with govCMS'),
+    '#group' => 'vtabs',
+  );
+
+  $form['support'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Extensions'),
+    '#description' => t('Which extensions should be supported on this site?'),
+    '#group' => 'vtabs',
+  );
+
+  $form['onetime'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('One-time purge'),
+    '#group' => 'vtabs',
+  );
+
+  $form['advanced'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced'),
+    '#description' => t('Advanced settings which you have access to, generally have security controls in place.'),
+    '#group' => 'vtabs',
+  );
+
+  $form['general']['govcms_akamai_fast_purge_enabled'] = [
     '#type' => 'checkbox',
     '#title' => t('Enable file purge on creation, update and deletion'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_enabled', TRUE),
   ];
 
-  $form['govcms_akamai_extensions_pdf'] = array(
+  $form['support']['govcms_akamai_extensions_pdf'] = array(
     '#type' => 'checkbox',
     '#title' => t('Purge PDF cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_pdf', FALSE),
   );
-  $form['govcms_akamai_extensions_word'] = array(
+  $form['support']['govcms_akamai_extensions_word'] = array(
     '#type' => 'checkbox',
     '#title' => t('Purge DOCX/DOC cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_word', FALSE),
   );
-  $form['govcms_akamai_extensions_excel'] = array(
+  $form['support']['govcms_akamai_extensions_excel'] = array(
     '#type' => 'checkbox',
     '#title' => t('Purge XLSX/XLS cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_excel', FALSE),
   );
-  $form['govcms_akamai_extensions_zip'] = array(
+  $form['support']['govcms_akamai_extensions_zip'] = array(
     '#type' => 'checkbox',
     '#title' => t('Purge ZIP cache on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_zip', FALSE),
   );
-  $form['govcms_akamai_extensions_images'] = array(
+  $form['support']['govcms_akamai_extensions_images'] = array(
     '#type' => 'checkbox',
     '#title' => t('Purge cache for supported image extensions on create/update.'),
     '#default_value' => variable_get('govcms_akamai_extensions_images', FALSE),
   );
-  $form['govcms_akamai_purge_path'] = array(
+  $form['onetime']['govcms_akamai_purge_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Manual purge'),
     '#placeholder' => t('/sites/default/files/file.pdf'),
@@ -139,7 +171,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#description' => t('Path to the URL for manual purging. <em>Works once, will not save.</em>'),
   );
 
-  $form['govcms_akamai_fast_purge_api_network'] = array(
+  $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
     '#type' => 'select',
     '#title' => t('Network'),
     '#options' => array(
@@ -151,7 +183,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('administer akamai network'),
   );
 
-  $form['govcms_akamai_fast_purge_credentials_path'] = array(
+  $form['advanced']['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Configuration'),
     '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected',
@@ -165,7 +197,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
 
-  $form['govcms_akamai_supported_extensions'] = array(
+  $form['support']['govcms_akamai_supported_extensions'] = array(
     '#type' => 'item',
     '#title' => t('Configured extensions'),
     '#markup' => "The following file extensions have been configured:<br />{$extensions}",
