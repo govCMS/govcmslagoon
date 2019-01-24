@@ -228,6 +228,7 @@ function _govcms_akamai_fast_purge_process_edgerc() {
   }
   return $credentials;
 }
+
 /**
  * Trigger the Akamai Fast Purge if needed.
  *
