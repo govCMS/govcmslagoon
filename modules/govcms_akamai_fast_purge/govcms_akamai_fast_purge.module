@@ -281,12 +281,17 @@ function _govcms_akamai_fast_purge_trigger($file) {
     return;
   }
 
-  $path = drupal_realpath($file->uri);
-  $parts = pathinfo($path);
-  $extension = $parts['extension'];
-  $purge_extensions = _govcms_akamai_get_configured_extensions();
-  if (!in_array($extension, $purge_extensions)) {
-    return;
+  if (isset($file->uri)) {
+    $path = drupal_realpath($file->uri);
+    $parts = pathinfo($path);
+    $extension = $parts['extension'];
+    $purge_extensions = _govcms_akamai_get_configured_extensions();
+    if (!in_array($extension, $purge_extensions)) {
+      return;
+    }
+  } else {
+    global $base_url;
+    $file = "{$base_url}/${file}";
   }
 
   if (count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
@@ -316,7 +321,7 @@ function _govcms_akamai_fast_purge_api_call($file) {
   $api_network = ((int) $network_selection == 1) ? 'staging' : 'prod';
   $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
 
-  $purge_url = file_create_url($file->uri);
+  $purge_url = (isset($file->uri)) ? file_create_url($file->uri) : $file;
   $api_request_options = [
     'json' => [
       'objects' => [
