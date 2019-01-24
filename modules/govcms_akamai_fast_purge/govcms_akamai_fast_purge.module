@@ -207,6 +207,28 @@ function _govcms_akamai_fast_purge_detect_edgerc() {
 }
 
 /**
+ * Process data available in the edgerc file/variable.
+ */
+function _govcms_akamai_fast_purge_process_edgerc() {
+  $creds = getenv('EDGERC_PATH');
+  $data = explode(" ", $creds);
+  $credentials = array();
+  foreach ($data as $key => $data_item) {
+    switch ($data_item):
+      case 'host':
+      case 'access_token':
+      case 'client_token':
+      case 'client_secret':
+      case 'location':
+        $credentials['default'][$data_item] = $data[$key + 2];
+        break;
+      default:
+        break;
+    endswitch;
+  }
+  return $credentials;
+}
+/**
  * Trigger the Akamai Fast Purge if needed.
  *
  * @param $file
