@@ -18,16 +18,16 @@ define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
 function govcms_akamai_fast_purge_permission() {
   return array(
     'administer edgerc file path' => array(
-      'title' => t('Administer Akaimai\'s configuration file path.'),
-      'description' => t('Access and set the configuration path for Akaimai fast purge.'),
+      'title' => t('Administer Akamai configuration file path.'),
+      'description' => t('Access and set the configuration path for Akamai fast purge.'),
     ),
-    'administer akaimai configuration' => array(
+    'administer akamai configuration' => array(
       'title' => t('Administer Akamai fast purge configuration'),
-      'description' => t('Access and set the configuration for Akaimai fast purge to consume.'),
+      'description' => t('Access and set the configuration for Akamai fast purge to consume.'),
     ),
     'administer akamai network' => array(
       'title' => t('Administer Akamai network'),
-      'description' => t('Access and set the configuration for Akaimai network.'),
+      'description' => t('Access and set the configuration for Akamai network.'),
     ),
     'manual akamai cache purge' => array(
       'title' => t('Submit path for purging'),
@@ -47,7 +47,7 @@ function govcms_akamai_fast_purge_menu() {
     'description' => 'Configuration for govCMS Akamai Fast Purge module',
     'page callback' => 'drupal_get_form',
     'page arguments' => ['govcms_akamai_fast_purge_form'],
-    'access arguments' => ['administer akaimai configuration'],
+    'access arguments' => ['administer akamai configuration'],
     'type' => MENU_NORMAL_ITEM,
   ];
 
