@@ -29,6 +29,10 @@ function govcms_akamai_fast_purge_permission() {
       'title' => t('Administer Akamai network'),
       'description' => t('Access and set the configuration for Akaimai network.'),
     ),
+    'manual akamai cache purge' => array(
+      'title' => t('Submit path for purging'),
+      'description' => t('Allow access to submit a path to clear from Akamai\'s cache'),
+    ),
   );
 }
 
@@ -120,6 +124,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t('One-time purge'),
     '#group' => 'vtabs',
+    '#access' => user_access('manual akamai cache purge'),
   );
 
   $form['advanced'] = array(
@@ -169,6 +174,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('Path to the URL for one-time manual purging.<br /><em>Do not include the domain or preceding slash (/)</em>'),
+    '#access' => user_access('manual akamai cache purge'),
   );
 
   $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
@@ -219,9 +225,11 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
  */
 function govcms_akamai_fast_purge_form_submit($form, $form_state) {
   // Purge a custom path.
-  $custom_path = $form_state['values']['govcms_akamai_purge_path'];
-  if ($custom_path != "") {
-    _govcms_akamai_fast_purge_trigger($custom_path);
+  if (isset($form_state['values']['govcms_akamai_purge_path'])) {
+    $custom_path = $form_state['values']['govcms_akamai_purge_path'];
+    if ($custom_path != "" && user_access('manual akamai cache purge')) {
+      _govcms_akamai_fast_purge_trigger($custom_path);
+    }
   }
 }
 
