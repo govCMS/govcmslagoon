@@ -17,17 +17,17 @@ define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
  */
 function govcms_akamai_fast_purge_permission() {
   return array(
-    'akamai edgerc config check access' => array(
-      'title' => t('Configuration check access.'),
-      'description' => t('Will allow the user access to the advanced form field to show config detection.'),
+    'administer edgerc file path' => array(
+      'title' => t('Administer Akamai configuration file path.'),
+      'description' => t('Access and set the configuration path for Akamai fast purge.'),
     ),
-    'administer akaimai configuration' => array(
+    'administer akamai configuration' => array(
       'title' => t('Administer Akamai fast purge configuration'),
-      'description' => t('Access and set the configuration for Akaimai fast purge to consume.'),
+      'description' => t('Access and set the configuration for Akamai fast purge to consume.'),
     ),
     'administer akamai network' => array(
       'title' => t('Administer Akamai network'),
-      'description' => t('Access and set the configuration for Akaimai network.'),
+      'description' => t('Access and set the configuration for Akamai network.'),
     ),
     'manual akamai cache purge' => array(
       'title' => t('Submit path for purging'),
@@ -47,7 +47,7 @@ function govcms_akamai_fast_purge_menu() {
     'description' => 'Configuration for govCMS Akamai Fast Purge module',
     'page callback' => 'drupal_get_form',
     'page arguments' => ['govcms_akamai_fast_purge_form'],
-    'access arguments' => ['administer akaimai configuration'],
+    'access arguments' => ['administer akamai configuration'],
     'type' => MENU_NORMAL_ITEM,
   ];
 
@@ -132,7 +132,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#title' => t('Advanced'),
     '#description' => t('Advanced settings which you have access to, generally have security controls in place.'),
     '#group' => 'vtabs',
-    '#access' => user_access('administer akamai network') || user_access('akamai edgerc config check access'),
+    '#access' => user_access('administer akamai network') || user_access('administer edgerc file path'),
   );
 
   $form['general']['govcms_akamai_fast_purge_enabled'] = [
@@ -198,7 +198,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#description' => t('The API credentials are stored in a variable inside the hosting provider, this will simply check if the expected values have been detected..'),
     '#required' => TRUE,
     '#disabled' => TRUE,
-    '#access' => user_access('akamai edgerc config check access'),
+    '#access' => user_access('administer edgerc file path'),
   );
 
   $extensions = _govcms_akamai_get_configured_extensions();
