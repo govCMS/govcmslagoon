@@ -1,0 +1,90 @@
+<?php
+/**
+ * @file
+ * Tests for the govcms_akamai_fast_purge module.
+ */
+class AkamaiConfigTestCase extends DrupalWebTestCase {
+
+    /**
+     * Perform any setup tasks for our test case.
+     */
+    public function setUp() {
+        parent::setUp(array('govcms_akamai_fast_purge'));
+    }
+
+    /**
+     * Metadata about our test case.
+     */
+    public static function getInfo() {
+        return array(
+            'name' => 'govCMS Akamai Fast Purge',
+            'description' => 'A basic test suite for the custom Akamai fast purge module govCMS manage.',
+            'group' => 'govCMS',
+        );
+    }
+
+    /**
+     * Test access from an admin user without explicit permission to this module's configuration.
+     */
+    public function testPermissionZero() {
+        $new_user = $this->drupalCreateUser(array('administer site configuration'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        return TRUE;
+    }
+
+    /**
+     * Test access from an admin user with edgerc config check permissions.
+     */
+    public function testPermissionOne() {
+        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        return TRUE;
+    }
+
+    /**
+     * Test access for an admin user to configure the module.
+     */
+    public function testPermissionTwo() {
+        $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        return TRUE;
+    }
+
+    /**
+     * Test access to see and set the Akamai network settings.
+     */
+    public function testPermissionThree() {
+        $new_user = $this->drupalCreateUser(array('administer akamai network'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        return TRUE;
+    }
+
+    /**
+     * Test access to view and set the manual purge path.
+     *
+     * This test does not check for API call on submission.
+     */
+    public function testPermissionFour() {
+        $new_user = $this->drupalCreateUser(array('manual akamai cache purge'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        return TRUE;
+    }
+
+    public function testExtensions() {
+        return TRUE;
+    }
+
+    public function testConfigurationDetection() {
+        return TRUE;
+    }
+
+    public function testApiCall() {
+        return TRUE;
+    }
+
+}

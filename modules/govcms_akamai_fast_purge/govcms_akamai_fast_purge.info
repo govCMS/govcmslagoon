@@ -4,3 +4,4 @@ package = govCMS
 core = 7.x
 
 configure = admin/config/services/akamai-fast-purge
+files[] = tests/govcms_akamai_fast_purge.test
