@@ -65,7 +65,6 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
         $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
         $this->assertField('edit-govcms-akamai-fast-purge-api-network', 'Found network field.');
-        return TRUE;
     }
 
     /**
