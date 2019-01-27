@@ -137,8 +137,17 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $this->assertTrue(0 != count(_govcms_akamai_fast_purge_detect_edgerc("[default] host = localhost access_token = xyz client_token = xyz client_secret = xyz location = xyz")));
     }
 
+    /**
+     * Test the API trigger, in which we expect to return false.
+     *
+     * This will need work if an API call is to be properly authenticated
+     * and succeed, however the functionality is established to support
+     * this test in the future. Right now this isn't possible and this is a
+     * best-efforts attempt at having a thorough test suite.
+     */
     public function testApiCall() {
-        return TRUE;
+        variable_set('govcms_akamai_fast_purge_enabled', TRUE);
+        $this->assertFalse(_govcms_akamai_fast_purge_trigger("url/to/path"));
     }
 
 }
