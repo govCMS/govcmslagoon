@@ -123,7 +123,18 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     }
 
     public function testConfigurationDetection() {
-        return TRUE;
+        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
+        $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
+
+        // Test configuration when not set.
+        $this->assertFieldById('edit-govcms-akamai-fast-purge-credentials-path', 'No configuration detected');
+
+        // Test a mock configuration.
+        $this->assertTrue(0 != count(_govcms_akamai_fast_purge_detect_edgerc("[default] host = localhost access_token = xyz client_token = xyz client_secret = xyz location = xyz")));
     }
 
     public function testApiCall() {
