@@ -260,16 +260,33 @@ function govcms_akamai_fast_purge_file_delete($file) {
 
 /**
  * Detect if a configuration has been set.
+ *
+ * @param string $config
+ *   The expected environment variable contents, for testing purposes.
+ *
+ * @return bool
+ *   The result of the test to indicate a valid configuration.
  */
-function _govcms_akamai_fast_purge_detect_edgerc() {
-  return (count(_govcms_akamai_fast_purge_process_edgerc()) === 1) ? TRUE : FALSE;
+function _govcms_akamai_fast_purge_detect_edgerc($config = NULL) {
+  return (count(_govcms_akamai_fast_purge_process_edgerc($config)) === 1) ? TRUE : FALSE;
 }
 
 /**
  * Process data available in the edgerc file/variable.
+ *
+ * @param string $config
+ *   The expected environment variable contents, for testing purposes.
+ *
+ * @return array|NULL
+ *   The data object to be used as the Akamai configuration.
  */
-function _govcms_akamai_fast_purge_process_edgerc() {
-  $creds = getenv('EDGERC_PATH');
+function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
+  if (NULL != $config) {
+      $creds = $config;
+  }
+  else {
+      $creds = getenv('EDGERC_PATH');
+  }
   $data = explode(" ", $creds);
   $credentials = array();
   foreach ($data as $key => $data_item) {
