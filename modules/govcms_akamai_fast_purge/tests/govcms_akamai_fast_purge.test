@@ -41,6 +41,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
         $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
         $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
     }
 
@@ -62,6 +63,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
         $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
+        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
         $this->assertField('edit-govcms-akamai-fast-purge-api-network', 'Found network field.');
         return TRUE;
     }
