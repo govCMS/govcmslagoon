@@ -72,10 +72,12 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
      * This test does not check for API call on submission.
      */
     public function testPermissionFour() {
-        $new_user = $this->drupalCreateUser(array('manual akamai cache purge'));
+        $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'administer akamai configuration'));
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
-        return TRUE;
+        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
+        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+        $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
     }
 
     public function testExtensions() {
