@@ -58,9 +58,11 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
      * Test access to see and set the Akamai network settings.
      */
     public function testPermissionThree() {
-        $new_user = $this->drupalCreateUser(array('administer akamai network'));
+        $new_user = $this->drupalCreateUser(array('administer akamai network', 'administer akamai configuration'));
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
+        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
+        $this->assertField('edit-govcms-akamai-fast-purge-api-network', 'Found network field.');
         return TRUE;
     }
 
