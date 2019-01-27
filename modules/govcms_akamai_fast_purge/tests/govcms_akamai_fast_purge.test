@@ -82,8 +82,45 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
     }
 
+    /**
+     * Test extension configuration to ensure extensions match configuration exactly.
+     */
     public function testExtensions() {
-        return TRUE;
+        $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
+        $this->drupalLogin($new_user);
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
+        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+        $this->assertNoField('edit-govcms-akamai-purge-path', 'Found path purge field.');
+
+        // No configuration
+        $this->drupalGet('admin/config/services/akamai-fast-purge');
+        $this->assertTrue(count(_govcms_akamai_get_configured_extensions()) === 0);
+
+        // PDF configuration
+        variable_set('govcms_akamai_extensions_pdf', TRUE);
+        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('pdf'));
+        variable_set('govcms_akamai_extensions_pdf', FALSE);
+
+        // Word configuration
+        variable_set('govcms_akamai_extensions_word', TRUE);
+        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('doc', 'docx'));
+        variable_set('govcms_akamai_extensions_word', FALSE);
+
+        // Excel configuration
+        variable_set('govcms_akamai_extensions_excel', TRUE);
+        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('xls', 'xlsx'));
+        variable_set('govcms_akamai_extensions_excel', FALSE);
+
+        // ZIP configuration
+        variable_set('govcms_akamai_extensions_zip', TRUE);
+        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('zip'));
+        variable_set('govcms_akamai_extensions_zip', FALSE);
+
+        // Image configuration
+        variable_set('govcms_akamai_extensions_images', TRUE);
+        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('gif', 'jpeg', 'jpg', 'png', 'tiff'));
+        variable_set('govcms_akamai_extensions_images', FALSE);
     }
 
     public function testConfigurationDetection() {
