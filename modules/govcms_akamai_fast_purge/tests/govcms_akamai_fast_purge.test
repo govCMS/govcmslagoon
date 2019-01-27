@@ -30,7 +30,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         $new_user = $this->drupalCreateUser(array('administer site configuration'));
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
-        return TRUE;
+        $this->assertText(t('Access denied'), 'Access denied message was found.');
     }
 
     /**
