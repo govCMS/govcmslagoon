@@ -308,13 +308,16 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
 /**
  * Trigger the Akamai Fast Purge if needed.
  *
- * @param $file
- *  The file object to be purged.
+ * @param mixed $file
+ *  The file object to be purged, or a string representing the (relative) URL/URI to the path/file
+ *
+ * @return  bool
+ *   The responding value to the success of the API call.
  */
 function _govcms_akamai_fast_purge_trigger($file) {
   $purge_enabled = variable_get('govcms_akamai_fast_purge_enabled', TRUE);
   if (!$purge_enabled) {
-    return;
+    return FALSE;
   }
 
   if (isset($file->uri)) {
@@ -323,7 +326,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
     $extension = $parts['extension'];
     $purge_extensions = _govcms_akamai_get_configured_extensions();
     if (!in_array($extension, $purge_extensions)) {
-      return;
+      return FALSE;
     }
   } else {
     global $base_url;
@@ -332,11 +335,12 @@ function _govcms_akamai_fast_purge_trigger($file) {
 
   if (count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
     drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
-    return;
+    return FALSE;
   }
 
   // Make the actual API call.
   _govcms_akamai_fast_purge_api_call($file);
+  return TRUE;
 }
 
 /**
@@ -346,6 +350,9 @@ function _govcms_akamai_fast_purge_trigger($file) {
  *
  * @param $file
  * @param $credentials_path
+ *
+ * @param bool
+ *   The true/false value of the success of the API call.
  */
 function _govcms_akamai_fast_purge_api_call($file) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
@@ -374,10 +381,12 @@ function _govcms_akamai_fast_purge_api_call($file) {
     $response = $client->request('POST', $api_request_url, $api_request_options);
     $responseContent = $response->getBody()->getContents();
     watchdog(GAFP_WATCHDOG_TYPE, 'Request Completed - Full response: @response', ['@response' => $responseContent]);
+    return TRUE;
   }
   catch (ClientException $e) {
     $responseContent = $e->getResponse()->getBody()->getContents();
     watchdog(GAFP_WATCHDOG_TYPE, 'Request Failed: @err_msg | Full response: @response', ['@err_msg' => $e->getMessage(), '@response' => $responseContent], WATCHDOG_ERROR);
+    return FALSE;
   }
 }
 
