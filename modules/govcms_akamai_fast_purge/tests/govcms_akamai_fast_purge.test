@@ -122,6 +122,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
         variable_set('govcms_akamai_extensions_images', FALSE);
     }
 
+    /**
+     * Test the validity of the processing of unconfigured mock data and the default form value.
+     */
     public function testConfigurationDetection() {
         $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
         $this->drupalLogin($new_user);
