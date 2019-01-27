@@ -37,10 +37,11 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
      * Test access from an admin user with edgerc config check permissions.
      */
     public function testPermissionOne() {
-        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access'));
+        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
         $this->drupalLogin($new_user);
         $this->drupalGet('admin/config/services/akamai-fast-purge');
-        return TRUE;
+        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+        $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
     }
 
     /**
