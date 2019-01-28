@@ -211,4 +211,7 @@ function govcms_akamai_fast_purge_callback() {
 
         endswitch;
     }
+    else {
+        drush_log('No argument specified, run \'drush help akamai\' for more information.', 'error');
+    }
 }
