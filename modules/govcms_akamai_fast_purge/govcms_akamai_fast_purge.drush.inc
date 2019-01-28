@@ -35,4 +35,18 @@ function govcms_akamai_fast_purge_drush_command() {
 }
 
 function govcms_akamai_fast_purge_callback() {
+    $args = func_get_args();
+    if ($args) {
+        switch ($args[0]) :
+            case 'check':
+                break;
+
+            case 'purge':
+                break;
+
+            default:
+                drush_log('No argument specified, run \'drush help akamai\' for more information.', 'error');
+
+        endswitch;
+    }
 }
