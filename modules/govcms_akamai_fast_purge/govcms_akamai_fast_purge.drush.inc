@@ -33,10 +33,14 @@ function govcms_akamai_fast_purge_drush_command() {
             'description' => dt('Explore options for the govCMS Akamai Fast Purge module.'),
             'examples' => array(
                 'Check the configuration of the Akamai settings' => 'drush akamai check',
+                'Disable the specified file category' => 'drush akamai disable pdf',
+                'Enable the specified file category' => 'drush akamai enable pdf',
                 'Purge a path from the configured Akamai instance' => 'drush akamai purge sites/default/files/news/news.pdf',
             ),
             'arguments' => array(
                 'check' => 'Display the configuration.',
+                'disable' => 'Disable hook cache purging for a given file category',
+                'enable' => 'Enable hook cache purging for a given file category',
                 'purge' => 'Purge a path from the Akamai cache.',
             ),
         ),
@@ -65,6 +69,12 @@ function govcms_akamai_fast_purge_callback() {
                 print("Akamai Config: {$config}\n");
                 print("Akamai Network: {$network}\n");
                 print("Currently configured extensions: {$extensions}\n");
+                break;
+
+            case 'disable':
+                break;
+
+            case 'enable':
                 break;
 
             case 'purge':
