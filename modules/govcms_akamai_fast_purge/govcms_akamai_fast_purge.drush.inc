@@ -15,9 +15,13 @@
 function govcms_akamai_fast_purge_drush_help($section) {
     switch ($section) {
         case 'check':
-            return dt("Check");
+            return dt("Check the configuration for the govCMS Akamai Fast Purge module.");
+        case 'disable':
+            return dt("Disable configuration for a given file category (pdf, word, excel, zip or images)");
+        case 'enable':
+            return dt("Enable configuration for a given file category (pdf, word, excel, zip or images)");
         case 'purge':
-            return dt("Purge");
+            return dt("Purge a path in a configured Akamai instance relative to the domain (ie sites/defaults/files/file.png");
         default:
             return NULL;
     }
