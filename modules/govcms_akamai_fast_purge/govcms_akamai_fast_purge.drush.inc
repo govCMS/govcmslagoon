@@ -197,9 +197,6 @@ function govcms_akamai_fast_purge_callback() {
                 endswitch;
                 break;
 
-            case 'enable':
-                break;
-
             case 'purge':
                 if (isset($args[1])) {
                     _govcms_akamai_fast_purge_trigger($args[1]);
