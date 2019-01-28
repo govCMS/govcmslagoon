@@ -51,6 +51,9 @@ function govcms_akamai_fast_purge_drush_command() {
     );
 }
 
+/**
+ * Main handler for the command.
+ */
 function govcms_akamai_fast_purge_callback() {
     if (empty(func_get_args())) {
         drush_print('No argument specified, run \'drush help akamai\' for more information.');
