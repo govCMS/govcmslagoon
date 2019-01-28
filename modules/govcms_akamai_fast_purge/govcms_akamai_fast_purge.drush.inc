@@ -29,7 +29,16 @@ function govcms_akamai_fast_purge_drush_help($section) {
 function govcms_akamai_fast_purge_drush_command() {
     return array(
         'akamai' => array(
-        'description' => dt('Explore options for the govCMS Akamai Fast Purge module.'),
+            'callback' => 'govcms_akamai_fast_purge_callback',
+            'description' => dt('Explore options for the govCMS Akamai Fast Purge module.'),
+            'examples' => array(
+                'Check the configuration of the Akamai settings' => 'drush akamai check',
+                'Purge a path from the configured Akamai instance' => 'drush akamai purge sites/default/files/news/news.pdf',
+            ),
+            'arguments' => array(
+                'check' => 'Display the configuration.',
+                'purge' => 'Purge a path from the Akamai cache.',
+            ),
         ),
     );
 }
