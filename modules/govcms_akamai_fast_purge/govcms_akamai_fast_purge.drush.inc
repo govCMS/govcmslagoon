@@ -68,6 +68,12 @@ function govcms_akamai_fast_purge_callback() {
                 break;
 
             case 'purge':
+                if (isset($args[1])) {
+                    _govcms_akamai_fast_purge_trigger($args[1]);
+                }
+                else {
+                    print('No path for purging was specified.');
+                }
                 break;
 
             default:
