@@ -33,3 +33,6 @@ function govcms_akamai_fast_purge_drush_command() {
         ),
     );
 }
+
+function govcms_akamai_fast_purge_callback() {
+}
