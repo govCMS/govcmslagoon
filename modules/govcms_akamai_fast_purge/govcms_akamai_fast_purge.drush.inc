@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Provide Drush integration for govCMS Akamai fast Purge.
+ */
+
+/**
  * Implements hook_drush_help().
  *
  * @param string $section
