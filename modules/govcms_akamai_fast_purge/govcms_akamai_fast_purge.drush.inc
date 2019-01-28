@@ -44,14 +44,27 @@ function govcms_akamai_fast_purge_drush_command() {
 }
 
 function govcms_akamai_fast_purge_callback() {
-    $args = func_get_args();
-    if (count($args) === 0) {
-        drush_log('No argument specified, run \'drush help akamai\' for more information.', 'error');
-        return NULL;
-    }
-    if (count($args) >= 1) {
+    if ($args = func_get_args()) {
         switch ($args[0]) :
             case 'check':
+                $pdf = (variable_get('govcms_akamai_extensions_pdf', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
+                $word = (variable_get('govcms_akamai_extensions_word', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
+                $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
+                $zip = (variable_get('govcms_akamai_extensions_zip', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
+                $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
+                $config = (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected';
+                $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
+                $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
+
+                print("govCMS Akamai Fast Purge configuration\n");
+                print("PDF Config: {$pdf}\n");
+                print("Word Config: {$word}\n");
+                print("Excel Config: {$excel}\n");
+                print("Zip Config: {$zip}\n");
+                print("Image Config: {$images}\n");
+                print("Akamai Config: {$config}\n");
+                print("Akamai Network: {$network}\n");
+                print("Currently configured extensions: {$extensions}\n");
                 break;
 
             case 'purge':
