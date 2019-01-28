@@ -77,10 +77,10 @@ function govcms_akamai_fast_purge_callback() {
                         $pdf = (variable_get('govcms_akamai_extensions_pdf', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $pdf) {
                             variable_set('govcms_akamai_extensions_pdf', FALSE);
-                            print('PDF extension was removed from support');
+                            print('PDF extension was removed from support\n');
                         }
                         else {
-                            print('PDF extension is not configured for support');
+                            print('PDF extension is not configured for support\n');
                         }
                         break;
 
@@ -88,10 +88,10 @@ function govcms_akamai_fast_purge_callback() {
                         $word = (variable_get('govcms_akamai_extensions_word', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $word) {
                             variable_set('govcms_akamai_extensions_word', FALSE);
-                            print('Word extension was removed from support');
+                            print('Word extension was removed from support\n');
                         }
                         else {
-                            print('Word extension is not configured for support');
+                            print('Word extension is not configured for support\n');
                         }
                         break;
 
@@ -99,10 +99,10 @@ function govcms_akamai_fast_purge_callback() {
                         $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $excel) {
                             variable_set('govcms_akamai_extensions_excel', FALSE);
-                            print('Excel extension was removed from support');
+                            print('Excel extension was removed from support\n');
                         }
                         else {
-                            print('Excel extension is not configured for support');
+                            print('Excel extension is not configured for support\n');
                         }
                         break;
 
@@ -110,10 +110,10 @@ function govcms_akamai_fast_purge_callback() {
                         $zip = (variable_get('govcms_akamai_extensions_zip', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $zip) {
                             variable_set('govcms_akamai_extensions_zip', FALSE);
-                            print('Archive extension was removed from support');
+                            print('Archive extension was removed from support\n');
                         }
                         else {
-                            print('Archive extension is not configured for support');
+                            print('Archive extension is not configured for support\n');
                         }
                         break;
 
@@ -121,10 +121,10 @@ function govcms_akamai_fast_purge_callback() {
                         $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $images) {
                             variable_set('govcms_akamai_extensions_images', FALSE);
-                            print('Image extensions were removed from support');
+                            print('Image extensions were removed from support\n');
                         }
                         else {
-                            print('Image extensions are not configured for support');
+                            print('Image extensions are not configured for support\n');
                         }
                         break;
 
@@ -140,10 +140,10 @@ function govcms_akamai_fast_purge_callback() {
                         $pdf = (variable_get('govcms_akamai_extensions_pdf', FALSE) != FALSE) ? TRUE : FALSE;
                         if (FALSE === $pdf) {
                             variable_set('govcms_akamai_extensions_pdf', TRUE);
-                            print('PDF extension was configured for support');
+                            print('PDF extension was configured for support\n');
                         }
                         else {
-                            print('PDF extension already configured for support');
+                            print('PDF extension already configured for support\n');
                         }
                         break;
 
@@ -151,10 +151,10 @@ function govcms_akamai_fast_purge_callback() {
                         $word = (variable_get('govcms_akamai_extensions_word', FALSE) != FALSE) ? TRUE : FALSE;
                         if (FALSE === $word) {
                             variable_set('govcms_akamai_extensions_word', TRUE);
-                            print('Word extensions were configured for support');
+                            print('Word extensions were configured for support\n');
                         }
                         else {
-                            print('Word extensions are already configured for support');
+                            print('Word extensions are already configured for support\n');
                         }
                         break;
 
@@ -162,10 +162,10 @@ function govcms_akamai_fast_purge_callback() {
                         $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? TRUE : FALSE;
                         if (FALSE === $excel) {
                             variable_set('govcms_akamai_extensions_excel', TRUE);
-                            print('Excel extensions were configured for support');
+                            print('Excel extensions were configured for support\n');
                         }
                         else {
-                            print('Excel extensions are already configured for support');
+                            print('Excel extensions are already configured for support\n');
                         }
                         break;
 
@@ -173,10 +173,10 @@ function govcms_akamai_fast_purge_callback() {
                         $zip = (variable_get('govcms_akamai_extensions_zip', FALSE) != FALSE) ? TRUE : FALSE;
                         if (FALSE === $zip) {
                             variable_set('govcms_akamai_extensions_zip', TRUE);
-                            print('Archive extensions were configured for support');
+                            print('Archive extensions were configured for support\n');
                         }
                         else {
-                            print('Archive extensions are already configured for support');
+                            print('Archive extensions are already configured for support\n');
                         }
                         break;
 
@@ -184,10 +184,10 @@ function govcms_akamai_fast_purge_callback() {
                         $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? TRUE : FALSE;
                         if (FALSE === $images) {
                             variable_set('govcms_akamai_extensions_images', TRUE);
-                            print('Image extensions were configured for support');
+                            print('Image extensions were configured for support\n');
                         }
                         else {
-                            print('Image extensions are already configured for support');
+                            print('Image extensions are already configured for support\n');
                         }
                         break;
 
