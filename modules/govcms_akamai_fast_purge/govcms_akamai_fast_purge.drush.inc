@@ -45,7 +45,11 @@ function govcms_akamai_fast_purge_drush_command() {
 
 function govcms_akamai_fast_purge_callback() {
     $args = func_get_args();
-    if ($args) {
+    if (count($args) === 0) {
+        drush_log('No argument specified, run \'drush help akamai\' for more information.', 'error');
+        return NULL;
+    }
+    if (count($args) >= 1) {
         switch ($args[0]) :
             case 'check':
                 break;
