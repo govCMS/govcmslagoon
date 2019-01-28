@@ -76,6 +76,64 @@ function govcms_akamai_fast_purge_callback() {
                     case 'pdf':
                         $pdf = (variable_get('govcms_akamai_extensions_pdf', FALSE) != FALSE) ? TRUE : FALSE;
                         if (TRUE === $pdf) {
+                            variable_set('govcms_akamai_extensions_pdf', FALSE);
+                            print('PDF extension was removed from support');
+                        }
+                        else {
+                            print('PDF extension is not configured for support');
+                        }
+                        break;
+
+                    case 'word':
+                        $word = (variable_get('govcms_akamai_extensions_word', FALSE) != FALSE) ? TRUE : FALSE;
+                        if (TRUE === $word) {
+                            variable_set('govcms_akamai_extensions_word', FALSE);
+                            print('Word extension was removed from support');
+                        }
+                        else {
+                            print('Word extension is not configured for support');
+                        }
+                        break;
+
+                    case 'excel':
+                        $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? TRUE : FALSE;
+                        if (TRUE === $excel) {
+                            variable_set('govcms_akamai_extensions_excel', FALSE);
+                            print('Excel extension was removed from support');
+                        }
+                        else {
+                            print('Excel extension is not configured for support');
+                        }
+                        break;
+
+                    case 'zip':
+                        $zip = (variable_get('govcms_akamai_extensions_zip', FALSE) != FALSE) ? TRUE : FALSE;
+                        if (TRUE === $zip) {
+                            variable_set('govcms_akamai_extensions_zip', FALSE);
+                            print('Archive extension was removed from support');
+                        }
+                        else {
+                            print('Archive extension is not configured for support');
+                        }
+                        break;
+
+                    case 'images':
+                        $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? TRUE : FALSE;
+                        if (TRUE === $images) {
+                            variable_set('govcms_akamai_extensions_images', FALSE);
+                            print('Image extensions were removed from support');
+                        }
+                        else {
+                            print('Image extensions are not configured for support');
+                        }
+                        break;
+
+                    case 'default':
+                        print 'No supported category was provided, please specify pdf, work, excel, zip or images';
+
+                endswitch;
+                break;
+
             case 'enable':
                 switch ($args[1]):
                     case 'pdf':
