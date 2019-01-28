@@ -211,11 +211,11 @@ function govcms_akamai_fast_purge_callback() {
                 break;
 
             default:
-                drush_print('No argument specified, run \'drush help akamai\' for more information.', 'error');
+                drush_print('No argument specified, run \'drush help akamai\' for more information.');
 
         endswitch;
     }
     else {
-        drush_print('No argument specified, run \'drush help akamai\' for more information.', 'error');
+        drush_print('No argument specified, run \'drush help akamai\' for more information.');
     }
 }
