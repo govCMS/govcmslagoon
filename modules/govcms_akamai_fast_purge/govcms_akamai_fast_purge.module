@@ -296,7 +296,7 @@ function _govcms_akamai_fast_purge_detect_edgerc_file($path) {
   if ((NULL != $path) && ($path != "") && (file_exists($path))) {
     return TRUE;
   }
-  return TRUE;
+  return FALSE;
 }
 
 /**
