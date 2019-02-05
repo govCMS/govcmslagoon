@@ -1,0 +1,9 @@
+{
+    "name": "govcms/akamai_fast_purge",
+    "description": "Integration for govCMS with Akamai's Fast Purge functionality for file fields",
+    "type": "drupal-module",
+    "license": "MIT",
+    "require": {
+        "akamai-open/edgegrid-client": "^1.0"
+    }
+}
