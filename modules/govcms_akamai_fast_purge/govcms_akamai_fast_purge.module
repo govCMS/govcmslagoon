@@ -387,9 +387,17 @@ function _govcms_akamai_fast_purge_trigger($file) {
  */
 function _govcms_akamai_fast_purge_api_call($file) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
-  module_load_include('phar', 'govcms_akamai_fast_purge', 'includes/akamai-open-edgegrid-client-1.0.0');
-  $client = new Client();
-  $client->setAuth($credentials['default']['client_token'], $credentials['default']['client_secret'], $credentials['default']['access_token']);
+  require __DIR__.'/vendor/autoload.php';
+  if (_govcms_akamai_fast_purge_detect_edgerc_env()) {
+    $client = new Akamai\Open\EdgeGrid\Client();
+    $client->setAuth($credentials['default']['client_token'], $credentials['default']['client_secret'], $credentials['default']['access_token']);
+  }
+  elseif (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
+    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile('default', getenv('HOME') . '/.edgerc');
+  }
+  else {
+    return FALSE;
+  }
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
   $api_network = ((int) $network_selection == 1) ? 'staging' : 'production';
