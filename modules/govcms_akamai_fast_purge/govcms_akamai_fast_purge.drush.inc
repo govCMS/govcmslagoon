@@ -67,7 +67,7 @@ function govcms_akamai_fast_purge_callback() {
                 $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
                 $zip = (variable_get('govcms_akamai_extensions_zip', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
                 $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
-                $config = (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected';
+                $config = (_govcms_akamai_fast_purge_detect_edgerc_env()) ? 'Configuration detected' : 'No configuration detected';
                 $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
                 $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
 
