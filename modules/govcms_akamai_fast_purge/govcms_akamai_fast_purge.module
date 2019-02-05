@@ -192,7 +192,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   $form['advanced']['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Configuration'),
-    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc()) ? 'Configuration detected' : 'No configuration detected',
+    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_env()) ? 'Configuration detected' : 'No configuration detected',
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('The API credentials are stored in a variable inside the hosting provider, this will simply check if the expected values have been detected..'),
@@ -267,7 +267,7 @@ function govcms_akamai_fast_purge_file_delete($file) {
  * @return bool
  *   The result of the test to indicate a valid configuration.
  */
-function _govcms_akamai_fast_purge_detect_edgerc($config = NULL) {
+function _govcms_akamai_fast_purge_detect_edgerc_env($config = NULL) {
   return (count(_govcms_akamai_fast_purge_process_edgerc($config)) === 1) ? TRUE : FALSE;
 }
 
