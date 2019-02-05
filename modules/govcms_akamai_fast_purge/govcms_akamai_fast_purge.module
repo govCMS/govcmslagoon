@@ -361,7 +361,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
     $file = "{$base_url}/${file}";
   }
 
-  if (count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
+  if (_govcms_akamai_fast_purge_detect_edgerc_env() && count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
     drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
     return FALSE;
   }
