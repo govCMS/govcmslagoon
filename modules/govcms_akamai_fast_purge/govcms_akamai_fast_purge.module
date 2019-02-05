@@ -201,6 +201,18 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('administer edgerc file path'),
   );
 
+  $form['advanced']['govcms_akamai_fast_purge_credentials_file'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Configuration'),
+    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) ? 'Configuration file detected' : 'No configuration file detected',
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('The API credentials are stored in a variable inside the hosting provider, this will simply check if the expected values have been detected..'),
+    '#required' => TRUE,
+    '#disabled' => TRUE,
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
   $extensions = _govcms_akamai_get_configured_extensions();
   if (count($extensions) === 0 || $extensions === '') {
     $extensions = '<em>No extensions have been configured.</em>';
@@ -272,6 +284,22 @@ function _govcms_akamai_fast_purge_detect_edgerc_env($config = NULL) {
 }
 
 /**
+ * Detect if a configuration file is found.
+ *
+ * @param string $path
+ *   The file path to the .edgerc file which we are not deviating from default.
+ *
+ * @return bool
+ *   The result of the test to indicate a file was found at the specified path.
+ */
+function _govcms_akamai_fast_purge_detect_edgerc_file($path) {
+  if ((NULL != $path) && ($path != "") && (file_exists($path))) {
+    return TRUE;
+  }
+  return TRUE;
+}
+
+/**
  * Process data available in the edgerc file/variable.
  *
  * @param string $config
@@ -335,6 +363,9 @@ function _govcms_akamai_fast_purge_trigger($file) {
 
   if (count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
     drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
+    return FALSE;
+  }
+  elseif (!_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
     return FALSE;
   }
 
