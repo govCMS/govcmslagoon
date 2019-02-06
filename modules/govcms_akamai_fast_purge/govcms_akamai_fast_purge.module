@@ -364,6 +364,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
     return FALSE;
   }
 
+  global $base_url;
   if (isset($file->uri)) {
     $path = drupal_realpath($file->uri);
     $parts = pathinfo($path);
@@ -372,8 +373,10 @@ function _govcms_akamai_fast_purge_trigger($file) {
     if (!in_array($extension, $purge_extensions)) {
       return FALSE;
     }
-  } else {
-    global $base_url;
+    $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
+    $file = "{$origin_url}${$path}";
+  }
+  else {
     $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
     $file = "{$origin_url}/${file}";
   }
@@ -420,18 +423,17 @@ function _govcms_akamai_fast_purge_api_call($file) {
   $api_network = ((int) $network_selection == 1) ? 'staging' : 'production';
   $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
 
-  $purge_url = (isset($file->uri)) ? file_create_url($file->uri) : $file;
   $api_request_options = [
     'json' => [
       'objects' => [
-        $purge_url
+        $file
       ],
     ],
     'handler' => _govcms_akamai_fast_purge_get_request_handler($client),
     'debug' => TRUE
   ];
 
-  watchdog(GAFP_WATCHDOG_TYPE, 'Purging Url: @url', ['@url' => $purge_url]);
+  watchdog(GAFP_WATCHDOG_TYPE, 'Purging Url: @url', ['@url' => $file]);
   try {
     /** @var \GuzzleHttp\Psr7\Response $response */
     $response = $client->request('POST', $api_request_url, $api_request_options);
