@@ -315,10 +315,10 @@ function _govcms_akamai_fast_purge_detect_edgerc_file($path) {
  */
 function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
   if (NULL != $config) {
-      $creds = $config;
+    $creds = $config;
   }
   else {
-      $creds = getenv('EDGERC_PATH');
+    $creds = getenv('EDGERC_PATH');
   }
   $data = explode(" ", $creds);
   $credentials = array();
