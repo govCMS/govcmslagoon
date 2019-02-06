@@ -240,7 +240,7 @@ function govcms_akamai_fast_purge_form_submit($form, $form_state) {
   if (isset($form_state['values']['govcms_akamai_purge_path'])) {
     $custom_path = $form_state['values']['govcms_akamai_purge_path'];
     if ($custom_path != "" && user_access('manual akamai cache purge')) {
-      if (_govcms_akamai_fast_purge_detect_edgerc_env() || _govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
+      if (!_govcms_akamai_fast_purge_detect_edgerc_env() && !_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
         _govcms_akamai_fast_purge_trigger($custom_path);
       }
       else {
