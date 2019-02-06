@@ -177,6 +177,17 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('manual akamai cache purge'),
   );
 
+  global $base_url;
+  $form['advanced']['govcms_akamai_origin_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Origin URL'),
+    '#default_value' => variable_get('govcms_akamai_origin_url', $base_url),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('URL to use in each purge, which is protected via permissions'),
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
   $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
     '#type' => 'select',
     '#title' => t('Network'),
@@ -363,7 +374,8 @@ function _govcms_akamai_fast_purge_trigger($file) {
     }
   } else {
     global $base_url;
-    $file = "{$base_url}/${file}";
+    $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
+    $file = "{$origin_url}/${file}";
   }
 
   if (_govcms_akamai_fast_purge_detect_edgerc_env() && count(_govcms_akamai_fast_purge_process_edgerc()) == 0) {
