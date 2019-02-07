@@ -1,5 +1,5 @@
 name = govCMS Akamai Fast Purge
-description = Triggers Akamai Fast Purge on File creation and update.
+description = Securely integrates Akamai Fast Purge for managed files with govCMS Drupal 7 websites, and provides a mechanism for manual purging of paths.
 package = govCMS
 core = 7.x
 
