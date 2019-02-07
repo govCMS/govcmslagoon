@@ -62,6 +62,7 @@ function govcms_akamai_fast_purge_callback() {
     if ($args = func_get_args()) {
         switch ($args[0]) :
             case 'check':
+                global $base_url;
                 $pdf = (variable_get('govcms_akamai_extensions_pdf', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
                 $word = (variable_get('govcms_akamai_extensions_word', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
                 $excel = (variable_get('govcms_akamai_extensions_excel', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
@@ -71,8 +72,12 @@ function govcms_akamai_fast_purge_callback() {
                 $edgerc = (_govcms_akamai_fast_purge_detect_edgerc_file()) ? 'Configuration file detected' : 'No configuration file detected';
                 $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
                 $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
+                $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
 
                 drush_print("govCMS Akamai Fast Purge configuration");
+                drush_print("------------------------------------------------");
+                drush_print("Note: Origin URL is configured to {$origin_url}");
+                drush_print("------------------------------------------------");
                 drush_print("PDF Config: {$pdf}");
                 drush_print("Word Config: {$word}");
                 drush_print("Excel Config: {$excel}");
