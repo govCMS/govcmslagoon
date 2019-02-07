@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Installation file for the govCMS Akamai Fast Purge module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @inheritdoc
+ */
+function govcms_akamai_fast_purge_install() {
+  variable_set('govcms_akamai_fast_purge_enabled', 1);
+  variable_set('govcms_akamai_extensions_pdf', TRUE);
+  variable_set('govcms_akamai_extensions_word', TRUE);
+  variable_set('govcms_akamai_extensions_excel', TRUE);
+  variable_set('govcms_akamai_extensions_zip', FALSE);
+  variable_set('govcms_akamai_extensions_images', FALSE);
+  variable_set('govcms_akamai_fast_purge_api_network', 0);
+  variable_set('govcms_akamai_fast_purge_loglevel', 0);
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * @inheritdoc
+ */
+function govcms_akamai_fast_purge_uninstall() {
+  variable_del('govcms_akamai_extensions_pdf');
+  variable_del('govcms_akamai_extensions_word');
+  variable_del('govcms_akamai_extensions_excel');
+  variable_del('govcms_akamai_extensions_zip');
+  variable_del('govcms_akamai_extensions_images');
+  variable_del('govcms_akamai_fast_purge_api_network');
+  variable_del('govcms_akamai_fast_purge_loglevel');
+  variable_del('govcms_akamai_fast_purge_credentials_file');
+  variable_del('govcms_akamai_fast_purge_credentials_path');
+  variable_del('govcms_akamai_origin_url');
+  variable_del('govcms_akamai_purge_path');
+}
