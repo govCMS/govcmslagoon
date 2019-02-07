@@ -73,6 +73,7 @@ function govcms_akamai_fast_purge_callback() {
                 $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
                 $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
                 $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
+                $logging = variable_get('govcms_akamai_fast_purge_loglevel', 0);
 
                 drush_print("govCMS Akamai Fast Purge configuration");
                 drush_print("------------------------------------------------");
@@ -87,6 +88,7 @@ function govcms_akamai_fast_purge_callback() {
                 drush_print("Akamai Edgerc file: ${edgerc}");
                 drush_print("Akamai Network: {$network}");
                 drush_print("Currently configured extensions: {$extensions}");
+                drush_print("Current logging level: {$logging}");
                 break;
 
             case 'disable':
