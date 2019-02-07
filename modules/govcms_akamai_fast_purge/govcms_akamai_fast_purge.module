@@ -381,6 +381,8 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   global $base_url;
+  $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
+
   if (isset($file->uri)) {
     $path = drupal_realpath($file->uri);
     $parts = pathinfo($path);
@@ -389,12 +391,11 @@ function _govcms_akamai_fast_purge_trigger($file) {
     if (!in_array($extension, $purge_extensions)) {
       return FALSE;
     }
-    $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
-    $file = "{$origin_url}${$path}";
+    $target = str_replace($base_url, $origin_url, file_create_url($file->uri));
   }
   else {
-    $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
-    $file = "{$origin_url}/${file}";
+    $target = $file;
+  }
 
   if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 1) {
     watchdog(GAFP_WATCHDOG_TYPE, 'Purging Url: @file', ['@file' => $target]);
@@ -409,7 +410,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   // Make the actual API call.
-  _govcms_akamai_fast_purge_api_call($file);
+  _govcms_akamai_fast_purge_api_call($target);
   return TRUE;
 }
 
