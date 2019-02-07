@@ -98,6 +98,19 @@ function _govcms_akamai_get_configured_extensions() {
 }
 
 /**
+ * Check is the environment is only allowed on production or if debugging mode is on.
+ */
+function govcms_akamai_fast_purge_is_production() {
+  if ((int) variable_get('govcms_akamai_fast_purge_debugmode', 0) === 1) {
+    return TRUE;
+  }
+  if (getenv('LAGOON_ENVIRONMENT_TYPE') === "production") {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
  * Page callback: Akamai Fast Purge settings
  *
  * @see govcms_akamai_fast_purge_menu()
@@ -218,6 +231,14 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     ),
     '#default_value' => variable_get('govcms_akamai_fast_purge_api_network', 0),
     '#description' => t('The Akamai network to use.'),
+    '#access' => user_access('administer akamai network'),
+  );
+
+  $form['advanced']['govcms_akamai_fast_purge_debugmode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Debug mode'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_debugmode', 0),
+    '#description' => t('Turn on debugging mode.<br />This will ensure the variable environment "LAGOON_ENVIRONMENT_TYPE" does not need to be "production" in order to fire API calls.<br /><br />If you are not using Amazee.io this will trigger the calls regardless of the needed environment variables.<br />Intended for Amazee.io platform testing. Enable to disable mechanism on non-Amazee.io infastructure.'),
     '#access' => user_access('administer akamai network'),
   );
 
@@ -406,6 +427,11 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
 function _govcms_akamai_fast_purge_trigger($file) {
   $purge_enabled = variable_get('govcms_akamai_fast_purge_enabled', TRUE);
   if (!$purge_enabled) {
+    return FALSE;
+  }
+
+  if (!govcms_akamai_fast_purge_is_production()) {
+    drupal_set_message('Akamai API calls are disabled on this environment.', 'warning');
     return FALSE;
   }
 
