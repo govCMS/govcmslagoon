@@ -431,7 +431,10 @@ function _govcms_akamai_fast_purge_api_call($file) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
   require __DIR__.'/vendor/autoload.php';
   if (_govcms_akamai_fast_purge_detect_edgerc_env()) {
-    $client = new Akamai\Open\EdgeGrid\Client();
+    $client = new Akamai\Open\EdgeGrid\Client([
+      'base_uri' => $credentials['ccu']['host']
+    ]);
+
     $client->setAuth($credentials['ccu']['client_token'], $credentials['ccu']['client_secret'], $credentials['ccu']['access_token']);
   }
   elseif (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
