@@ -442,7 +442,7 @@ function _govcms_akamai_fast_purge_api_call($file) {
   }
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
-  $api_network = ((int) $network_selection == 1) ? 'staging' : 'production';
+  $api_network = ((int) $network_selection == 0) ? 'staging' : 'production';
   $api_request_url = '/ccu/v3/invalidate/url/' . $api_network;
 
   $api_request_options = [
