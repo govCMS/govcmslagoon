@@ -431,7 +431,6 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   if (!govcms_akamai_fast_purge_is_production()) {
-    drupal_set_message('Akamai API calls are disabled on this environment.', 'warning');
     return FALSE;
   }
 
