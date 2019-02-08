@@ -27,9 +27,9 @@ function govcms_akamai_fast_purge_permission() {
       'title' => t('Administer Akamai fast purge configuration'),
       'description' => t('Access and set the configuration for Akamai fast purge to consume.'),
     ),
-    'administer akamai network' => array(
-      'title' => t('Administer Akamai network'),
-      'description' => t('Access and set the configuration for Akamai network.'),
+    'administer advanced akamai settings' => array(
+      'title' => t('Administer Advanced Akamai settings'),
+      'description' => t('Access and set the advanced settings.'),
     ),
     'manual akamai cache purge' => array(
       'title' => t('Submit path for purging'),
@@ -147,7 +147,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#title' => t('Advanced'),
     '#description' => t('Advanced settings which you have access to, generally have security controls in place.'),
     '#group' => 'vtabs',
-    '#access' => user_access('administer akamai network') || user_access('akamai edgerc config check access'),
+    '#access' => user_access('administer advanced akamai settings') || user_access('akamai edgerc config check access'),
   );
 
   $form['general']['govcms_akamai_fast_purge_enabled'] = [
@@ -233,7 +233,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     ),
     '#default_value' => variable_get('govcms_akamai_fast_purge_api_network', 0),
     '#description' => t('The Akamai network to use.'),
-    '#access' => user_access('administer akamai network'),
+    '#access' => user_access('administer advanced akamai settings'),
   );
 
   $form['advanced']['govcms_akamai_fast_purge_debugmode'] = array(
@@ -241,7 +241,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#title' => t('Debug mode'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_debugmode', 0),
     '#description' => t('Turn on debugging mode.<br />This will ensure the variable environment "LAGOON_ENVIRONMENT_TYPE" does not need to be "production" in order to fire API calls.<br /><br />If you are not using Amazee.io this will trigger the calls regardless of the needed environment variables.<br />Intended for Amazee.io platform testing. Enable to disable mechanism on non-Amazee.io infastructure.'),
-    '#access' => user_access('administer akamai network'),
+    '#access' => user_access('administer advanced akamai settings'),
   );
 
   $form['advanced']['govcms_akamai_fast_purge_loglevel'] = array(
@@ -254,7 +254,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     ),
     '#default_value' => (int) variable_get('govcms_akamai_fast_purge_loglevel', 0),
     '#description' => t('Watchdog event logging support.'),
-    '#access' => user_access('administer akamai network'),
+    '#access' => user_access('administer advanced akamai settings'),
   );
 
   $form['advanced']['govcms_akamai_fast_purge_credentials_path'] = array(
