@@ -139,7 +139,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t('One-time purge'),
     '#group' => 'vtabs',
-    '#access' => user_access('manual akamai cache purge'),
+    '#access' => user_access('manual akamai cache purge') && govcms_akamai_fast_purge_is_production(),
   );
 
   $form['advanced'] = array(
