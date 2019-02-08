@@ -158,27 +158,27 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['support']['govcms_akamai_extensions_pdf'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Purge PDF cache on create/update.'),
+    '#title' => t('pdf'),
     '#default_value' => variable_get('govcms_akamai_extensions_pdf', FALSE),
   );
   $form['support']['govcms_akamai_extensions_word'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Purge DOCX/DOC cache on create/update.'),
+    '#title' => t('doc/docx'),
     '#default_value' => variable_get('govcms_akamai_extensions_word', FALSE),
   );
   $form['support']['govcms_akamai_extensions_excel'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Purge XLSX/XLS cache on create/update.'),
+    '#title' => t('xls/xlsx'),
     '#default_value' => variable_get('govcms_akamai_extensions_excel', FALSE),
   );
   $form['support']['govcms_akamai_extensions_zip'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Purge ZIP cache on create/update.'),
+    '#title' => t('zip'),
     '#default_value' => variable_get('govcms_akamai_extensions_zip', FALSE),
   );
   $form['support']['govcms_akamai_extensions_images'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Purge cache for supported image extensions on create/update.'),
+    '#title' => t('images'),
     '#default_value' => variable_get('govcms_akamai_extensions_images', FALSE),
   );
 
