@@ -1,156 +1,330 @@
 <?php
+
 /**
  * @file
  * Tests for the govcms_akamai_fast_purge module.
  */
+
+/**
+ * AkamaiConfigTestCase contains all test cases for govCMS Akamai Fast Purge.
+ */
 class AkamaiConfigTestCase extends DrupalWebTestCase {
 
-    /**
-     * Perform any setup tasks for our test case.
-     */
-    public function setUp() {
-        parent::setUp(array('govcms_akamai_fast_purge'));
+  /**
+   * Perform any setup tasks for our test case.
+   */
+  public function setUp() {
+    parent::setUp(array('govcms_akamai_fast_purge'));
+  }
+
+  /**
+   * Metadata about our test case.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'govCMS Akamai Fast Purge',
+      'description' => 'A basic test suite for the custom Akamai fast purge module govCMS manage.',
+      'group' => 'govCMS',
+    );
+  }
+
+  /**
+   * Test access from an admin user without explicit permission to this module's configuration.
+   */
+  public function testPermissionZero() {
+    $new_user = $this->drupalCreateUser(array('administer site configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+    );
+
+    $expected_present = array();
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
     }
 
-    /**
-     * Metadata about our test case.
-     */
-    public static function getInfo() {
-        return array(
-            'name' => 'govCMS Akamai Fast Purge',
-            'description' => 'A basic test suite for the custom Akamai fast purge module govCMS manage.',
-            'group' => 'govCMS',
-        );
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
     }
 
-    /**
-     * Test access from an admin user without explicit permission to this module's configuration.
-     */
-    public function testPermissionZero() {
-        $new_user = $this->drupalCreateUser(array('administer site configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertText(t('Access denied'), 'Access denied message was found.');
+
+    $this->assertText(t('Access denied'), 'Access denied message was found.');
+  }
+
+  /**
+   * Test access from an admin user with edgerc config check permissions.
+   */
+  public function testPermissionOne() {
+    $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
     }
 
-    /**
-     * Test access from an admin user with edgerc config check permissions.
-     */
-    public function testPermissionOne() {
-        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
-        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
-        $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
     }
 
-    /**
-     * Test access for an admin user to configure the module.
-     */
-    public function testPermissionTwo() {
-        $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+    $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+  }
+
+  /**
+   * Test access for an admin user to configure the module.
+   */
+  public function testPermissionTwo() {
+    $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
     }
 
-    /**
-     * Test access to see and set the Akamai network settings.
-     */
-    public function testPermissionThree() {
-        $new_user = $this->drupalCreateUser(array('administer advanced akamai settings', 'administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
-        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
-        $this->assertField('edit-govcms-akamai-fast-purge-api-network', 'Found network field.');
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
     }
 
-    /**
-     * Test access to view and set the manual purge path.
-     *
-     * This test does not check for API call on submission.
-     */
-    public function testPermissionFour() {
-        $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
-        $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
+    $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+  }
+
+  /**
+   * Test access to see and set the Akamai network settings.
+   */
+  public function testPermissionThree() {
+    $new_user = $this->drupalCreateUser(array('administer advanced akamai settings', 'administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
     }
 
-    /**
-     * Test extension configuration to ensure extensions match configuration exactly.
-     */
-    public function testExtensions() {
-        $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-credentials-path', 'Did not find configuration field.');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
-        $this->assertNoField('edit-govcms-akamai-purge-path', 'Found path purge field.');
-
-        // No configuration
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertTrue(count(_govcms_akamai_get_configured_extensions()) === 0);
-
-        // PDF configuration
-        variable_set('govcms_akamai_extensions_pdf', TRUE);
-        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('pdf'));
-        variable_set('govcms_akamai_extensions_pdf', FALSE);
-
-        // Word configuration
-        variable_set('govcms_akamai_extensions_word', TRUE);
-        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('doc', 'docx'));
-        variable_set('govcms_akamai_extensions_word', FALSE);
-
-        // Excel configuration
-        variable_set('govcms_akamai_extensions_excel', TRUE);
-        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('xls', 'xlsx'));
-        variable_set('govcms_akamai_extensions_excel', FALSE);
-
-        // ZIP configuration
-        variable_set('govcms_akamai_extensions_zip', TRUE);
-        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('zip'));
-        variable_set('govcms_akamai_extensions_zip', FALSE);
-
-        // Image configuration
-        variable_set('govcms_akamai_extensions_images', TRUE);
-        $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('gif', 'jpeg', 'jpg', 'png', 'tiff'));
-        variable_set('govcms_akamai_extensions_images', FALSE);
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
     }
 
-    /**
-     * Test the validity of the processing of unconfigured mock data and the default form value.
-     */
-    public function testConfigurationDetection() {
-        $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
-        $this->drupalLogin($new_user);
-        $this->drupalGet('admin/config/services/akamai-fast-purge');
-        $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
-        $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
-        $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
+    $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+  }
 
-        // Test configuration when not set.
-        $this->assertFieldById('edit-govcms-akamai-fast-purge-credentials-path', 'No configuration detected');
+  /**
+   * Test access to view and set the manual purge path.
+   *
+   * This test does not check for API call on submission.
+   */
+  public function testPermissionFour() {
+    $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
 
-        // Test a mock configuration.
-        $this->assertTrue(0 != count(_govcms_akamai_fast_purge_detect_edgerc("[default] host = localhost access_token = xyz client_token = xyz client_secret = xyz location = xyz")));
+    $expected_absent = array(
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+      // Purge path should not be available until debugging mode is switched on.
+      'edit-govcms-akamai-purge-path',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
     }
 
-    /**
-     * Test the API trigger, in which we expect to return false.
-     *
-     * This will need work if an API call is to be properly authenticated
-     * and succeed, however the functionality is established to support
-     * this test in the future. Right now this isn't possible and this is a
-     * best-efforts attempt at having a thorough test suite.
-     */
-    public function testApiCall() {
-        variable_set('govcms_akamai_fast_purge_enabled', TRUE);
-        $this->assertFalse(_govcms_akamai_fast_purge_trigger("url/to/path"));
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
     }
+
+    // Turn on debugging mode and assert purge path is available.
+    // This is to imitate expected behavior because config isn't available for real-world use.
+    variable_set('govcms_akamai_fast_purge_debugmode', 1);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+    $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
+
+    $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+  }
+
+  /**
+   * Test extension configuration to ensure extensions match configuration exactly.
+   */
+  public function testExtensions() {
+    $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+      // Purge path should not be available until debugging mode is switched on.
+      'edit-govcms-akamai-purge-path',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
+    }
+
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
+    }
+
+    variable_set('govcms_akamai_extensions_pdf', FALSE);
+    variable_set('govcms_akamai_extensions_word', FALSE);
+    variable_set('govcms_akamai_extensions_excel', FALSE);
+    variable_set('govcms_akamai_extensions_zip', FALSE);
+    variable_set('govcms_akamai_extensions_images', FALSE);
+
+    // No configuration
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+    $this->assertTrue(count(_govcms_akamai_get_configured_extensions()) === 0);
+
+    // PDF configuration
+    variable_set('govcms_akamai_extensions_pdf', TRUE);
+    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('pdf'));
+    variable_set('govcms_akamai_extensions_pdf', FALSE);
+
+    // Word configuration
+    variable_set('govcms_akamai_extensions_word', TRUE);
+    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('doc', 'docx'));
+    variable_set('govcms_akamai_extensions_word', FALSE);
+
+    // Excel configuration
+    variable_set('govcms_akamai_extensions_excel', TRUE);
+    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('xls', 'xlsx'));
+    variable_set('govcms_akamai_extensions_excel', FALSE);
+
+    // ZIP configuration
+    variable_set('govcms_akamai_extensions_zip', TRUE);
+    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('zip'));
+    variable_set('govcms_akamai_extensions_zip', FALSE);
+
+    // Image configuration
+    variable_set('govcms_akamai_extensions_images', TRUE);
+    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('gif', 'jpeg', 'jpg', 'png', 'tiff'));
+    variable_set('govcms_akamai_extensions_images', FALSE);
+  }
+
+  /**
+   * Test the validity of the processing of unconfigured mock data and the default form value.
+   */
+  public function testConfigurationDetection() {
+    $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $this->assertField('edit-govcms-akamai-fast-purge-enabled', 'Found module enable field');
+
+    $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+    $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
+    $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
+
+    // Test configuration when not set.
+    $this->assertFieldById('edit-govcms-akamai-fast-purge-credentials-path', 'No configuration detected');
+
+    // Test a mock configuration.
+    $this->assertTrue(0 != count(_govcms_akamai_fast_purge_detect_edgerc_env("[default] host = localhost access_token = xyz client_token = xyz client_secret = xyz location = xyz")));
+  }
+
+  /**
+   * Test the API trigger, in which we expect to return false.
+   *
+   * This will need work if an API call is to be properly authenticated
+   * and succeed, however the functionality is established to support
+   * this test in the future. Right now this isn't possible and this is a
+   * best-efforts attempt at having a thorough test suite.
+   */
+  public function testApiCall() {
+    variable_set('govcms_akamai_fast_purge_enabled', TRUE);
+    $this->assertFalse(_govcms_akamai_fast_purge_trigger("url/to/path"));
+  }
 
 }
