@@ -38,6 +38,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
 
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-fast-purge-api-network',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
@@ -75,6 +76,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
 
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-fast-purge-api-network',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
@@ -112,6 +114,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
 
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-api-network',
@@ -149,6 +152,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
 
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
     );
@@ -194,6 +198,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-loglevel',
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
     );
 
     $expected_present = array(
@@ -218,6 +223,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     variable_set('govcms_akamai_fast_purge_debugmode', 1);
     $this->drupalGet('admin/config/services/akamai-fast-purge');
     $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
+    $this->assertField('edit-govcms-akamai-purge-path-button', 'Found path purge field button.');
 
     $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
   }
@@ -238,6 +244,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-loglevel',
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
     );
 
     $expected_present = array(
