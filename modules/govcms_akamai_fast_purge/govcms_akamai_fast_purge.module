@@ -419,6 +419,7 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
       case 'client_token':
       case 'client_secret':
       case 'location':
+      case 'max-size':
         $credentials[$section][$data_item] = $data[$key + 2];
         break;
       default:
