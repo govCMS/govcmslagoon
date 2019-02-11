@@ -40,6 +40,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
       'edit-govcms-akamai-fast-purge-enabled',
@@ -78,6 +79,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
     );
@@ -118,6 +120,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
     );
@@ -165,6 +168,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-extensions-zip',
       'edit-govcms-akamai-extensions-images',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
     );
@@ -194,6 +198,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
       // Purge path should not be available until debugging mode is switched on.
@@ -240,6 +245,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section'
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
       // Purge path should not be available until debugging mode is switched on.
@@ -311,6 +317,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $this->assertField('edit-govcms-akamai-fast-purge-enabled', 'Found module enable field');
 
     $this->assertNoField('edit-govcms-akamai-fast-purge-api-network', 'Did not find network field.');
+    $this->assertNoField('edit-govcms-akamai-fast-purge-section', 'Did not find section field.');
     $this->assertNoField('edit-govcms-akamai-purge-path', 'Did not find path purge field.');
     $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
 

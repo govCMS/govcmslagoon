@@ -70,6 +70,7 @@ function govcms_akamai_fast_purge_callback() {
                 $images = (variable_get('govcms_akamai_extensions_images', FALSE) != FALSE) ? 'Enabled' : 'Disabled';
                 $config = (_govcms_akamai_fast_purge_detect_edgerc_env()) ? 'Configuration detected' : 'No configuration detected';
                 $edgerc = (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) ? 'Configuration file detected' : 'No configuration file detected';
+                $section = variable_get('govcms_akamai_purge_section', 'default');
                 $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
                 $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
                 $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
@@ -87,6 +88,7 @@ function govcms_akamai_fast_purge_callback() {
                 drush_print("Image Config: {$images}");
                 drush_print("Akamai Config: {$config}");
                 drush_print("Akamai Edgerc file: ${edgerc}");
+                drush_print("Akamai Edgerc section: ${section}");
                 drush_print("Akamai Network: {$network}");
                 drush_print("Debug mode is ${debug}");
                 drush_print("Currently configured extensions: {$extensions}");
