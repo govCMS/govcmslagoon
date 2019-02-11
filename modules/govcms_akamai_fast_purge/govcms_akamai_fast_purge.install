@@ -18,6 +18,7 @@ function govcms_akamai_fast_purge_install() {
   variable_set('govcms_akamai_extensions_zip', FALSE);
   variable_set('govcms_akamai_extensions_images', FALSE);
   variable_set('govcms_akamai_fast_purge_api_network', 0);
+  variable_set('govcms_akamai_purge_section', 'default');
   variable_set('govcms_akamai_fast_purge_loglevel', 0);
   variable_set('govcms_akamai_fast_purge_debugmode', 0);
 }
@@ -35,6 +36,7 @@ function govcms_akamai_fast_purge_uninstall() {
   variable_del('govcms_akamai_extensions_zip');
   variable_del('govcms_akamai_extensions_images');
   variable_del('govcms_akamai_fast_purge_api_network');
+  variable_del('govcms_akamai_purge_section');
   variable_del('govcms_akamai_fast_purge_loglevel');
   variable_del('govcms_akamai_fast_purge_debugmode');
   variable_del('govcms_akamai_fast_purge_credentials_file');

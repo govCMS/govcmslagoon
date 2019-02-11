@@ -11,7 +11,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\ClientException;
 
 define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
-define('GAFP_API_TYPE', 'ccu');
 define('GAFP_API_VERSION', 'v3');
 
 /**
@@ -224,6 +223,17 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
+  $form['advanced']['govcms_akamai_purge_section'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Section'),
+    '#default_value' => variable_get('govcms_akamai_purge_section', 'default'),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('The section in the configuration to target. ie "ccu" or "default."'),
+    '#access' => user_access('administer advanced akamai settings'),
+    '#disabled' => !govcms_akamai_fast_purge_is_production(),
+  );
+
   $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
     '#type' => 'select',
     '#title' => t('Network'),
@@ -401,6 +411,7 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
   }
   $data = explode(" ", $creds);
   $credentials = array();
+  $section = variable_get('govcms_akamai_purge_section', 'default');
   foreach ($data as $key => $data_item) {
     switch ($data_item):
       case 'host':
@@ -408,7 +419,7 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
       case 'client_token':
       case 'client_secret':
       case 'location':
-        $credentials[GAFP_API_TYPE][$data_item] = $data[$key + 2];
+        $credentials[$section][$data_item] = $data[$key + 2];
         break;
       default:
         break;
@@ -482,16 +493,17 @@ function _govcms_akamai_fast_purge_trigger($file) {
  */
 function _govcms_akamai_fast_purge_api_call($file) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
+  $section = variable_get('govcms_akamai_purge_section', 'default');
   require __DIR__.'/vendor/autoload.php';
   if (_govcms_akamai_fast_purge_detect_edgerc_env()) {
     $client = new Akamai\Open\EdgeGrid\Client([
-      'base_uri' => $credentials[GAFP_API_TYPE]['host']
+      'base_uri' => $credentials[$section]['host']
     ]);
 
-    $client->setAuth($credentials[GAFP_API_TYPE]['client_token'], $credentials[GAFP_API_TYPE]['client_secret'], $credentials[GAFP_API_TYPE]['access_token']);
+    $client->setAuth($credentials[$section]['client_token'], $credentials[$section]['client_secret'], $credentials[$section]['access_token']);
   }
   elseif (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
-    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile(GAFP_API_TYPE, getenv('HOME') . '/.edgerc');
+    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile($section, getenv('HOME') . '/.edgerc');
   }
   else {
     return FALSE;
@@ -499,7 +511,7 @@ function _govcms_akamai_fast_purge_api_call($file) {
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
   $api_network = ((int) $network_selection == 0) ? 'staging' : 'production';
-  $api_request_url = '/' . GAFP_API_TYPE . '/' . GAFP_API_VERSION . '/invalidate/url/' . $api_network;
+  $api_request_url = '/' . $section . '/' . GAFP_API_VERSION . '/invalidate/url/' . $api_network;
 
   $api_request_options = [
     'json' => [
