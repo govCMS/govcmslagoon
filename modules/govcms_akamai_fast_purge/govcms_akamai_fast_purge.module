@@ -321,7 +321,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('administer advanced akamai settings'),
   );
 
-  $form['advanced']['govcms_akamai_fast_purge_credentials_path'] = array(
+  $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_credentials_envvarname'] = array(
     '#type' => 'textfield',
     '#title' => t('Configuration'),
     '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_env()) ? 'Configuration detected' : 'No configuration detected',
@@ -333,7 +333,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
-  $form['advanced']['govcms_akamai_fast_purge_credentials_file'] = array(
+  $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Configuration'),
     '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) ? 'Configuration file detected' : 'No configuration file detected',
@@ -345,7 +345,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
-  $form['advanced']['encryption']['fieldset'] = array(
+  $form['advanced']['env']['fieldset']['encryption']['fieldset'] = array(
     '#title' => 'Encryption',
     '#description' => t('Specify the fields which reflect the type of encryption which was used to create the environment variable.<br />Leave these fields empty if you are not using an encrypted key or are using a .edgerc file.'),
     '#access' => govcms_akamai_fast_purge_is_production(),
@@ -356,7 +356,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_passcode'] = array(
+  $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_passcode'] = array(
     '#type' => 'textfield',
     '#title' => t('Passcode'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_passcode', ''),
@@ -367,7 +367,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
-  $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_type'] = array(
+  $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_type'] = array(
     '#type' => 'textfield',
     '#title' => t('Encryption type'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_encryption_type', ''),
@@ -383,6 +383,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     $passcode = variable_get('govcms_akamai_fast_purge_passcode', '');
     $method = variable_get('govcms_akamai_fast_purge_encryption_type', '');
     $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
+    $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
       '#type' => 'textfield',
       '#title' => t('Encryption validation'),
       '#default_value' => (_govcms_akamai_fast_purge_decrypt_check($data, $method, $passcode)) ? 'Encrypted data is valid.' : 'Invalid',
