@@ -300,6 +300,14 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('administer advanced akamai settings'),
   );
 
+  $form['advanced']['env']['fieldset'] = array(
+    '#title' => 'Environment Variable',
+    '#description' => t(''),
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="encr-elements-wrapper">',
+    '#suffix' => '</div>',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
 
   $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_credentials_envvarname'] = array(
