@@ -391,6 +391,27 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
+  $form['advanced']['file']['fieldset']['govcms_akamai_fast_purge_credentials_filepath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('File path'),
+    '#description' => t('File path configuration when the module is configured to use an .edgerc file.'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
+  $form['advanced']['file']['fieldset']['govcms_akamai_fast_purge_credentials_file'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Validation'),
+    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc')) ? 'Valid' : 'Invalid'),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('An evaluation of the suitability of the specified file path'),
+    '#disabled' => TRUE,
+    '#access' => user_access('akamai edgerc config check access'),
+  );
   $form['advanced']['debug']['fieldset']['govcms_akamai_fast_purge_debugmode'] = array(
     '#type' => 'checkbox',
     '#title' => t('Debug mode'),
