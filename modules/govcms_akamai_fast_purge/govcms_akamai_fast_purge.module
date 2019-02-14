@@ -14,6 +14,50 @@ define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
 define('GAFP_API_VERSION', 'v3');
 
 /**
+ * Encrypts the variable value.
+ *
+ * @param $data string
+ *   Pointer to the data to encrypt.
+ * @param $method string
+ *   The method to use for encryption.
+ * @param $passcode string
+ *   Passcode to use in encryption algorithm.
+ */
+function _govcms_akamai_fast_purge_encrypt(&$data, $method, $passcode) {
+  if (NULL != $data && NULL != $method && NULL != $passcode) {
+    $data = @openssl_encrypt($data, $method, $passcode, OPENSSL_ALGO_MD5);
+  }
+}
+
+/**
+ * Decrypts the variable value.
+ *
+ * @param $data string
+ *   Pointer to the data to decrypt.
+ * @param $method string
+ *   The method to use for decryption.
+ * @param $passcode string
+ *   Passcode to use in decryption algorithm.
+ */
+function _govcms_akamai_fast_purge_decrypt(&$data, $method, $passcode) {
+  if (NULL != $data && NULL != $method && NULL != $passcode) {
+    $data = @openssl_decrypt($data, $method, $passcode, OPENSSL_ALGO_MD5);
+  }
+}
+
+/**
+ * Checks if the data structure for library compatibility.
+ *
+ * @return bool
+ *   A boolean to show the contents of the encrypted value is valid.
+ */
+function _govcms_akamai_fast_purge_decrypt_check() {
+  $section = variable_get('govcms_akamai_purge_section', 'default');
+  $creds = _govcms_akamai_fast_purge_process_edgerc();
+  return (isset($creds[$section]['host']) && isset($creds[$section]['access_token']) && isset($creds[$section]['client_token']) && isset($creds[$section]['client_secret']));
+}
+
+/**
  * Implements hook_permission().
  */
 function govcms_akamai_fast_purge_permission() {
@@ -291,6 +335,51 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
+  $form['advanced']['encryption']['fieldset'] = array(
+    '#title' => 'Encryption',
+    '#description' => t('Specify the fields which reflect the type of encryption which was used to create the environment variable.<br />Leave these fields empty if you are not using an encrypted key or are using a .edgerc file.'),
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="encr-elements-wrapper">',
+    '#suffix' => '</div>',
+  );
+
+  $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_passcode'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Passcode'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_passcode', ''),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('The passcode used to encrypt the environment key.'),
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
+  $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_type'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Encryption type'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_encryption_type', ''),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('The encryption type used to encrypt the environment key'),
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
+  if ('' != variable_get('govcms_akamai_fast_purge_passcode', '') && '' != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
+    $data = getenv('EDGERC_PATH');
+    $passcode = variable_get('govcms_akamai_fast_purge_passcode', '');
+    $method = variable_get('govcms_akamai_fast_purge_encryption_type', '');
+    $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Encryption validation'),
+      '#default_value' => (_govcms_akamai_fast_purge_decrypt_check($data, $method, $passcode)) ? 'Encrypted data is valid.' : 'Invalid',
+      '#size' => 40,
+      '#maxlength' => 256,
+      '#description' => t('This field will attempt to validate if the format of the data which is encrypted.<br />This will not provide specifics as to why validation failed.'),
+      '#required' => TRUE,
+      '#disabled' => TRUE,
+      '#access' => user_access('akamai edgerc config check access'),
+    );
+  }
+
   $extensions = _govcms_akamai_get_configured_extensions();
   if (count($extensions) === 0 || $extensions === '') {
     $extensions = '<em>No extensions have been configured.</em>';
@@ -408,6 +497,11 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
   }
   else {
     $creds = getenv('EDGERC_PATH');
+    if ("" != variable_get('govcms_akamai_fast_purge_passcode', '') && "" != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
+      $method = variable_get('govcms_akamai_fast_purge_encryption_type', '...');
+      $passcode = variable_get('govcms_akamai_fast_purge_passcode', '...');
+      _govcms_akamai_fast_purge_decrypt($creds, $method, $passcode);
+    }
   }
   $data = explode(" ", $creds);
   $credentials = array();

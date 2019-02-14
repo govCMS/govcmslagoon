@@ -51,6 +51,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-extensions-images',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array();
@@ -82,6 +85,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array(
@@ -123,6 +129,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array(
@@ -158,6 +167,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-purge-path-button',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array(
@@ -171,6 +181,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
     );
 
     foreach ($expected_absent as $field) {
@@ -204,6 +216,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array(
@@ -251,6 +266,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
     );
 
     $expected_present = array(
