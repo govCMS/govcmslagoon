@@ -256,6 +256,16 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     ],
   );
 
+  $form['advanced']['api']['fieldset'] = array(
+    '#title' => 'API Configuration',
+    '#description' => t('Helpful features to help debug configurations for module development and deployment testing, and to allow for local testing.'),
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="api-elements-wrapper">',
+    '#suffix' => '</div>',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
   global $base_url;
   $form['advanced']['govcms_akamai_origin_url'] = array(
     '#type' => 'textfield',
@@ -385,6 +395,15 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     );
   }
 
+  $form['advanced']['file']['fieldset'] = array(
+    '#title' => '.edgerc file',
+    '#description' => t('.edgerc file path configuration and validation'),
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="ficr-elements-wrapper">',
+    '#suffix' => '</div>',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
   $extensions = _govcms_akamai_get_configured_extensions();
   if (count($extensions) === 0 || $extensions === '') {
     $extensions = '<em>No extensions have been configured.</em>';
