@@ -338,6 +338,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   $form['advanced']['encryption']['fieldset'] = array(
     '#title' => 'Encryption',
     '#description' => t('Specify the fields which reflect the type of encryption which was used to create the environment variable.<br />Leave these fields empty if you are not using an encrypted key or are using a .edgerc file.'),
+    '#access' => govcms_akamai_fast_purge_is_production(),
     '#type' => 'fieldset',
     '#prefix' => '<div id="encr-elements-wrapper">',
     '#suffix' => '</div>',
@@ -349,6 +350,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Passcode'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_passcode', ''),
+    '#disabled' => !govcms_akamai_fast_purge_is_production(),
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('The passcode used to encrypt the environment key.'),
@@ -359,6 +361,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Encryption type'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_encryption_type', ''),
+    '#disabled' => !govcms_akamai_fast_purge_is_production(),
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('The encryption type used to encrypt the environment key'),
