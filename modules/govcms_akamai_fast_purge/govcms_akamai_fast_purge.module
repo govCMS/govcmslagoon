@@ -412,6 +412,17 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#disabled' => TRUE,
     '#access' => user_access('akamai edgerc config check access'),
   );
+
+  $form['advanced']['debug']['fieldset'] = array(
+    '#title' => 'Debugging',
+    '#description' => t('Debugging features'),
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="debug-elements-wrapper">',
+    '#suffix' => '</div>',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
   $form['advanced']['debug']['fieldset']['govcms_akamai_fast_purge_debugmode'] = array(
     '#type' => 'checkbox',
     '#title' => t('Debug mode'),
