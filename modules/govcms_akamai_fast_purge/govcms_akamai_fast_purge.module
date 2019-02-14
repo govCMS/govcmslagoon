@@ -365,7 +365,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   );
 
   if ('' != variable_get('govcms_akamai_fast_purge_passcode', '') && '' != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
-    $data = getenv('EDGERC_PATH');
+    $data = getenv(variable_get('govcms_akamai_fast_purge_credentials_envvarname', 'EDGERC'));
     $passcode = variable_get('govcms_akamai_fast_purge_passcode', '');
     $method = variable_get('govcms_akamai_fast_purge_encryption_type', '');
     $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
@@ -469,7 +469,7 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
   if (isset($form_state['values']['govcms_akamai_purge_path'])) {
     $custom_path = $form_state['values']['govcms_akamai_purge_path'];
     if ($custom_path != "" && user_access('manual akamai cache purge')) {
-      if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
+      if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
         global $base_url;
         $custom_path = variable_get('govcms_akamai_origin_url', $base_url) . "/{$custom_path}";
         if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
@@ -559,7 +559,7 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
     $creds = $config;
   }
   else {
-    $creds = getenv('EDGERC_PATH');
+    $creds = getenv(variable_get('govcms_akamai_fast_purge_credentials_envvarname', 'EDGERC'));
     if ("" != variable_get('govcms_akamai_fast_purge_passcode', '') && "" != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
       $method = variable_get('govcms_akamai_fast_purge_encryption_type', '...');
       $passcode = variable_get('govcms_akamai_fast_purge_passcode', '...');
@@ -660,8 +660,8 @@ function _govcms_akamai_fast_purge_api_call($file) {
 
     $client->setAuth($credentials[$section]['client_token'], $credentials[$section]['client_secret'], $credentials[$section]['access_token']);
   }
-  elseif (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) {
-    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile($section, getenv('HOME') . '/.edgerc');
+  elseif (_govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
+    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile($section,  variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'));
   }
   else {
     return FALSE;
