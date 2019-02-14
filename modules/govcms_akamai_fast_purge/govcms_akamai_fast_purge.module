@@ -540,7 +540,8 @@ function _govcms_akamai_fast_purge_detect_edgerc_env($config = NULL) {
  */
 function _govcms_akamai_fast_purge_detect_edgerc_file($path) {
   if ((NULL != $path) && ($path != "") && (file_exists($path))) {
-    return TRUE;
+    $section = variable_get('govcms_akamai_purge_section', 'default');
+    return (isset($creds[$section]['host']) && isset($creds[$section]['access_token']) && isset($creds[$section]['client_token']) && isset($creds[$section]['client_secret']));
   }
   return FALSE;
 }
