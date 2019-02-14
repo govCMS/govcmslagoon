@@ -267,7 +267,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   );
 
   global $base_url;
-  $form['advanced']['govcms_akamai_origin_url'] = array(
+  $form['advanced']['api']['fieldset']['govcms_akamai_origin_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Origin URL'),
     '#default_value' => variable_get('govcms_akamai_origin_url', $base_url),
@@ -277,7 +277,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
-  $form['advanced']['govcms_akamai_purge_section'] = array(
+  $form['advanced']['api']['fieldset']['govcms_akamai_purge_section'] = array(
     '#type' => 'textfield',
     '#title' => t('Section'),
     '#default_value' => variable_get('govcms_akamai_purge_section', 'default'),
@@ -288,7 +288,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#disabled' => !govcms_akamai_fast_purge_is_production(),
   );
 
-  $form['advanced']['govcms_akamai_fast_purge_api_network'] = array(
+  $form['advanced']['api']['fieldset']['govcms_akamai_fast_purge_api_network'] = array(
     '#type' => 'select',
     '#title' => t('Network'),
     '#options' => array(
