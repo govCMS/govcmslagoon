@@ -368,7 +368,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     $data = getenv('EDGERC_PATH');
     $passcode = variable_get('govcms_akamai_fast_purge_passcode', '');
     $method = variable_get('govcms_akamai_fast_purge_encryption_type', '');
-    $form['advanced']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
     $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
       '#type' => 'textfield',
       '#title' => t('Encryption validation'),
