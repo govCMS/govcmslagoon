@@ -54,6 +54,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     $expected_present = array();
@@ -99,6 +101,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-extensions-images',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     foreach ($expected_absent as $field) {
@@ -132,6 +136,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     $expected_present = array(
@@ -168,6 +174,11 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-section',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     $expected_present = array(
@@ -178,11 +189,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-extensions-zip',
       'edit-govcms-akamai-extensions-images',
       'edit-govcms-akamai-fast-purge-api-network',
-      'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
       'edit-govcms-akamai-fast-purge-loglevel',
-      'edit-govcms-akamai-fast-purge-passcode',
-      'edit-govcms-akamai-fast-purge-encryption-type',
     );
 
     foreach ($expected_absent as $field) {
@@ -219,6 +227,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     $expected_present = array(
@@ -269,6 +279,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
     );
 
     $expected_present = array(
@@ -340,7 +352,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'Found configuration field.');
 
     // Test configuration when not set.
-    $this->assertFieldById('edit-govcms-akamai-fast-purge-credentials-path', 'No configuration detected');
+    $this->assertField('edit-govcms-akamai-fast-purge-credentials-path', 'No configuration detected');
 
     // Test a mock configuration.
     $this->assertTrue(0 != count(_govcms_akamai_fast_purge_detect_edgerc_env("[default] host = localhost access_token = xyz client_token = xyz client_secret = xyz location = xyz")));
