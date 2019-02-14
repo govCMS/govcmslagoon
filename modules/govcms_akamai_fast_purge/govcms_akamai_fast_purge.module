@@ -300,25 +300,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('administer advanced akamai settings'),
   );
 
-  $form['advanced']['govcms_akamai_fast_purge_debugmode'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Debug mode'),
-    '#default_value' => variable_get('govcms_akamai_fast_purge_debugmode', 0),
-    '#description' => t('Turn on debugging mode.<br />This will ensure the variable environment "LAGOON_ENVIRONMENT_TYPE" does not need to be "production" in order to fire API calls.<br /><br />If you are not using Amazee.io this will trigger the calls regardless of the needed environment variables.<br />Intended for Amazee.io platform testing. Enable to disable mechanism on non-Amazee.io infastructure.'),
-    '#access' => user_access('administer advanced akamai settings'),
-  );
-
-  $form['advanced']['govcms_akamai_fast_purge_loglevel'] = array(
-    '#type' => 'select',
-    '#title' => t('Logging level'),
-    '#options' => array(
-      0 => t('None'),
-      1 => t('Regular'),
-      2 => t('Verbose'),
-    ),
-    '#default_value' => (int) variable_get('govcms_akamai_fast_purge_loglevel', 0),
-    '#description' => t('Watchdog event logging support.'),
-    '#access' => user_access('administer advanced akamai settings'),
   );
 
   $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_credentials_envvarname'] = array(
@@ -405,6 +386,27 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+  $form['advanced']['debug']['fieldset']['govcms_akamai_fast_purge_debugmode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Debug mode'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_debugmode', 0),
+    '#description' => t('Turn on debugging mode.<br />This will ensure the variable environment "LAGOON_ENVIRONMENT_TYPE" does not need to be "production" in order to fire API calls.<br /><br />If you are not using Amazee.io this will trigger the calls regardless of the needed environment variables.<br />Intended for Amazee.io platform testing. Enable to disable mechanism on non-Amazee.io infastructure.'),
+    '#access' => user_access('administer advanced akamai settings'),
+  );
+
+  $form['advanced']['debug']['fieldset']['govcms_akamai_fast_purge_loglevel'] = array(
+    '#type' => 'select',
+    '#title' => t('Logging level'),
+    '#options' => array(
+      0 => t('None'),
+      1 => t('Regular'),
+      2 => t('Verbose'),
+    ),
+    '#default_value' => (int) variable_get('govcms_akamai_fast_purge_loglevel', 0),
+    '#description' => t('Watchdog event logging support.'),
+    '#access' => user_access('administer advanced akamai settings'),
+  );
+
   $extensions = _govcms_akamai_get_configured_extensions();
   if (count($extensions) === 0 || $extensions === '') {
     $extensions = '<em>No extensions have been configured.</em>';
