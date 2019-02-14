@@ -14,7 +14,7 @@ define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
 define('GAFP_API_VERSION', 'v3');
 
 /**
- * Encrypts the variable value.
+ * Decrypts the variable value.
  *
  * @param $data string
  *   Pointer to the data to encrypt.
@@ -46,7 +46,7 @@ function _govcms_akamai_fast_purge_decrypt(&$data, $method, $passcode) {
 }
 
 /**
- * Checks if the data structure for library compatibility.
+ * Checks if the data for encryption and validates the array.
  *
  * @return bool
  *   A boolean to show the contents of the encrypted value is valid.
