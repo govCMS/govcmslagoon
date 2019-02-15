@@ -2,7 +2,7 @@
 
 /**
  * @file
- * govCMS Akamai Fast Purge
+ * The govCMS Akamai Fast Purge module file.
  */
 
 use Akamai\Open\EdgeGrid\Client;
@@ -10,17 +10,17 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\ClientException;
 
-define('GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
-define('GAFP_API_VERSION', 'v3');
+define('GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
+define('GOVCMS_AKAMAI_FAST_PURGE_GAFP_API_VERSION', 'v3');
 
 /**
  * Decrypts the variable value.
  *
- * @param $data string
+ * @param string $data
  *   Pointer to the data to encrypt.
- * @param $method string
+ * @param string $method
  *   The method to use for encryption.
- * @param $passcode string
+ * @param string $passcode
  *   Passcode to use in encryption algorithm.
  */
 function _govcms_akamai_fast_purge_encrypt(&$data, $method, $passcode) {
@@ -32,11 +32,11 @@ function _govcms_akamai_fast_purge_encrypt(&$data, $method, $passcode) {
 /**
  * Decrypts the variable value.
  *
- * @param $data string
+ * @param string $data
  *   Pointer to the data to decrypt.
- * @param $method string
+ * @param string $method
  *   The method to use for decryption.
- * @param $passcode string
+ * @param string $passcode
  *   Passcode to use in decryption algorithm.
  */
 function _govcms_akamai_fast_purge_decrypt(&$data, $method, $passcode) {
@@ -76,7 +76,7 @@ function govcms_akamai_fast_purge_permission() {
     ),
     'manual akamai cache purge' => array(
       'title' => t('Submit path for purging'),
-      'description' => t('Allow access to submit a path to clear from Akamai\'s cache'),
+      'description' => t("Allow access to submit a path to clear from Akamai's cache"),
     ),
   );
 }
@@ -141,7 +141,10 @@ function _govcms_akamai_get_configured_extensions() {
 }
 
 /**
- * Check is the environment is only allowed on production or if debugging mode is on.
+ * Checks the environment for API protection logic.
+ *
+ * Check if the environment has prod mode on or if debugging mode is on.
+ * Useful to run exclusively on Amazee infrastructure or not.
  */
 function govcms_akamai_fast_purge_is_production() {
   if ((int) variable_get('govcms_akamai_fast_purge_debugmode', 0) === 1) {
@@ -154,7 +157,7 @@ function govcms_akamai_fast_purge_is_production() {
 }
 
 /**
- * Page callback: Akamai Fast Purge settings
+ * Page callback: Akamai Fast Purge settings.
  *
  * @see govcms_akamai_fast_purge_menu()
  */
@@ -302,7 +305,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['advanced']['env']['fieldset'] = array(
     '#title' => 'Environment Variable',
-    '#description' => t(''),
+    '#description' => t('Configuration and validation of the environment variable and its optional encryption.'),
     '#type' => 'fieldset',
     '#prefix' => '<div id="encr-elements-wrapper">',
     '#suffix' => '</div>',
@@ -404,7 +407,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   $form['advanced']['file']['fieldset']['govcms_akamai_fast_purge_credentials_file'] = array(
     '#type' => 'textfield',
     '#title' => t('Validation'),
-    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc')) ? 'Valid' : 'Invalid'),
+    '#default_value' => (_govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc')) ? 'Valid' : 'Invalid'),
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('An evaluation of the suitability of the specified file path'),
@@ -469,11 +472,11 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
   if (isset($form_state['values']['govcms_akamai_purge_path'])) {
     $custom_path = $form_state['values']['govcms_akamai_purge_path'];
     if ($custom_path != "" && user_access('manual akamai cache purge')) {
-      if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
+      if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
         global $base_url;
         $custom_path = variable_get('govcms_akamai_origin_url', $base_url) . "/{$custom_path}";
         if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-          watchdog(GAFP_WATCHDOG_TYPE, 'Manual purge requested of "@path"', ['@path' => $custom_path]);
+          watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Manual purge requested of "@path"', ['@path' => $custom_path]);
         }
         _govcms_akamai_fast_purge_trigger($custom_path);
       }
@@ -552,7 +555,7 @@ function _govcms_akamai_fast_purge_detect_edgerc_file($path) {
  * @param string $config
  *   The expected environment variable contents, for testing purposes.
  *
- * @return array|NULL
+ * @return array|null
  *   The data object to be used as the Akamai configuration.
  */
 function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
@@ -571,7 +574,7 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
   $credentials = array();
   $section = variable_get('govcms_akamai_purge_section', 'default');
   foreach ($data as $key => $data_item) {
-    switch ($data_item):
+    switch ($data_item) {
       case 'host':
       case 'access_token':
       case 'client_token':
@@ -580,9 +583,11 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
       case 'max-size':
         $credentials[$section][$data_item] = $data[$key + 2];
         break;
+
       default:
         break;
-    endswitch;
+
+    }
   }
   return $credentials;
 }
@@ -591,9 +596,10 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
  * Trigger the Akamai Fast Purge if needed.
  *
  * @param mixed $file
- *  The file object to be purged, or a string representing the (relative) URL/URI to the path/file
+ *   The file object to be purged, or a string
+ *   representing the (relative) URL/URI to the path/file.
  *
- * @return  bool
+ * @return bool
  *   The responding value to the success of the API call.
  */
 function _govcms_akamai_fast_purge_trigger($file) {
@@ -624,10 +630,10 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 1) {
-    watchdog(GAFP_WATCHDOG_TYPE, 'Purging Url: @file', ['@file' => $target]);
+    watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Purging Url: @file', ['@file' => $target]);
   }
 
-  if (FALSE === _govcms_akamai_fast_purge_detect_edgerc_env() && count(_govcms_akamai_fast_purge_process_edgerc()) != 1 && FALSE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
+  if (FALSE === _govcms_akamai_fast_purge_detect_edgerc_env() && count(_govcms_akamai_fast_purge_process_edgerc()) != 1 && FALSE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
     drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
     return FALSE;
   }
@@ -639,28 +645,29 @@ function _govcms_akamai_fast_purge_trigger($file) {
 
 /**
  * Make the API call to Akamai Purge.
+ *
+ * @param string $file
+ *   Resolved URL to target/file.
+ *
+ * @return bool
+ *   The true/false value of the success of the API call.
+ *
  * @see https://github.com/akamai/AkamaiOPEN-edgegrid-php-client
  * @see https://developer.akamai.com/api/purge/ccu/resources.html
- *
- * @param $file
- * @param $credentials_path
- *
- * @param bool
- *   The true/false value of the success of the API call.
  */
 function _govcms_akamai_fast_purge_api_call($file) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
   $section = variable_get('govcms_akamai_purge_section', 'default');
-  require __DIR__.'/vendor/autoload.php';
+  require __DIR__ . '/vendor/autoload.php';
   if (_govcms_akamai_fast_purge_detect_edgerc_env()) {
-    $client = new Akamai\Open\EdgeGrid\Client([
-      'base_uri' => $credentials[$section]['host']
+    $client = new Client([
+      'base_uri' => $credentials[$section]['host'],
     ]);
 
     $client->setAuth($credentials[$section]['client_token'], $credentials[$section]['client_secret'], $credentials[$section]['access_token']);
   }
-  elseif (_govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
-    $client = Akamai\Open\EdgeGrid\Client::createFromEdgeRcFile($section,  variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'));
+  elseif (_govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
+    $client = Client::createFromEdgeRcFile($section, variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'));
   }
   else {
     return FALSE;
@@ -668,16 +675,16 @@ function _govcms_akamai_fast_purge_api_call($file) {
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
   $api_network = ((int) $network_selection == 0) ? 'staging' : 'production';
-  $api_request_url = '/' . $section . '/' . GAFP_API_VERSION . '/invalidate/url/' . $api_network;
+  $api_request_url = '/' . $section . '/' . GOVCMS_AKAMAI_FAST_PURGE_GAFP_API_VERSION . '/invalidate/url/' . $api_network;
 
   $api_request_options = [
     'json' => [
       'objects' => [
-        $file
+        $file,
       ],
     ],
     'handler' => _govcms_akamai_fast_purge_get_request_handler($client),
-    'debug' => TRUE
+    'debug' => TRUE,
   ];
 
   try {
@@ -685,25 +692,27 @@ function _govcms_akamai_fast_purge_api_call($file) {
     $response = $client->request('POST', $api_request_url, $api_request_options);
     $responseContent = $response->getBody()->getContents();
     if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-      watchdog(GAFP_WATCHDOG_TYPE, 'Request Completed - Full response: @response', ['@response' => $responseContent]);
+      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Request Completed - Full response: @response', ['@response' => $responseContent]);
     }
     return TRUE;
   }
   catch (ClientException $e) {
     $responseContent = $e->getResponse()->getBody()->getContents();
     if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-      watchdog(GAFP_WATCHDOG_TYPE, 'Request Failed: @err_msg | Full response: @response', ['@err_msg' => $e->getMessage(), '@response' => $responseContent], WATCHDOG_ERROR);
+      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Request Failed: @err_msg | Full response: @response', ['@err_msg' => $e->getMessage(), '@response' => $responseContent], WATCHDOG_ERROR);
     }
     return FALSE;
   }
 }
 
 /**
- * Creates a request handler
+ * Creates a request handler.
  *
  * @param \Akamai\Open\EdgeGrid\Client $client
+ *   The Akamai client object to handle.
  *
  * @return mixed
+ *   Do not return anything.
  */
 function _govcms_akamai_fast_purge_get_request_handler(Client $client) {
   // Grab the client's handler instance.
@@ -720,7 +729,7 @@ function _govcms_akamai_fast_purge_get_request_handler(Client $client) {
       $message_vars['@headers'] .= $name . ': ' . implode(', ', $values) . "; ";
     }
     if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 1) {
-      watchdog(GAFP_WATCHDOG_TYPE, $message, $message_vars);
+      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, $message, $message_vars);
     }
   });
 

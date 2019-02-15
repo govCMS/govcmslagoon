@@ -29,7 +29,10 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Test access from an admin user without explicit permission to this module's configuration.
+   * Test permission zero.
+   *
+   * Test access from an admin user without explicit
+   * permission to this module's configuration.
    */
   public function testPermissionZero() {
     $new_user = $this->drupalCreateUser(array('administer site configuration'));
@@ -68,12 +71,14 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       $this->assertField($field, "Found expected field '{$field}'");
     }
 
-
     $this->assertText(t('Access denied'), 'Access denied message was found.');
   }
 
   /**
-   * Test access from an admin user with edgerc config check permissions.
+   * Test permission one.
+   *
+   * Test access from an admin user with
+   * edgerc config check permissions.
    */
   public function testPermissionOne() {
     $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
@@ -117,6 +122,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Test permission two.
+   *
    * Test access for an admin user to configure the module.
    */
   public function testPermissionTwo() {
@@ -161,6 +168,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Test permission three.
+   *
    * Test access to see and set the Akamai network settings.
    */
   public function testPermissionThree() {
@@ -205,8 +214,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Test access to view and set the manual purge path.
+   * Test permission four.
    *
+   * Test access to view and set the manual purge path.
    * This test does not check for API call on submission.
    */
   public function testPermissionFour() {
@@ -249,7 +259,8 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     }
 
     // Turn on debugging mode and assert purge path is available.
-    // This is to imitate expected behavior because config isn't available for real-world use.
+    // This is to imitate expected behavior because config isn't
+    // available for real-world use.
     variable_set('govcms_akamai_fast_purge_debugmode', 1);
     $this->drupalGet('admin/config/services/akamai-fast-purge');
     $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
@@ -259,7 +270,9 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Test extension configuration to ensure extensions match configuration exactly.
+   * Test extension configuration.
+   *
+   * Ensures extensions match configuration exactly.
    */
   public function testExtensions() {
     $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
@@ -306,38 +319,49 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     variable_set('govcms_akamai_extensions_zip', FALSE);
     variable_set('govcms_akamai_extensions_images', FALSE);
 
-    // No configuration
+    // No configuration.
     $this->drupalGet('admin/config/services/akamai-fast-purge');
     $this->assertTrue(count(_govcms_akamai_get_configured_extensions()) === 0);
 
-    // PDF configuration
+    // PDF configuration.
     variable_set('govcms_akamai_extensions_pdf', TRUE);
     $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('pdf'));
     variable_set('govcms_akamai_extensions_pdf', FALSE);
 
-    // Word configuration
+    // Word configuration.
     variable_set('govcms_akamai_extensions_word', TRUE);
     $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('doc', 'docx'));
     variable_set('govcms_akamai_extensions_word', FALSE);
 
-    // Excel configuration
+    // Excel configuration.
     variable_set('govcms_akamai_extensions_excel', TRUE);
     $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('xls', 'xlsx'));
     variable_set('govcms_akamai_extensions_excel', FALSE);
 
-    // ZIP configuration
+    // ZIP configuration.
     variable_set('govcms_akamai_extensions_zip', TRUE);
     $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('zip'));
     variable_set('govcms_akamai_extensions_zip', FALSE);
 
-    // Image configuration
+    // Image configuration.
     variable_set('govcms_akamai_extensions_images', TRUE);
-    $this->assertTrue(_govcms_akamai_get_configured_extensions() === array('gif', 'jpeg', 'jpg', 'png', 'tiff'));
+    $this->assertTrue(
+      _govcms_akamai_get_configured_extensions() === array(
+        'gif',
+        'jpeg',
+        'jpg',
+        'png',
+        'tiff',
+      )
+    );
     variable_set('govcms_akamai_extensions_images', FALSE);
   }
 
   /**
-   * Test the validity of the processing of unconfigured mock data and the default form value.
+   * Primitive tests for config detection.
+   *
+   * Test the validity of the processing of unconfigured mock data
+   * and the default form value.
    */
   public function testConfigurationDetection() {
     $new_user = $this->drupalCreateUser(array('akamai edgerc config check access', 'administer akamai configuration'));
