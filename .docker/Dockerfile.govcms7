@@ -1,4 +1,4 @@
-FROM govcmsdev/govcms7:3.2
+FROM govcmsdev/govcms7:3.3
 
 # Temporary override until lagoon PR is available in upstream image.
 # https://github.com/amazeeio/lagoon/issues/787
