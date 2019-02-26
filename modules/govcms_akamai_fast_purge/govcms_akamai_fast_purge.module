@@ -76,7 +76,11 @@ function govcms_akamai_fast_purge_permission() {
     ),
     'manual akamai cache purge' => array(
       'title' => t('Submit path for purging'),
-      'description' => t("Allow access to submit a path to clear from Akamai's cache"),
+      'description' => t('Allow access to submit a path to clear from Akamai\'s cache'),
+    ),
+    'site akamai cache purge' => array(
+      'title' => t('Clear all Akamai cache.'),
+      'description' => t('Submit a request to clear Akamai cache for the entire website.'),
     ),
   );
 }
@@ -252,6 +256,17 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'submit',
     '#default_value' => t('Purge'),
     '#disabled' => !govcms_akamai_fast_purge_is_production(),
+    '#submit' => ['govcms_akamai_fast_purge_button_handler'],
+    '#ajax' => [
+      'callback' => 'govcms_akamai_fast_purge_button_callback',
+      'wrapper' => 'js-ajax-elements-wrapper',
+    ],
+  );
+
+  $form['onetime']['purge_fieldset']['govcms_akamai_purge_all_button'] = array(
+    '#type' => 'submit',
+    '#default_value' => t('Purge all'),
+    '#disabled' => (!govcms_akamai_fast_purge_is_production() && user_access('site akamai cache purge')),
     '#submit' => ['govcms_akamai_fast_purge_button_handler'],
     '#ajax' => [
       'callback' => 'govcms_akamai_fast_purge_button_callback',
@@ -483,6 +498,25 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
       else {
         drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
       }
+    }
+  }
+}
+
+/**
+ * Handler to purge all Akamai cache for the configured URL.
+ */
+function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
+  if (user_access('site akamai cache purge')) {
+    if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
+      global $base_url;
+      $custom_path = variable_get('govcms_akamai_origin_url', $base_url);
+      if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
+        watchdog(GAFP_WATCHDOG_TYPE, 'Manual purge for entire website requested for "@path"', ['@path' => $custom_path]);
+      }
+      _govcms_akamai_fast_purge_trigger($custom_path);
+    }
+    else {
+      drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
     }
   }
 }
