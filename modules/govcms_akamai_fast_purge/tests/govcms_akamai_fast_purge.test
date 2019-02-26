@@ -276,9 +276,61 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Test extension configuration.
-   *
-   * Ensures extensions match configuration exactly.
+   * Test permissions for whole site purge button.
+   */
+  public function testPermissionFive() {
+    $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'site akamai cache purge', 'administer akamai configuration'));
+    $this->drupalLogin($new_user);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+
+    $expected_absent = array(
+      'edit-govcms-akamai-origin-url',
+      'edit-govcms-akamai-fast-purge-credentials-path',
+      'edit-govcms-akamai-fast-purge-api-network',
+      'edit-govcms-akamai-fast-purge-section',
+      'edit-govcms-akamai-fast-purge-debugmode',
+      'edit-govcms-akamai-fast-purge-loglevel',
+      // Purge path should not be available until debugging mode is switched on.
+      'edit-govcms-akamai-purge-path',
+      'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
+      'edit-govcms-akamai-fast-purge-passcode',
+      'edit-govcms-akamai-fast-purge-encryption-type',
+      'edit-govcms-akamai-fast-purge-encryption-check',
+      'edit-govcms-akamai-fast-purge-credentials-filepath',
+      'edit-govcms-akamai-fast-purge-credentials-envvarname',
+    );
+
+    $expected_present = array(
+      'edit-govcms-akamai-fast-purge-enabled',
+      'edit-govcms-akamai-extensions-pdf',
+      'edit-govcms-akamai-extensions-word',
+      'edit-govcms-akamai-extensions-excel',
+      'edit-govcms-akamai-extensions-zip',
+      'edit-govcms-akamai-extensions-images',
+    );
+
+    foreach ($expected_absent as $field) {
+      $this->assertNoField($field, "Did not find unexpected field '{$field}'");
+    }
+
+    foreach ($expected_present as $field) {
+      $this->assertField($field, "Found expected field '{$field}'");
+    }
+
+    // Turn on debugging mode and assert purge path is available.
+    // This is to imitate expected behavior because config isn't available for real-world use.
+    variable_set('govcms_akamai_fast_purge_debugmode', 1);
+    $this->drupalGet('admin/config/services/akamai-fast-purge');
+    $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
+    $this->assertField('edit-govcms-akamai-purge-path-button', 'Found path purge field button.');
+    $this->assertField('edit-govcms-akamai-purge-all-button', 'Founf whole of site akamai cache clear button.');
+
+    $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
+  }
+
+  /**
+   * Test extension configuration to ensure extensions match configuration exactly.
    */
   public function testExtensions() {
     $new_user = $this->drupalCreateUser(array('administer akamai configuration'));
