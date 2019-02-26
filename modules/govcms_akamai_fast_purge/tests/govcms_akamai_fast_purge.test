@@ -42,6 +42,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-fast-purge-api-network',
       'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
@@ -88,6 +89,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-fast-purge-api-network',
       'edit-govcms-akamai-fast-purge-section',
       'edit-govcms-akamai-fast-purge-debugmode',
@@ -134,6 +136,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-api-network',
@@ -180,6 +183,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $expected_absent = array(
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-origin-url',
       'edit-govcms-akamai-fast-purge-credentials-path',
       'edit-govcms-akamai-fast-purge-encryption-check',
@@ -234,6 +238,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
@@ -265,6 +270,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
     $this->drupalGet('admin/config/services/akamai-fast-purge');
     $this->assertField('edit-govcms-akamai-purge-path', 'Found path purge field.');
     $this->assertField('edit-govcms-akamai-purge-path-button', 'Found path purge field button.');
+    $this->assertNoField('edit-govcms-akamai-purge-all-button', 'Did not find whole of site akamai cache clear button.');
 
     $this->assertNoText(t('Access denied'), 'Access denied message was not found.');
   }
@@ -289,6 +295,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
       // Purge path should not be available until debugging mode is switched on.
       'edit-govcms-akamai-purge-path',
       'edit-govcms-akamai-purge-path-button',
+      'edit-govcms-akamai-purge-all-button',
       'edit-govcms-akamai-fast-purge-passcode',
       'edit-govcms-akamai-fast-purge-encryption-type',
       'edit-govcms-akamai-fast-purge-encryption-check',
