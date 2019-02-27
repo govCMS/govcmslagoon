@@ -48,4 +48,5 @@ function govcms_akamai_fast_purge_uninstall() {
   variable_del('govcms_akamai_fast_purge_encryption_check');
   variable_del('govcms_akamai_origin_url');
   variable_del('govcms_akamai_purge_path');
+  variable_del('govcms_akamai_fast_purge_endpoint_envvarname');
 }
