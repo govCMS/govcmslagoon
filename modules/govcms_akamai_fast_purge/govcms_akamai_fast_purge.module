@@ -10,9 +10,25 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\ClientException;
 
-define('GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE', "govcms_akamai_fast_purge");
 define('GOVCMS_AKAMAI_FAST_PURGE_GAFP_API_VERSION', 'v3');
 
+/**
+ * Watchdog API function.
+ *
+ * @param bool $priority
+ *   The logging level the message is applicable to.
+ * @param string $message
+ *   The message to send to watchdog.
+ */
+function _govcms_akamai_fast_purge_watchdog($priority, $message) {
+  if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= $priority) {
+    global $user;
+    $user_name = (isset($user->name)) ? $user->name : 'undefined';
+    $user_uid = (isset($user->uid)) ? $user->uid : 'undefined';
+    $message = "Akamai: {$user_name} ({$user_uid}) submitted watchdog message via govcms_akamai_fast_purge.\n {$message}";
+    watchdog('govcms_akamai_fast_purge', $message);
+  }
+}
 /**
  * Decrypts the variable value.
  *
@@ -490,9 +506,7 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
       if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
         global $base_url;
         $custom_path = variable_get('govcms_akamai_origin_url', $base_url) . "/{$custom_path}";
-        if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-          watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Manual purge requested of "@path"', ['@path' => $custom_path]);
-        }
+        _govcms_akamai_fast_purge_watchdog(2, "Manual purge requested of '{$custom_path}'");
         _govcms_akamai_fast_purge_trigger($custom_path);
       }
       else {
@@ -510,9 +524,7 @@ function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
     if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
       global $base_url;
       $custom_path = variable_get('govcms_akamai_origin_url', $base_url);
-      if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-        watchdog(GAFP_WATCHDOG_TYPE, 'Manual purge for entire website requested for "@path"', ['@path' => $custom_path]);
-      }
+      _govcms_akamai_fast_purge_watchdog(2, "Manual purge for entire website requested for '{$custom_path}'");
       _govcms_akamai_fast_purge_trigger($custom_path);
     }
     else {
@@ -663,9 +675,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
     $target = $file;
   }
 
-  if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 1) {
-    watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Purging Url: @file', ['@file' => $target]);
-  }
+  _govcms_akamai_fast_purge_watchdog(1, "Purging Url: '{$target}'");
 
   if (FALSE === _govcms_akamai_fast_purge_detect_edgerc_env() && count(_govcms_akamai_fast_purge_process_edgerc()) != 1 && FALSE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
     drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
@@ -725,18 +735,14 @@ function _govcms_akamai_fast_purge_api_call($file) {
     /** @var \GuzzleHttp\Psr7\Response $response */
     $response = $client->request('POST', $api_request_url, $api_request_options);
     $responseContent = $response->getBody()->getContents();
-    if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Request Completed - Full response: @response', ['@response' => $responseContent]);
-    }
+    _govcms_akamai_fast_purge_watchdog(2, "Request Completed - Full response: '{$responseContent}'");
     return TRUE;
   }
   catch (ClientException $e) {
     $responseContent = $e->getResponse()->getBody()->getContents();
-    if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 2) {
-      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, 'Request Failed: @err_msg | Full response: @response', ['@err_msg' => $e->getMessage(), '@response' => $responseContent], WATCHDOG_ERROR);
-    }
-    return FALSE;
+    _govcms_akamai_fast_purge_watchdog(2, "Request Failed: @err_msg | Full response: '{$responseContent}'");
   }
+  return FALSE;
 }
 
 /**
@@ -760,11 +766,12 @@ function _govcms_akamai_fast_purge_get_request_handler(Client $client) {
 
     // Print out the headers.
     foreach ($request->getHeaders() as $name => $values) {
-      $message_vars['@headers'] .= $name . ': ' . implode(', ', $values) . "; ";
+      if ($name != 'Host') {
+        $message_vars['@headers'] .= $name . ': ' . implode(', ', $values) . "; ";
+      }
     }
-    if ((int) variable_get('govcms_akamai_fast_purge_loglevel', 0) >= 1) {
-      watchdog(GOVCMS_AKAMAI_FAST_PURGE_GAFP_WATCHDOG_TYPE, $message, $message_vars);
-    }
+    $message_output = (string) implode(', ', $message_vars);
+    _govcms_akamai_fast_purge_watchdog(1, "{$message} {$message_output}");
   });
 
   return $tapMiddleware($clientHandler);
