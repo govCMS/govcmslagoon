@@ -74,7 +74,7 @@ function govcms_akamai_fast_purge_callback() {
         $config = (_govcms_akamai_fast_purge_detect_edgerc_env()) ? 'Configuration detected' : 'No configuration detected';
         $edgerc = (_govcms_akamai_fast_purge_detect_edgerc_file(getenv('HOME') . '/.edgerc')) ? 'Configuration file detected' : 'No configuration file detected';
         $section = variable_get('govcms_akamai_purge_section', 'default');
-        $network = (variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
+        $network = ((int) variable_get('govcms_akamai_fast_purge_api_network', 0) === 0) ? 'staging' : 'production';
         $extensions = implode(', ', _govcms_akamai_get_configured_extensions());
         $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
         $logging = variable_get('govcms_akamai_fast_purge_loglevel', 0);
