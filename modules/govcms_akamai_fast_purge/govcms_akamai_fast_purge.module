@@ -283,11 +283,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#type' => 'submit',
     '#default_value' => t('Purge all'),
     '#disabled' => (!govcms_akamai_fast_purge_is_production() && user_access('site akamai cache purge')),
-    '#submit' => ['govcms_akamai_fast_purge_button_handler'],
-    '#ajax' => [
-      'callback' => 'govcms_akamai_fast_purge_button_callback',
-      'wrapper' => 'js-ajax-elements-wrapper',
-    ],
   );
 
   $form['advanced']['api']['fieldset'] = array(
