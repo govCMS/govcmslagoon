@@ -675,6 +675,15 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
 
     }
   }
+
+  // If encryption is used, we need to reallocate our host.
+  if ("" != variable_get('govcms_akamai_fast_purge_passcode', '') && "" != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
+    $host = getenv(variable_get('govcms_akamai_fast_purge_endpoint_envvarname', '...'));
+    if (_govcms_akamai_fast_purge_decrypt_check_endpoint($host, $method, $passcode)) {
+      _govcms_akamai_fast_purge_decrypt($host, $method, $passcode);
+      $credentials[$section]['host'] = $host;
+    }
+  }
   return $credentials;
 }
 
