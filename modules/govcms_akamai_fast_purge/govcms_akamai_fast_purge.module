@@ -29,6 +29,7 @@ function _govcms_akamai_fast_purge_watchdog($priority, $message) {
     watchdog('govcms_akamai_fast_purge', $message);
   }
 }
+
 /**
  * Decrypts the variable value.
  *
