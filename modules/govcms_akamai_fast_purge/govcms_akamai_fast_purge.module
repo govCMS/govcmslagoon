@@ -74,6 +74,25 @@ function _govcms_akamai_fast_purge_decrypt_check() {
 }
 
 /**
+ * Checks if the endpoint is encrypted.
+ *
+ * @param string data
+ *   The data to be decrypted.
+ * @param string $method
+ *   The encryption method originally used to encrypt the data.
+ * @param string $passcode
+ *   The passcode used to encrypt the data.
+ *
+ * @return bool
+ *   A boolean to show the contents of the encrypted value is valid.
+ */
+function _govcms_akamai_fast_purge_decrypt_check_endpoint($data, $method, $passcode) {
+  $copy = $data;
+  _govcms_akamai_fast_purge_decrypt($copy, $method, $passcode);
+  return checkdnsrr($copy);
+}
+
+/**
  * Implements hook_permission().
  */
 function govcms_akamai_fast_purge_permission() {
@@ -349,6 +368,16 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('akamai edgerc config check access'),
   );
 
+  $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_endpoint_envvarname'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Endpoint'),
+    '#default_value' => variable_get('govcms_akamai_fast_purge_endpoint_envvarname', 'EDGERC_HOST'),
+    '#size' => 40,
+    '#maxlength' => 256,
+    '#description' => t('The location of the Akamai endpoint.'),
+    '#access' => user_access('akamai edgerc config check access'),
+  );
+
   $form['advanced']['env']['fieldset']['govcms_akamai_fast_purge_credentials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Validation'),
@@ -394,13 +423,27 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   );
 
   if ('' != variable_get('govcms_akamai_fast_purge_passcode', '') && '' != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
-    $data = getenv(variable_get('govcms_akamai_fast_purge_credentials_envvarname', 'EDGERC'));
     $passcode = variable_get('govcms_akamai_fast_purge_passcode', '');
     $method = variable_get('govcms_akamai_fast_purge_encryption_type', '');
+
+    $data = getenv(variable_get('govcms_akamai_fast_purge_endpoint_envvarname', 'EDGERC_HOST'));
+    $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_endpoint_encryption_check'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Endpoint encryption validation'),
+      '#default_value' => (_govcms_akamai_fast_purge_decrypt_check_endpoint($data, $method, $passcode)) ? 'Encrypted value is valid.' : 'Invalid',
+      '#size' => 40,
+      '#maxlength' => 256,
+      '#description' => t('This field will attempt to validate if the format of the data which is encrypted.<br />This will not provide specifics as to why validation failed.'),
+      '#required' => TRUE,
+      '#disabled' => TRUE,
+      '#access' => user_access('akamai edgerc config check access'),
+    );
+
+    $data = getenv(variable_get('govcms_akamai_fast_purge_credentials_envvarname', 'EDGERC'));
     $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
       '#type' => 'textfield',
       '#title' => t('Encryption validation'),
-      '#default_value' => (_govcms_akamai_fast_purge_decrypt_check($data, $method, $passcode)) ? 'Encrypted data is valid.' : 'Invalid',
+      '#default_value' => (_govcms_akamai_fast_purge_decrypt_check()) ? 'Encrypted data is valid.' : 'Invalid',
       '#size' => 40,
       '#maxlength' => 256,
       '#description' => t('This field will attempt to validate if the format of the data which is encrypted.<br />This will not provide specifics as to why validation failed.'),
