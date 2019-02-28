@@ -577,7 +577,7 @@ function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
  * Purge button callback for the custom purge path.
  */
 function govcms_akamai_fast_purge_button_callback($form, &$form_state) {
-  return $form['purge_fieldset'];
+  return $form['onetime']['purge_fieldset'];
 }
 
 /**
