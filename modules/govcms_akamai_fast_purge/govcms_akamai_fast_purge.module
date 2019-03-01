@@ -739,8 +739,8 @@ function _govcms_akamai_fast_purge_trigger($file) {
 /**
  * Make the API call to Akamai Purge.
  *
- * @param string $file
- *   Resolved URL to target/file.
+ * @param string $object
+ *   Resolved URL to target/object.
  *
  * @return bool
  *   The true/false value of the success of the API call.
@@ -748,7 +748,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
  * @see https://github.com/akamai/AkamaiOPEN-edgegrid-php-client
  * @see https://developer.akamai.com/api/purge/ccu/resources.html
  */
-function _govcms_akamai_fast_purge_api_call($file) {
+function _govcms_akamai_fast_purge_api_call($object, $cpcode_clear = FALSE) {
   $credentials = _govcms_akamai_fast_purge_process_edgerc();
   $section = variable_get('govcms_akamai_purge_section', 'default');
   require __DIR__ . '/vendor/autoload.php';
@@ -773,7 +773,7 @@ function _govcms_akamai_fast_purge_api_call($file) {
   $api_request_options = [
     'json' => [
       'objects' => [
-        $file,
+        $object,
       ],
     ],
     'handler' => _govcms_akamai_fast_purge_get_request_handler($client),
