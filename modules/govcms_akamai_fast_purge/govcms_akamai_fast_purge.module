@@ -437,7 +437,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
       '#access' => user_access('akamai edgerc config check access'),
     );
 
-    $data = getenv(variable_get('govcms_akamai_fast_purge_credentials_envvarname', 'EDGERC'));
     $form['advanced']['env']['fieldset']['encryption']['fieldset']['govcms_akamai_fast_purge_encryption_check'] = array(
       '#type' => 'textfield',
       '#title' => t('Encryption validation'),
