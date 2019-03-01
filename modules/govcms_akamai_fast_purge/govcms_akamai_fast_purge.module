@@ -791,6 +791,7 @@ function _govcms_akamai_fast_purge_api_call($object, $cpcode_clear = FALSE) {
     $responseContent = $e->getResponse()->getBody()->getContents();
     $responseContent = str_replace($object, 'REDACTED', $responseContent);
     _govcms_akamai_fast_purge_watchdog(2, "Request Failed: @err_msg | Full response: '{$responseContent}'");
+    drupal_set_message("Akamai purge failed: Response code {$e->getResponse()->getStatusCode()}, Reason: {$e->getResponse()->getReasonPhrase()}");
   }
   return FALSE;
 }
