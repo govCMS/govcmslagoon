@@ -71,7 +71,7 @@ function _govcms_akamai_fast_purge_decrypt(&$data, $method, $passcode) {
 function _govcms_akamai_fast_purge_decrypt_check() {
   $section = variable_get('govcms_akamai_purge_section', 'default');
   $creds = _govcms_akamai_fast_purge_process_edgerc();
-  return (isset($creds[$section]['host']) && isset($creds[$section]['access_token']) && isset($creds[$section]['client_token']) && isset($creds[$section]['client_secret']));
+  return (isset($creds[$section]['access_token']) && isset($creds[$section]['client_token']) && isset($creds[$section]['client_secret']));
 }
 
 /**
