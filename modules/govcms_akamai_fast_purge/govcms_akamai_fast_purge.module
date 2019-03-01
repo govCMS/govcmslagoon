@@ -287,6 +287,11 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#access' => user_access('manual akamai cache purge'),
     '#disabled' => !govcms_akamai_fast_purge_is_production(),
   );
+  // If the site-wide purging is an option, we should inform people how to use it successfully.
+  if (user_access('site akamai cache purge')) {
+    $form['onetime']['purge_fieldset']['govcms_akamai_purge_path']['#description'] .= '<br />If you are doing a site-wide purge, please enter your cpcode instead of the relative paths.';
+  }
+
 
   $form['onetime']['purge_fieldset']['govcms_akamai_purge_path_button'] = array(
     '#type' => 'submit',
@@ -560,10 +565,14 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
 function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
   if (user_access('site akamai cache purge')) {
     if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file( variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
-      global $base_url;
-      $custom_path = variable_get('govcms_akamai_origin_url', $base_url);
-      _govcms_akamai_fast_purge_watchdog(2, "Manual purge for entire website requested for '{$custom_path}'");
-      _govcms_akamai_fast_purge_trigger($custom_path);
+      if (isset($form_state['values']['govcms_akamai_purge_path'])) {
+        $cpcode = (int) $form_state['values']['govcms_akamai_purge_path'];
+        _govcms_akamai_fast_purge_watchdog(2, "Manual purge for entire website requested for '{$cpcode}'");
+        $result = _govcms_akamai_fast_purge_trigger($cpcode, TRUE);
+        if (TRUE === $result) {
+          drupal_set_message('All Akamai caches have been successfully cleared', 'status');
+        }
+      }
     }
     else {
       drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
@@ -670,7 +679,13 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
   // If encryption is used, we need to reallocate our host.
   if ("" != variable_get('govcms_akamai_fast_purge_passcode', '') && "" != variable_get('govcms_akamai_fast_purge_encryption_type', '')) {
     $host = getenv(variable_get('govcms_akamai_fast_purge_endpoint_envvarname', '...'));
-    if (isset($credentials['host']) && TRUE === _govcms_akamai_fast_purge_decrypt_check_endpoint($host)) {
+    if (!isset($method)) {
+      $method = variable_get('govcms_akamai_fast_purge_encryption_type', '...');
+    }
+    if (!isset($passcode)) {
+      $passcode = variable_get('govcms_akamai_fast_purge_passcode', '...');
+    }
+    if (!isset($credentials['host']) && TRUE === _govcms_akamai_fast_purge_decrypt_check_endpoint($host, $method, $passcode)) {
       _govcms_akamai_fast_purge_decrypt($host, $method, $passcode);
       $credentials[$section]['host'] = $host;
     }
@@ -684,11 +699,15 @@ function _govcms_akamai_fast_purge_process_edgerc($config = NULL) {
  * @param mixed $file
  *   The file object to be purged, or a string
  *   representing the (relative) URL/URI to the path/file.
+ * @param bool $cpcode_clear
+ *   Tell the API to clear the CP code instead of a URL.
+ *   True will indicate this should happen and it will
+ *   default to FALSE.
  *
  * @return bool
  *   The responding value to the success of the API call.
  */
-function _govcms_akamai_fast_purge_trigger($file) {
+function _govcms_akamai_fast_purge_trigger($file, $cpcode_clear = FALSE) {
   $purge_enabled = variable_get('govcms_akamai_fast_purge_enabled', TRUE);
   if (!$purge_enabled) {
     return FALSE;
@@ -723,8 +742,7 @@ function _govcms_akamai_fast_purge_trigger($file) {
   }
 
   // Make the actual API call.
-  _govcms_akamai_fast_purge_api_call($target);
-  return TRUE;
+  return _govcms_akamai_fast_purge_api_call($target, $cpcode_clear);
 }
 
 /**
@@ -732,6 +750,9 @@ function _govcms_akamai_fast_purge_trigger($file) {
  *
  * @param string $object
  *   Resolved URL to target/object.
+ * @param bool $cpcode_clear
+ *   Tell the API to clear the CP code instead of a URL.
+ *   True will indicate this should happen.
  *
  * @return bool
  *   The true/false value of the success of the API call.
@@ -759,7 +780,15 @@ function _govcms_akamai_fast_purge_api_call($object, $cpcode_clear = FALSE) {
 
   $network_selection = variable_get('govcms_akamai_fast_purge_api_network', 0);
   $api_network = ((int) $network_selection == 0) ? 'staging' : 'production';
-  $api_request_url = '/' . $section . '/' . GOVCMS_AKAMAI_FAST_PURGE_GAFP_API_VERSION . '/invalidate/url/' . $api_network;
+
+  if (TRUE === $cpcode_clear) {
+    $purge_type = "cpcode";
+  }
+  else {
+    $purge_type = "url";
+  }
+
+  $api_request_url = '/' . $section . '/' . GOVCMS_AKAMAI_FAST_PURGE_GAFP_API_VERSION . "/invalidate/{$purge_type}/" . $api_network;
 
   $api_request_options = [
     'json' => [
