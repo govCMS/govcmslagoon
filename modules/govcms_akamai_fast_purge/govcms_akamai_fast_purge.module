@@ -278,7 +278,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['onetime']['purge_fieldset']['govcms_akamai_purge_path'] = array(
     '#type' => 'textfield',
-    '#title' => t('Path'),
+    '#title' => t('Input'),
     '#placeholder' => t('sites/default/files/file.pdf'),
     '#default_value' => '',
     '#size' => 40,
