@@ -542,8 +542,11 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
       if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
         global $base_url;
         $custom_path = variable_get('govcms_akamai_origin_url', $base_url) . "/{$custom_path}";
-        _govcms_akamai_fast_purge_watchdog(2, "Manual purge requested of '{$custom_path}'");
-        _govcms_akamai_fast_purge_trigger($custom_path);
+        _govcms_akamai_fast_purge_watchdog(2, "Manual purge requested of '{$form_state['values']['govcms_akamai_purge_path']}'");
+        $result = _govcms_akamai_fast_purge_trigger($custom_path);
+        if (TRUE === $result) {
+          drupal_set_message("Akamai cache for the following URL has been invalidated: {$custom_path}", 'status');
+        }
       }
       else {
         drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
