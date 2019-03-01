@@ -293,10 +293,6 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#default_value' => t('Purge'),
     '#disabled' => !govcms_akamai_fast_purge_is_production(),
     '#submit' => ['govcms_akamai_fast_purge_button_handler'],
-    '#ajax' => [
-      'callback' => 'govcms_akamai_fast_purge_button_callback',
-      'wrapper' => 'js-ajax-elements-wrapper',
-    ],
   );
 
   $form['onetime']['purge_fieldset']['govcms_akamai_purge_all_button'] = array(
@@ -571,13 +567,6 @@ function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
       drupal_set_message('Akamai Fast Purge is enabled but no credentials have been provided.', 'warning');
     }
   }
-}
-
-/**
- * Purge button callback for the custom purge path.
- */
-function govcms_akamai_fast_purge_button_callback($form, &$form_state) {
-  return $form['onetime']['purge_fieldset'];
 }
 
 /**
