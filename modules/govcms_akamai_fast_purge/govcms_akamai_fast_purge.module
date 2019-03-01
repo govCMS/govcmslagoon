@@ -815,7 +815,7 @@ function _govcms_akamai_fast_purge_get_request_handler(Client $client) {
 
     // Print out the headers.
     foreach ($request->getHeaders() as $name => $values) {
-      if ($name != 'Host') {
+      if ($name != "Host" && $name != "Authorization") {
         $message_vars['@headers'] .= $name . ': ' . implode(', ', $values) . "; ";
       }
     }
