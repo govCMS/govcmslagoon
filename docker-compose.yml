@@ -117,6 +117,16 @@ services:
       - amazeeio-network
       - default
 
+  chrome:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.chrome
+    image: selenium/standalone-chrome
+    shm_size: '1gb'
+    depends_on:
+      - test
+    << : *default-volumes
+
 networks:
   amazeeio-network:
     external: true
