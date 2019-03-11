@@ -1,7 +1,8 @@
 ARG CLI_IMAGE
+ARG LAGOON_IMAGE_VERSION
 FROM ${CLI_IMAGE} as cli
 
-FROM amazeeio/solr:6.6-drupal
+FROM amazeeio/solr:6.6-drupal-${LAGOON_IMAGE_VERSION}
 COPY --from=cli /app/profiles/govcms/modules/contrib/search_api_solr/solr-conf/6.x/ /solr-conf/conf/
 
 USER root

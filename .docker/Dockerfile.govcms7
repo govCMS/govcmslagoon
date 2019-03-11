@@ -1,6 +1,8 @@
-FROM amazeeio/php:7.1-cli-drupal as builder
+ARG LAGOON_IMAGE_VERSION
+ARG PHP_IMAGE_VERSION
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION} as builder
 
-ENV GOVCMS_PROJECT_VERSION=7.x-3.x
+ENV GOVCMS_PROJECT_VERSION=7.x-3.4
 
 RUN rm -rf /app \
     && mkdir /src \
@@ -16,17 +18,10 @@ RUN rm -rf /app \
         echo "projects[govcms][download][url] = https://github.com/govCMS/govCMS.git"; \
         echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
     } | tee -a "/src/build-govcms.make" \
-    && drush make /src/build-govcms.make /app --contrib-destination
+    && drush make /src/build-govcms.make /app --contrib-destination \
+    && echo "version = \"$GOVCMS_PROJECT_VERSION\"" >> /app/profiles/govcms/govcms.info
 
-FROM amazeeio/php:7.1-cli-drupal
-
-# Temporary override until lagoon PR is available in upstream image.
-# https://github.com/amazeeio/lagoon/issues/787
-ENV PHP_MAX_INPUT_VARS=2000
-
-RUN apk add gmp gmp-dev \
-    && docker-php-ext-install gmp \
-    && docker-php-ext-configure gmp
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION}
 
 COPY --from=builder /app /app
 COPY .docker/sanitize.sh /app/sanitize.sh
@@ -49,6 +44,9 @@ RUN apk add python \
     && fix-permissions /home/.drush \
     && chmod +x /app/sanitize.sh \
     && /app/sanitize.sh
+
+# Ensure tmp folder always exists.
+RUN mkdir -p /app/sites/default/files/private/tmp/
 
 COPY modules/ /app/sites/all/modules/
 
