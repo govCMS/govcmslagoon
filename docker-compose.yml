@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: $PWD/.docker/Dockerfile.govcms7
       args:
-        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
     << : *default-volumes
@@ -31,7 +31,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.test
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test
     << : *default-volumes
@@ -62,7 +62,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.php
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php
     environment:
@@ -96,7 +96,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.solr
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/solr
     ports:
       - "8983" # Find port on host with `docker-compose port solr 8983`

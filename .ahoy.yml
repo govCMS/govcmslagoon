@@ -50,6 +50,24 @@ commands:
     usage: Login to a website.
     cmd: docker-compose exec -T test drush uli "$@"
 
+  lint:
+    usage: Lint code
+    cmd: docker-compose exec test lint-govcms
+
+  test:
+    usage: Run all tests.
+    cmd: |
+      ahoy test-phpunit
+      ahoy test-behat
+
+  test-behat:
+    usage: Run Behat tests.
+    cmd: docker-compose exec test behat "$@"
+
+  test-phpunit:
+    usage: Run PHPUnit tests.
+    cmd: docker-compose exec test phpunit "$@"
+
   pull:
     usage: Pull latest docker images.
     cmd: docker image ls --format \"{{.Repository}}:{{.Tag}}\" | grep govcmsdev/ | grep -v none | xargs -n1 docker pull | cat
