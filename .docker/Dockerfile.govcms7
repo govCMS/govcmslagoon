@@ -2,7 +2,7 @@ ARG LAGOON_IMAGE_VERSION
 ARG PHP_IMAGE_VERSION
 FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION} as builder
 
-ENV GOVCMS_PROJECT_VERSION=7.x-3.4
+ENV GOVCMS_PROJECT_VERSION=release/7.x-3.5
 
 RUN rm -rf /app \
     && mkdir /src \
