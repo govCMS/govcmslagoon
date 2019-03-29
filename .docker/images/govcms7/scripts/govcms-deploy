@@ -39,6 +39,7 @@ fi
 
 # All valid environments.
 if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
+  drush rr
   drush updb -y
   drush cc all
 fi
