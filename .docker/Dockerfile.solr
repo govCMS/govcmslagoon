@@ -1,5 +1,4 @@
 ARG CLI_IMAGE
-ARG LAGOON_IMAGE_VERSION
 FROM ${CLI_IMAGE} as cli
 
 FROM amazeeio/solr:6.6
