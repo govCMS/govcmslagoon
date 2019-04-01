@@ -34,6 +34,7 @@ services:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION_PHP}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
+        SITE_AUDIT_VERSION: ${SITE_AUDIT_VERSION:-7.x-3.x}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test
     << : *default-volumes
     depends_on:
