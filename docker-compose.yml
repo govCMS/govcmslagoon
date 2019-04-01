@@ -8,7 +8,7 @@ x-volumes:
 
 x-environment:
   &default-environment
-    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcms-lagoon.docker.amazee.io}
+    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
     X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
 
 services:
@@ -17,21 +17,12 @@ services:
     build:
       context: .
       dockerfile: $PWD/.docker/Dockerfile.govcms7
+      args:
+        GOVCMS_PROJECT_VERSION: ${GOVCMS_PROJECT_VERSION:-7.x-3.x}
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION_PHP}
+        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
     << : *default-volumes
-    environment:
-      << : *default-environment
-
-  acsf:
-    build:
-      context: .
-      dockerfile: $PWD/.docker/Dockerfile.acsf
-      args:
-        CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/acsf
-    << : *default-volumes
-    depends_on:
-      - cli
     environment:
       << : *default-environment
 
@@ -41,6 +32,9 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.test
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION_PHP}
+        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
+        SITE_AUDIT_VERSION: ${SITE_AUDIT_VERSION:-7.x-3.x}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test
     << : *default-volumes
     depends_on:
@@ -54,6 +48,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.nginx-drupal
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/nginx-drupal
     << : *default-volumes
     environment:
@@ -69,6 +64,8 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.php
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION_PHP}
+        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php
     environment:
       << : *default-environment
@@ -77,6 +74,8 @@ services:
     build:
       context: .
       dockerfile: $PWD/.docker/Dockerfile.mariadb-drupal
+      args:
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/mariadb-drupal
     ports:
       - "3306" # Find port on host with `docker-compose port mariadb 3306`
@@ -87,6 +86,8 @@ services:
     build:
       context: .
       dockerfile: $PWD/.docker/Dockerfile.redis
+      args:
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/redis
     environment:
       << : *default-environment
@@ -107,6 +108,8 @@ services:
     build:
       context: .
       dockerfile: $PWD/.docker/Dockerfile.varnish-drupal
+      args:
+        LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/varnish-drupal
     environment:
       << : *default-environment
@@ -114,6 +117,16 @@ services:
     networks:
       - amazeeio-network
       - default
+
+  chrome:
+    build:
+      context: .
+      dockerfile: $PWD/.docker/Dockerfile.chrome
+    image: selenium/standalone-chrome
+    shm_size: '1gb'
+    depends_on:
+      - test
+    << : *default-volumes
 
 networks:
   amazeeio-network:

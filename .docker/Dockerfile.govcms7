@@ -1,9 +1,29 @@
-FROM govcmsdev/govcms7:3.4
+ARG LAGOON_IMAGE_VERSION_PHP
+ARG PHP_IMAGE_VERSION
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal${LAGOON_IMAGE_VERSION_PHP} as builder
 
-# Temporary override until lagoon PR is available in upstream image.
-# https://github.com/amazeeio/lagoon/issues/787
-ENV PHP_MAX_INPUT_VARS=2000
+ARG GOVCMS_PROJECT_VERSION
 
+RUN rm -rf /app \
+    && mkdir /src \
+    && cd /src \
+    && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
+    && wget https://raw.githubusercontent.com/govCMS/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
+    && { \
+        echo "core = 7.x"; \
+        echo "api = 2"; \
+        echo "includes[] = drupal-org-core.make"; \
+        echo "projects[govcms][type] = profile"; \
+        echo "projects[govcms][download][type] = git"; \
+        echo "projects[govcms][download][url] = https://github.com/govCMS/govCMS.git"; \
+        echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
+    } | tee -a "/src/build-govcms.make" \
+    && drush make /src/build-govcms.make /app --contrib-destination \
+    && echo "version = \"$GOVCMS_PROJECT_VERSION\"" >> /app/profiles/govcms/govcms.info
+
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal${LAGOON_IMAGE_VERSION_PHP}
+
+COPY --from=builder /app /app
 COPY .docker/sanitize.sh /app/sanitize.sh
 
 COPY .docker/images/govcms7/scripts /usr/bin/
@@ -12,6 +32,7 @@ COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 RUN apk add python \
     && apk del mysql-client \
     && apk add --no-cache "mariadb-client=10.2.22-r0" --repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main/ \
+    && drush @none dl registry_rebuild-7.x \
     && drush dl --destination=sites/all/modules/contrib -y \
     fast_404 \
     lagoon_logs \
@@ -24,6 +45,9 @@ RUN apk add python \
     && fix-permissions /home/.drush \
     && chmod +x /app/sanitize.sh \
     && /app/sanitize.sh
+
+# Ensure tmp folder always exists.
+RUN mkdir -p /app/sites/default/files/private/tmp/
 
 COPY modules/ /app/sites/all/modules/
 

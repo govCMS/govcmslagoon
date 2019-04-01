@@ -1,1 +1,2 @@
-FROM govcmsdev/mariadb-drupal:3.4
+ARG LAGOON_IMAGE_VERSION
+FROM amazeeio/mariadb-drupal:${LAGOON_IMAGE_VERSION}
