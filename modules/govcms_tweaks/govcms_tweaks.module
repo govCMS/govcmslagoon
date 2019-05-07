@@ -20,12 +20,13 @@
  * @param $vbo
  */
 function govcms_tweaks_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
-      global $user;
-  $isAdminPeoplePage = strpos($_GET['q'], 'admin/people') === 0;
-  $isAdmin = $user->uid === '1';
-  $isVboForm = $form_state['step'] === 'views_form_views_form';
-  if ($isAdminPeoplePage && !$isAdmin && $isVboForm) {
-    unset($form['select']['operation']['#options']['action::views_bulk_operations_user_roles_action']);
-    unset($form['select']['operation']['#options']['action::views_bulk_operations_modify_action']);
-  }
+    global $user;
+
+    $isAdminPeoplePage = strpos($_GET['q'], 'admin/people') === 0;
+    $isAdmin = $user->uid === '1';
+    $isVboForm = $form_state['step'] === 'views_form_views_form';
+    if ($isAdminPeoplePage && !$isAdmin && $isVboForm) {
+        unset($form['select']['operation']['#options']['action::views_bulk_operations_user_roles_action']);
+        unset($form['select']['operation']['#options']['action::views_bulk_operations_modify_action']);
+    }
 }

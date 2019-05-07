@@ -9,8 +9,8 @@
  * Implements hook_install().
  */
 function govcms_tweaks_install() {
-  // Sets the mode to CLAMAV_USE_EXECUTABLE as recommended on
-  // https://docs.acquia.com/cloud/configure/antivirus
-  variable_set('clamav_mode', 1);
+    // Sets the mode to CLAMAV_USE_EXECUTABLE as recommended on
+    // https://docs.acquia.com/cloud/configure/antivirus
+    variable_set('clamav_mode', 1);
 }
 
