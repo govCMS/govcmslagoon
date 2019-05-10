@@ -114,10 +114,25 @@ function govcms_akamai_fast_purge_permission() {
       'title' => t('Submit path for purging'),
       'description' => t('Allow access to submit a path to clear from Akamai\'s cache'),
     ),
+    'manual akamai cache purge (complete site)' => array(
+      'title' => t('Submit website for purging'),
+      'description' => t('Allow access to submit a path to clear from Akamai\'s cache'),
+    ),
     'site akamai cache purge' => array(
       'title' => t('Clear all Akamai cache.'),
       'description' => t('Submit a request to clear Akamai cache for the entire website.'),
     ),
+  );
+}
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ * @inheritDoc
+ */
+function govcms_akamai_fast_purge_paranoia_hide_permissions() {
+  return array(
+    'administer advanced akamai settings',
+    'manual akamai cache purge (complete site)',
   );
 }
 
@@ -288,10 +303,9 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#disabled' => !govcms_akamai_fast_purge_is_production(),
   );
   // If the site-wide purging is an option, we should inform people how to use it successfully.
-  if (user_access('site akamai cache purge')) {
+  if (user_access('site akamai cache purge') && user_access('manual akamai cache purge (complete site)')) {
     $form['onetime']['purge_fieldset']['govcms_akamai_purge_path']['#description'] .= '<br />If you are doing a site-wide purge, please enter your cpcode instead of the relative paths.';
   }
-
 
   $form['onetime']['purge_fieldset']['govcms_akamai_purge_path_button'] = array(
     '#type' => 'submit',
@@ -303,7 +317,8 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   $form['onetime']['purge_fieldset']['govcms_akamai_purge_all_button'] = array(
     '#type' => 'submit',
     '#default_value' => t('Purge all'),
-    '#disabled' => (!govcms_akamai_fast_purge_is_production() && user_access('site akamai cache purge')),
+    '#disabled' => (!govcms_akamai_fast_purge_is_production() && user_access('site akamai cache purge') && !user_access('manual akamai cache purge (complete site)')),
+    '#access' => user_access('manual akamai cache purge (complete site)'),
     '#submit' => ['govcms_akamai_fast_purge_all_button_handler'],
   );
 
