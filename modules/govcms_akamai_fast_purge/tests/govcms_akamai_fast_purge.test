@@ -279,7 +279,7 @@ class AkamaiConfigTestCase extends DrupalWebTestCase {
    * Test permissions for whole site purge button.
    */
   public function testPermissionFive() {
-    $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'site akamai cache purge', 'administer akamai configuration'));
+    $new_user = $this->drupalCreateUser(array('manual akamai cache purge', 'manual akamai cache purge (complete site)', 'administer akamai configuration'));
     $this->drupalLogin($new_user);
     $this->drupalGet('admin/config/services/akamai-fast-purge');
 
