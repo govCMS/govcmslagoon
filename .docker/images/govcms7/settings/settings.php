@@ -169,6 +169,14 @@ $conf['drupal_http_request_fails'] = FALSE;
 $conf['clamav_mode'] = 1;
 $conf['clamav_executable_path'] = '/usr/bin/clamscan';
 
+// Configure environment indicator.
+$conf['environment_indicator_overwrite'] = TRUE;
+$conf['environment_indicator_overwritten_color'] = '#FFA500';
+$conf['environment_indicator_overwritten_name'] = 'Branch Development';
+if (getenv('LOCALDEV_URL') !== FALSE) {
+  $conf['environment_indicator_overwritten_name'] = 'Local Development';
+}
+
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
   include __DIR__ . '/all.settings.php';
