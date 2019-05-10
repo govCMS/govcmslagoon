@@ -126,6 +126,17 @@ function govcms_akamai_fast_purge_permission() {
 }
 
 /**
+ * Implements hook_paranoia_hide_permissions().
+ * @inheritDoc
+ */
+function govcms_akamai_fast_purge_paranoia_hide_permissions() {
+  return array(
+    'administer advanced akamai settings',
+    'manual akamai cache purge (complete site)',
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function govcms_akamai_fast_purge_menu() {
