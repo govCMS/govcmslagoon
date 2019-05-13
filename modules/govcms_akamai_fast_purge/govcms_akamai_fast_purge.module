@@ -364,6 +364,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['advanced']['env']['fieldset'] = array(
     '#title' => 'Environment Variable',
+    '#access' => user_access('administer advanced akamai settings'),
     '#description' => t('Configuration and validation of the environment variable and its optional encryption.'),
     '#type' => 'fieldset',
     '#prefix' => '<div id="encr-elements-wrapper">',
@@ -468,6 +469,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['advanced']['file']['fieldset'] = array(
     '#title' => '.edgerc file',
+    '#access' => user_access('administer advanced akamai settings'),
     '#description' => t('.edgerc file path configuration and validation'),
     '#type' => 'fieldset',
     '#prefix' => '<div id="ficr-elements-wrapper">',
@@ -499,6 +501,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
 
   $form['advanced']['debug']['fieldset'] = array(
     '#title' => 'Debugging',
+    '#access' => user_access('administer advanced akamai settings'),
     '#description' => t('Debugging features'),
     '#type' => 'fieldset',
     '#prefix' => '<div id="debug-elements-wrapper">',
