@@ -29,7 +29,8 @@ COPY .docker/sanitize.sh /app/sanitize.sh
 COPY .docker/images/govcms7/scripts /usr/bin/
 COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 
-RUN apk add python \
+# findutils can be removed after amazeeio/lagoon PR1077
+RUN apk add --no-cache python findutils \
     && drush @none dl registry_rebuild-7.x \
     && drush dl --destination=sites/all/modules/contrib -y \
     fast_404-7.x-1.5 \
