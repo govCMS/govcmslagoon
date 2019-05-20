@@ -30,8 +30,6 @@ COPY .docker/images/govcms7/scripts /usr/bin/
 COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 
 RUN apk add python \
-    && apk del mysql-client \
-    && apk add --no-cache "mariadb-client=10.2.22-r0" --repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main/ \
     && drush @none dl registry_rebuild-7.x \
     && drush dl --destination=sites/all/modules/contrib -y \
     fast_404-7.x-1.5 \
