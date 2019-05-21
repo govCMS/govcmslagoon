@@ -29,15 +29,14 @@ COPY .docker/sanitize.sh /app/sanitize.sh
 COPY .docker/images/govcms7/scripts /usr/bin/
 COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 
-RUN apk add python \
-    && apk del mysql-client \
-    && apk add --no-cache "mariadb-client=10.2.22-r0" --repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main/ \
+# findutils can be removed after amazeeio/lagoon PR1077
+RUN apk add --no-cache python findutils \
     && drush @none dl registry_rebuild-7.x \
     && drush dl --destination=sites/all/modules/contrib -y \
-    fast_404 \
-    lagoon_logs \
-    redis \
-    stage_file_proxy \
+    fast_404-7.x-1.5 \
+    lagoon_logs-7.x-1.0 \
+    redis-7.x-3.17 \
+    stage_file_proxy-7.x-1.9 \
     && wget https://www.drupal.org/files/issues/drupal-500_exception_on_exception-12221055-6.patch \
     && patch -p1 < drupal-500_exception_on_exception-12221055-6.patch \
     && rm drupal-500_exception_on_exception-12221055-6.patch \
