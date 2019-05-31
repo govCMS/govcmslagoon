@@ -51,3 +51,4 @@ RUN mkdir -p /app/sites/default/files/private/tmp/
 COPY modules/ /app/sites/all/modules/
 
 COPY .docker/images/govcms7/settings/ /app/sites/default/
+RUN chmod 444 /app/sites/default/settings.php
