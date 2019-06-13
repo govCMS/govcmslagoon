@@ -165,10 +165,12 @@ if (getenv('LAGOON')) {
 // Disable HTTP request status check in docker.
 $conf['drupal_http_request_fails'] = FALSE;
 
-// ClamAV configuration.
-$conf['clamav_mode'] = 0;
-$conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
-$conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;
+if (getenv('LAGOON')) {
+  // ClamAV configuration.
+  $conf['clamav_mode'] = 0;
+  $conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
+  $conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;
+}
 
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
