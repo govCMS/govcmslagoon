@@ -176,6 +176,11 @@ if (getenv('LAGOON')) {
     $conf['clamav_mode'] = 1;
     $conf['clamav_executable_path'] = '/usr/bin/clamscan';
   }
+
+  $env = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'local';
+  if ($env === 'local') {
+    $conf['clamav_enabled'] = 0;
+  }
 }
 
 // Loading settings for all environment types.
