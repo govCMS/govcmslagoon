@@ -3,8 +3,7 @@ version: '2.3'
 x-volumes:
   &default-volumes
     volumes:
-      - ./modules:/app/profiles/govcms/modules/migration:${VOLUME_FLAGS:-delegated} ### Removed automatically in CI.
-      - /app/sites/default/files
+      - ./files:/app/sites/default/files:delegated
 
 x-environment:
   &default-environment
@@ -67,6 +66,7 @@ services:
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION_PHP}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.1}
     image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php
+    << : *default-volumes
     environment:
       << : *default-environment
 
