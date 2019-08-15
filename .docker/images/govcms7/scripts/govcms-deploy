@@ -30,7 +30,7 @@ if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
       # @see comments for GOVCMS_TEST_CANARY above.
       if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
         echo "GOVCMS_TEST_CANARY is set, syncing the database."
-        drush sql-sync @govcms.prod @self -y
+        drush sql-sync @govcms-prod @self -y
       fi
 
       # Enable stage file proxy.
