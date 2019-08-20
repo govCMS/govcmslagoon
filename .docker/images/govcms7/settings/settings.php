@@ -141,13 +141,34 @@ if (getenv('LAGOON')) {
 }
 
 // Redis configuration.
-if ((getenv('LAGOON'))  && (getenv('ENABLE_REDIS'))) {
-  $conf['redis_client_interface'] = 'PhpRedis';
-  $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
-  $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
-  $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
-  $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
-  $conf['cache_default_class'] = 'Redis_Cache';
+if ((getenv('LAGOON')) && (getenv('ENABLE_REDIS'))) {
+  $redis = DRUPAL_ROOT . '/sites/all/modules/contrib/redis';
+
+  if (file_exists("$redis/redis.module")) {
+    require_once "$redis/redis.module";
+    $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
+    try {
+      // Ensure that there is a connection to redis.
+      $client = Redis_Client::getClient();
+      $response = $client->ping();
+      if (!strpos($response, 'PONG')) {
+        throw new Exception('Invalid redis response.');
+      }
+      $conf['redis_client_interface'] = 'PhpRedis';
+      $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
+      $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
+      $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
+      $conf['cache_default_class'] = 'Redis_Cache';
+    } catch (\Exception $e) {
+      // Redis is not available for this request we should not configure the
+      // redis backend and ensure no cache is used. This will retry next
+      // request.
+      if (!class_exists('DrupalFakeCache')) {
+        $conf['cache_backends'][] = 'includes/cache-install.inc';
+      }
+      $conf['cache_default_class'] = 'DrupalFakeCache';
+    }
+  }
 }
 
 // Public, private and temporary files paths.
