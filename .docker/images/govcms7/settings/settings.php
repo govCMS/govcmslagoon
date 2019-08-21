@@ -187,8 +187,22 @@ if (getenv('LAGOON')) {
 $conf['drupal_http_request_fails'] = FALSE;
 
 // ClamAV configuration.
-$conf['clamav_mode'] = 1;
-$conf['clamav_executable_path'] = '/usr/bin/clamscan';
+if (getenv('LAGOON')) {
+  $clam_mode = getenv('CLAMAV_MODE') ?: 1;
+  if ($clam_mode == 0) {
+    $conf['clamav_mode'] = 0;
+    $conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
+    $conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;
+  } else {
+    $conf['clamav_mode'] = 1;
+    $conf['clamav_executable_path'] = '/usr/bin/clamscan';
+  }
+
+  $env = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'local';
+  if ($env === 'local') {
+    $conf['clamav_enabled'] = 0;
+  }
+}
 
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
