@@ -14,7 +14,6 @@ class FrameOptionsTest extends TestCase {
    */
   public function testHeaderExists() {
     $headers = \get_curl_headers("/");
-    var_dump($headers);
     $this->assertEquals('SameOrigin', $headers['X-Frame-Options']);
   }
 
