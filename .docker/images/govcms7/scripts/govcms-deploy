@@ -11,7 +11,7 @@ common_deploy () {
     drush updb -y
     
     # Non production environments.
-    if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
+    if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
         # Enable stage file proxy post db-import.
         drush en stage_file_proxy -y
     fi
