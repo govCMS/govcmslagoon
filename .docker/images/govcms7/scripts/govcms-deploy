@@ -37,14 +37,6 @@ else
 
 fi
 
-# Fix for redirect to be removed after deployment.
-# For more information, see https://github.com/govCMS/govCMS/pull/827
-# Deploying this must accompany the change from the above PR.
-if redirect=$(drush sqlq "SELECT schema_version FROM system WHERE name = 'redirect' AND schema_version = '7101';") && [ -n "${redirect}" ]; then
-  echo "Reverting schema version used by redirect to version 7100 for newer database updates.";
-  drush sql-query "UPDATE system SET schema_version = 7100 WHERE name = 'redirect';";
-fi
-
 # All valid environments.
 if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
   drush updb -y
