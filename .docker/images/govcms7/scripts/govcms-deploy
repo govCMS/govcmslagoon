@@ -13,6 +13,7 @@ GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 # Database options to configure the remote to use the read replica when
 # performing read operations.
 sync_opts=""
+query_opts=""
 read_replica_enabled () {
   if tables=$(drush @govcms-prod sqlq 'show tables; --database=read') && [ -n "$tables" ]; then
     sync_opts="--source-database=read"
@@ -52,13 +53,15 @@ if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
 # Production environments.
 else
 
-  if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
+    query_opts=[ -z "$MARIADB_HOST_READREPLICA" ] "--database=read" || ""
 
-    mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
-    drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
-  else
-    echo "Drupal not installed."
-  fi
+    if tables=$(drush sqlq 'show tables;' $query_opts) && [ -n "$tables" ]; then
+
+        mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
+        drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
+    else
+        echo "Drupal not installed."
+    fi
 
 fi
 
@@ -71,6 +74,6 @@ if redirect=$(drush sqlq "SELECT schema_version FROM system WHERE name = 'redire
 fi
 
 # All valid environments.
-if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
+if tables=$(drush sqlq 'show tables;' $query_opts) && [ -n "$tables" ]; then
   drush updb -y
 fi
