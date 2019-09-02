@@ -9,6 +9,7 @@ mkdir -p /app/sites/default/files/private/tmp/
 # Database updates, cache rebuild.
 common_deploy () {
     drush updb -y
+    drush cc all -y
     
     # Non production environments.
     if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
