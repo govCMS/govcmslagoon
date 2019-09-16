@@ -188,8 +188,8 @@ $conf['drupal_http_request_fails'] = FALSE;
 
 // ClamAV configuration.
 if (getenv('LAGOON')) {
-  $clam_mode = getenv('CLAMAV_MODE') ?: 1;
-  if ($clam_mode == 0) {
+  $clam_mode = getenv('CLAMAV_MODE') !== FALSE ? getenv('CLAMAV_MODE') : 1;
+  if ($clam_mode == 0 || $clam_mode == 'daemon') {
     $conf['clamav_mode'] = 0;
     $conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
     $conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;
