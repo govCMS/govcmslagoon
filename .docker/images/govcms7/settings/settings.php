@@ -155,6 +155,8 @@ if ((getenv('LAGOON')) && (getenv('ENABLE_REDIS'))) {
         throw new Exception('Invalid redis response.');
       }
       $conf['redis_client_interface'] = 'PhpRedis';
+      $conf['redis_client_port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
+      $conf['cache_prefix'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
       $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
       $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
       $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
