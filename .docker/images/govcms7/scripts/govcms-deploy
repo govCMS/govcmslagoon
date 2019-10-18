@@ -47,7 +47,7 @@ if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "producti
 # Production environments.
 else
     if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
-        mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
+        mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
         common_deploy
         drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
     else
