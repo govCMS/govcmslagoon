@@ -15,6 +15,7 @@ COPY --from=cli /app /app
 RUN cp -r /app/profiles/govcms/tests /app/ \
     && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
     && composer install -d /app/tests -n --ansi --prefer-dist --no-suggest \
+    && composer clearcache \
     && drush dl drupalorg_drush-7.x-1.x-dev -y \
     && rm -rf /usr/local/etc/php/conf.d/memory.ini \
     && mv /app/profiles/govcms/.docker/lint-govcms /usr/bin/lint-govcms \

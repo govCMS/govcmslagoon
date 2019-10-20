@@ -141,15 +141,37 @@ if (getenv('LAGOON')) {
 }
 
 // Redis configuration.
-if ((getenv('LAGOON'))  && (getenv('ENABLE_REDIS'))) {
-  $conf['redis_client_interface'] = 'PhpRedis';
-  $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
-  $conf['redis_client_port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
-  $conf['cache_prefix'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
-  $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
-  $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
-  $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
-  $conf['cache_default_class'] = 'Redis_Cache';
+if ((getenv('LAGOON')) && (getenv('ENABLE_REDIS'))) {
+  $redis = DRUPAL_ROOT . '/sites/all/modules/contrib/redis';
+
+  if (file_exists("$redis/redis.module")) {
+    require_once "$redis/redis.module";
+    $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
+    $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';  
+    $conf['redis_client_port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
+    $conf['cache_prefix'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
+    try {
+      // Ensure that there is a connection to redis.
+      $client = Redis_Client::getClient();
+      $response = $client->ping();
+      if (!strpos($response, 'PONG')) {
+        throw new Exception('Invalid redis response.');
+      }
+      $conf['redis_client_interface'] = 'PhpRedis';
+      $conf['lock_inc'] = $contrib_path . '/redis/redis.lock.inc';
+      $conf['path_inc'] = $contrib_path . '/redis/redis.path.inc';
+      $conf['cache_backends'][] = $contrib_path . '/redis/redis.autoload.inc';
+      $conf['cache_default_class'] = 'Redis_Cache';
+    } catch (\Exception $e) {
+      // Redis is not available for this request we should not configure the
+      // redis backend and ensure no cache is used. This will retry next
+      // request.
+      if (!class_exists('DrupalFakeCache')) {
+        $conf['cache_backends'][] = 'includes/cache-install.inc';
+      }
+      $conf['cache_default_class'] = 'DrupalFakeCache';
+    }
+  }
 }
 
 // Public, private and temporary files paths.
@@ -168,8 +190,22 @@ if (getenv('LAGOON')) {
 $conf['drupal_http_request_fails'] = FALSE;
 
 // ClamAV configuration.
-$conf['clamav_mode'] = 1;
-$conf['clamav_executable_path'] = '/usr/bin/clamscan';
+if (getenv('LAGOON')) {
+  $clam_mode = getenv('CLAMAV_MODE') ?: 1;
+  if ($clam_mode == 0) {
+    $conf['clamav_mode'] = 0;
+    $conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
+    $conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;
+  } else {
+    $conf['clamav_mode'] = 1;
+    $conf['clamav_executable_path'] = '/usr/bin/clamscan';
+  }
+
+  $env = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'local';
+  if ($env === 'local') {
+    $conf['clamav_enabled'] = 0;
+  }
+}
 
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
