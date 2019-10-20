@@ -147,7 +147,6 @@ if ((getenv('LAGOON')) && (getenv('ENABLE_REDIS'))) {
   if (file_exists("$redis/redis.module")) {
     require_once "$redis/redis.module";
     $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
-    $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';  
     $conf['redis_client_port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
     $conf['cache_prefix'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
     try {
