@@ -1,20 +1,21 @@
-# GovCMS Lagoon project
+# GovCMS Lagoon project - Drupal 7
 
 [![CircleCI](https://circleci.com/gh/govCMS/govcmslagoon.svg?style=svg&circle-token=b356e4c11fbbf32973d909ee37e048da981fc663)](https://circleci.com/gh/govCMS/govcmslagoon)
 
-## Requirements
+## Overview
 
-* [Docker](https://docs.docker.com/install/)
-* [pygmy](https://docs.amazee.io/local_docker_development/pygmy.html#installation) (you might need sudo for this depending on your ruby configuration)
-* [Ahoy](http://ahoy-cli.readthedocs.io/en/latest/#installation)
+This project is used to create the images required by Lagoon, using the GovCMS distribution - it is only intended to
+be used by distribution/platform maintainers.
 
-## Purpose
+Images are published to the [govcmslagoon](https://hub.docker.com/u/govcmslagoon) namespace on Docker Hub.
 
-This project is used to create the images required by Lagoon, using the GovCMS distribution - it is only intended to be used by distribution/platform maintainers.
+There is also the equivalent project for [GovCMS Drupal 8 images](https://github.com/govcms/govcms8lagoon). Please
+be mindful that there is some duplication across the two projects, so consider whether pull requests for changes
+should be accompanied by PRs on the other repository.
 
-## Commands
+## Instructions
 
-Additional commands are listed in `.ahoy.yml`.
+Please refer to [govcms8lagoon](https://github.com/govcms/govcms8lagoon#instructions) for guidelines.
 
 ## Releasing a govcmslagoon release to dockerhub
 
