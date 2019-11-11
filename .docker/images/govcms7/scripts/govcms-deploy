@@ -13,52 +13,44 @@ GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 # Ensure tmp folder always exists.
 mkdir -p /app/sites/default/files/private/tmp/
 
+# Database updates, cache rebuild.
+common_deploy () {
+    drush updb -y
+    drush cc all -y
+    
+    # Non production environments.
+    if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
+        # Enable stage file proxy post db-import.
+        drush en stage_file_proxy -y
+    fi
+}
+
 # Non production environments.
-if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
+if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
     # Import production database on initial deployment (when database is empty).
     if tables=$(drush sqlq 'show tables;') && [ -z "$tables" ]; then
-
         # SQL sync only in Lagoon development environments.
         if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "local" ]]; then
-          drush sql-sync @govcms-prod @self -y
-
-          # Enable stage file proxy post db-import.
-          drush en stage_file_proxy -y
+            drush sql-sync @govcms-prod @self -y
+            common_deploy
+        else
+            echo "Drupal not installed."
         fi
-
     else
-      # @see comments for GOVCMS_TEST_CANARY above.
-      if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
-        echo "GOVCMS_TEST_CANARY is set, syncing the database."
-        drush sql-sync @govcms-prod @self -y
-      fi
-
-      # Enable stage file proxy.
-      drush en stage_file_proxy -y
+        # @see comments for GOVCMS_TEST_CANARY above.
+        if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
+            echo "GOVCMS_TEST_CANARY is set, syncing the database."
+            drush sql-sync @govcms-prod @self -y
+        fi
+        common_deploy
     fi
-
 # Production environments.
 else
-
-  if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
-
-    mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
-    drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
-  else
-    echo "Drupal not installed."
-  fi
-
-fi
-
-# Fix for redirect to be removed after deployment.
-# For more information, see https://github.com/govCMS/govCMS/pull/827
-# Deploying this must accompany the change from the above PR.
-if redirect=$(drush sqlq "SELECT schema_version FROM system WHERE name = 'redirect' AND schema_version = '7101';") && [ -n "${redirect}" ]; then
-  echo "Reverting schema version used by redirect to version 7100 for newer database updates.";
-  drush sql-query "UPDATE system SET schema_version = 7100 WHERE name = 'redirect';";
-fi
-
-# All valid environments.
-if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
-  drush updb -y
+    if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
+        mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
+        common_deploy
+        drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
+    else
+        echo "Drupal not installed."
+    fi
 fi
