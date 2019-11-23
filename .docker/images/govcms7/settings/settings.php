@@ -147,6 +147,8 @@ if ((getenv('LAGOON')) && (getenv('ENABLE_REDIS'))) {
   if (file_exists("$redis/redis.module")) {
     require_once "$redis/redis.module";
     $conf['redis_client_host'] = getenv('REDIS_HOST') ?: 'redis';
+    $conf['redis_client_port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
+    $conf['cache_prefix'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
     try {
       // Ensure that there is a connection to redis.
       $client = Redis_Client::getClient();
@@ -188,8 +190,8 @@ $conf['drupal_http_request_fails'] = FALSE;
 
 // ClamAV configuration.
 if (getenv('LAGOON')) {
-  $clam_mode = getenv('CLAMAV_MODE') ?: 1;
-  if ($clam_mode == 0) {
+  $clam_mode = getenv('CLAMAV_MODE') !== FALSE ? getenv('CLAMAV_MODE') : 1;
+  if ($clam_mode == 0 || $clam_mode == 'daemon') {
     $conf['clamav_mode'] = 0;
     $conf['clamav_daemon_host'] = getenv('CLAMAV_HOST') ?: 'localhost';
     $conf['clamav_daemon_port'] = getenv('CLAMAV_PORT') ?: 3310;

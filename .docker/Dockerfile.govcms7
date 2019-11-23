@@ -1,6 +1,6 @@
-ARG LAGOON_IMAGE_VERSION_PHP
+ARG LAGOON_IMAGE_VERSION
 ARG PHP_IMAGE_VERSION
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal${LAGOON_IMAGE_VERSION_PHP} as builder
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION} as builder
 
 ARG GOVCMS_PROJECT_VERSION
 
@@ -8,20 +8,20 @@ RUN rm -rf /app \
     && mkdir /src \
     && cd /src \
     && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
-    && wget https://raw.githubusercontent.com/govCMS/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
+    && wget https://raw.githubusercontent.com/govcms/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
     && { \
         echo "core = 7.x"; \
         echo "api = 2"; \
         echo "includes[] = drupal-org-core.make"; \
         echo "projects[govcms][type] = profile"; \
         echo "projects[govcms][download][type] = git"; \
-        echo "projects[govcms][download][url] = https://github.com/govCMS/govCMS.git"; \
+        echo "projects[govcms][download][url] = https://github.com/govcms/govCMS.git"; \
         echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
     } | tee -a "/src/build-govcms.make" \
     && drush make /src/build-govcms.make /app --contrib-destination \
     && echo "version = \"$GOVCMS_PROJECT_VERSION\"" >> /app/profiles/govcms/govcms.info
 
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal${LAGOON_IMAGE_VERSION_PHP}
+FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION}
 
 COPY --from=builder /app /app
 COPY .docker/sanitize.sh /app/sanitize.sh
