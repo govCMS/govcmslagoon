@@ -15,7 +15,12 @@ GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 sync_opts=""
 query_opts=""
 read_replica_enabled () {
-  if tables=$(drush @govcms-prod sqlq 'show tables; --database=read') && [ -n "$tables" ]; then
+
+  if [[ -z "$MARIADB_READREPLICA_HOST" ]]; then
+    return
+  fi
+
+  if tables=$(drush @govcms-prod sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
     sync_opts="--source-database=read"
   fi
 }
