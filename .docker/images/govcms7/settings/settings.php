@@ -117,6 +117,19 @@ if (getenv('LAGOON')) {
     'charset' => 'utf8mb4',
     'collation' => 'utf8mb4_general_ci',
   ];
+
+  if (getenv('MARIADB_READREPLICA_HOST')) {
+    $databases['read']['default'] = [
+      'driver' => 'mysql',
+      'database' => getenv('MARIADB_DATABASE') ?: 'drupal',
+      'username' => getenv('MARIADB_USERNAME') ?: 'drupal',
+      'password' => getenv('MARIADB_PASSWORD') ?: 'drupal',
+      'host' => getenv('MARIADB_READREPLICA_HOST') ?: 'mariadb',
+      'port' => 3306,
+      'charset' => 'utf8mb4',
+      'collation' => 'utf8mb4_general_ci',
+    ];
+  }
 }
 
 // Lagoon Solr connection
