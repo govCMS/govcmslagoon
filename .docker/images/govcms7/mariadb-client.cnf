@@ -1,0 +1,3 @@
+
+[client]
+max_allowed_packet=256M
