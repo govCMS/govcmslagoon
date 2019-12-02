@@ -29,6 +29,8 @@ class AcsfRedirectsTest extends TestCase {
     `docker-compose exec nginx mkdir -p /app/sites/default/themes/custom/mysite`;
     `docker cp $testjpg $(docker-compose ps -q nginx):/app/sites/default/themes/custom/mysite/`;
     `docker cp $testjpg $(docker-compose ps -q nginx):/app/sites/default/files/`;
+    `docker-compose exec nginx mkdir -p /app/sites/g/files/net123/f/private/backups`;
+    `docker-compose exec nginx touch /app/sites/g/files/net123/f/private/backups/backup.sql`;
   }
 
   /**
@@ -36,11 +38,17 @@ class AcsfRedirectsTest extends TestCase {
    *
    * @dataProvider provideAcsfPaths
    */
-  public function testRedirect($acsf_path) {
+  public function testRedirect($acsf_path): void {
     $headers = \get_curl_headers($acsf_path);
-    // Nginx redirects without $port so it can't follow in the docker container
-    // as this ends up being http://nginx/ and this can't be accessed.
-    $this->assertTrue($headers['Status'] == 200 || $headers['Status'] == 301);
+    $this->assertEquals(301, $headers['Status']);
+  }
+
+  /**
+   * Ensure that a private file returns a 403.
+   */
+  public function testPrivateACSFFiles(): void {
+    $headers = \get_curl_headers('/sites/g/files/net123/f/private/backups/backup.sql');
+    $this->assertEquals(403, $headers['Status']);
   }
 
 }
