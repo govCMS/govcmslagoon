@@ -26,7 +26,7 @@ class AcsfRedirectsTest extends TestCase {
     $testjpg = dirname(__DIR__) . '/resources/autotest.jpg';
     // @TODO: This assumes that the process for migrating sites will
     // handle putting these theme files in the correct positions.
-    `docker-compose exec --env LAGOON_IMAGE_VERSION_PHP=7.1 nginx mkdir -p /app/sites/default/themes/custom/mysite`;
+    `docker-compose exec nginx mkdir -p /app/sites/default/themes/custom/mysite`;
     `docker cp $testjpg $(docker-compose ps -q nginx):/app/sites/default/themes/custom/mysite/`;
     `docker cp $testjpg $(docker-compose ps -q nginx):/app/sites/default/files/`;
   }
