@@ -28,6 +28,7 @@ RUN cp -r /app/profiles/govcms/tests /app/ \
     && chmod +x /usr/bin/phpunit
 
 COPY .docker/images/test/drutiny /usr/bin/drutiny
+COPY .docker/images/govcms7/mariadb-client.cnf /etc/my.cnf.d
 
 ARG SITE_AUDIT_VERSION
 
