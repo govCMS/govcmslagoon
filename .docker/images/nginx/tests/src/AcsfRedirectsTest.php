@@ -31,6 +31,7 @@ class AcsfRedirectsTest extends TestCase {
     `docker cp $testjpg $(docker-compose ps -q nginx):/app/sites/default/files/`;
     `docker-compose exec nginx mkdir -p /app/sites/g/files/net123/f/private/backups`;
     `docker-compose exec nginx touch /app/sites/g/files/net123/f/private/backups/backup.sql`;
+    `docker-compose exec nginx tar -czvf /app/sites/g/files/net123/f/private/backups/backup.sql.tar.gz --files-from /dev/null`;
   }
 
   /**
@@ -49,6 +50,10 @@ class AcsfRedirectsTest extends TestCase {
   public function testPrivateACSFFiles(): void {
     $headers = \get_curl_headers('/sites/g/files/net123/f/private/backups/backup.sql');
     $this->assertEquals(403, $headers['Status']);
+    $headers = \get_curl_headers('/sites/g/files/net123/f/private/backups/backup.sql.tar.gz');
+    $this->assertEquals(301, $headers['Status']);
+    $headers = \get_curl_headers('/sites/default/files/private/backups/backup.sql.tar.gz');
+    $this->assertEquals(404, $headers['Status']);
   }
 
 }
