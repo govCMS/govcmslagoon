@@ -250,6 +250,7 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
   $form['general']['govcms_akamai_fast_purge_enabled'] = [
     '#type' => 'checkbox',
     '#title' => t('Enable file purge on creation, update and deletion'),
+    '#description' => t('Note API calls will not trigger unless configuration and origin is valid'),
     '#default_value' => variable_get('govcms_akamai_fast_purge_enabled', TRUE),
   ];
 
@@ -328,11 +329,11 @@ function govcms_akamai_fast_purge_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  global $base_url;
   $form['advanced']['api']['fieldset']['govcms_akamai_origin_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Origin URL'),
-    '#default_value' => variable_get('govcms_akamai_origin_url', $base_url),
+    '#required' => TRUE,
+    '#default_value' => variable_get('govcms_akamai_origin_url', NULL),
     '#size' => 40,
     '#maxlength' => 256,
     '#description' => t('URL to use in each purge, which is protected via permissions'),
@@ -558,12 +559,14 @@ function govcms_akamai_fast_purge_button_handler($form, &$form_state) {
     $custom_path = $form_state['values']['govcms_akamai_purge_path'];
     if ($custom_path != "" && user_access('manual akamai cache purge')) {
       if (TRUE === _govcms_akamai_fast_purge_detect_edgerc_env() || count(_govcms_akamai_fast_purge_process_edgerc()) == 1 || TRUE === _govcms_akamai_fast_purge_detect_edgerc_file(variable_get('govcms_akamai_fast_purge_credentials_filepath', '/.edgerc'))) {
-        global $base_url;
-        $custom_path = variable_get('govcms_akamai_origin_url', $base_url) . "/{$custom_path}";
-        _govcms_akamai_fast_purge_watchdog(2, "Manual purge requested of '{$form_state['values']['govcms_akamai_purge_path']}'");
-        $result = _govcms_akamai_fast_purge_trigger($custom_path);
-        if (TRUE === $result) {
-          drupal_set_message("Akamai cache for the following URL has been invalidated: {$custom_path}", 'status');
+        if (variable_get('govcms_akamai_origin_url', NULL) !== NULL) {
+          global $base_url;
+          $custom_path = variable_get('govcms_akamai_origin_url', NULL) . "/{$custom_path}";
+          _govcms_akamai_fast_purge_watchdog(2, "Manual purge requested of '{$form_state['values']['govcms_akamai_purge_path']}'");
+          $result = _govcms_akamai_fast_purge_trigger($custom_path);
+          if (TRUE === $result) {
+            drupal_set_message("Akamai cache for the following URL has been invalidated: {$custom_path}", 'status');
+          }
         }
       }
       else {
@@ -598,7 +601,9 @@ function govcms_akamai_fast_purge_all_button_handler($form, &$form_state) {
  * Implements hook_file_insert().
  */
 function govcms_akamai_fast_purge_file_insert($file) {
-  _govcms_akamai_fast_purge_trigger($file);
+  if (variable_get('govcms_akamai_origin_url', NULL) !== NULL) {
+    _govcms_akamai_fast_purge_trigger($file);
+  }
 }
 
 /**
@@ -609,14 +614,18 @@ function govcms_akamai_fast_purge_file_update($file) {
   if (empty($file->replace_upload)) {
     return;
   }
-  _govcms_akamai_fast_purge_trigger($file);
+  if (variable_get('govcms_akamai_origin_url', NULL) !== NULL) {
+    _govcms_akamai_fast_purge_trigger($file);
+  }
 }
 
 /**
  * Implements hook_file_delete().
  */
 function govcms_akamai_fast_purge_file_delete($file) {
-  _govcms_akamai_fast_purge_trigger($file);
+  if (variable_get('govcms_akamai_origin_url', NULL) !== NULL) {
+    _govcms_akamai_fast_purge_trigger($file);
+  }
 }
 
 /**
@@ -732,7 +741,7 @@ function _govcms_akamai_fast_purge_trigger($file, $cpcode_clear = FALSE) {
   }
 
   global $base_url;
-  $origin_url = variable_get('govcms_akamai_origin_url', $base_url);
+  $origin_url = variable_get('govcms_akamai_origin_url', NULL);
 
   if (isset($file->uri)) {
     $path = drupal_realpath($file->uri);
