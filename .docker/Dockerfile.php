@@ -9,7 +9,7 @@ RUN apk add --no-cache gmp gmp-dev \
     && docker-php-ext-install gmp \
     && docker-php-ext-configure gmp
 
-RUN apk add --no-cache --update clamav clamav-libunrar --repository http://dl-3.alpinelinux.org/alpine/edge/main \
+RUN apk add --no-cache --update clamav clamav-libunrar --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
     && freshclam
 
 COPY --from=cli /app /app
