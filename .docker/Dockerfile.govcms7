@@ -8,14 +8,14 @@ RUN rm -rf /app \
     && mkdir /src \
     && cd /src \
     && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
-    && wget https://raw.githubusercontent.com/govCMS/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
+    && wget https://raw.githubusercontent.com/govcms/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
     && { \
         echo "core = 7.x"; \
         echo "api = 2"; \
         echo "includes[] = drupal-org-core.make"; \
         echo "projects[govcms][type] = profile"; \
         echo "projects[govcms][download][type] = git"; \
-        echo "projects[govcms][download][url] = https://github.com/govCMS/govCMS.git"; \
+        echo "projects[govcms][download][url] = https://github.com/govcms/govCMS.git"; \
         echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
     } | tee -a "/src/build-govcms.make" \
     && drush make /src/build-govcms.make /app --contrib-destination \
@@ -28,6 +28,7 @@ COPY .docker/sanitize.sh /app/sanitize.sh
 
 COPY .docker/images/govcms7/scripts /usr/bin/
 COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
+COPY .docker/images/govcms7/mariadb-client.cnf /etc/my.cnf.d
 
 # findutils can be removed after amazeeio/lagoon PR1077
 RUN apk add --no-cache python findutils \
@@ -37,9 +38,6 @@ RUN apk add --no-cache python findutils \
     lagoon_logs-7.x-1.0 \
     redis-7.x-3.17 \
     stage_file_proxy-7.x-1.9 \
-    && wget https://www.drupal.org/files/issues/drupal-500_exception_on_exception-12221055-6.patch \
-    && patch -p1 < drupal-500_exception_on_exception-12221055-6.patch \
-    && rm drupal-500_exception_on_exception-12221055-6.patch \
     && mkdir -p /app/sites/default/files/private \
     && fix-permissions /home/.drush \
     && chmod +x /app/sanitize.sh \
