@@ -15,16 +15,16 @@ commands:
     cmd: docker-compose up -d --build "$@"
 
   cli:
-    usage: Start a shell inside TEST container.
-    cmd: docker-compose exec test bash
+    usage: Start a shell inside cli container.
+    cmd: docker-compose exec cli bash
 
   run:
-    usage: Run command inside TEST container.
-    cmd: docker-compose exec -T test bash -c "$@"
+    usage: Run command inside cli container.
+    cmd: docker-compose exec -T cli bash -c "$@"
 
   drush:
-    usage: Run drush commands in TEST container.
-    cmd: docker-compose exec -T test drush "$@"
+    usage: Run drush commands in cli container.
+    cmd: docker-compose exec -T cli drush "$@"
 
   logs:
     usage: Show Docker logs.
@@ -44,11 +44,11 @@ commands:
 
   install:
     usage: Install the profile.
-    cmd: docker-compose exec -T test drush si -y govcms "$@"
+    cmd: docker-compose exec -T cli drush si -y govcms "$@"
 
   login:
     usage: Login to a website.
-    cmd: docker-compose exec -T test drush uli "$@"
+    cmd: docker-compose exec -T cli drush uli "$@"
 
   lint:
     usage: Lint code
