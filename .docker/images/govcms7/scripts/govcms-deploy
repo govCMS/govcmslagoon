@@ -48,6 +48,7 @@ if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "producti
     if tables=$(drush sqlq 'show tables;') && [ -z "$tables" ]; then
         # SQL sync only in Lagoon development environments.
         if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "local" ]]; then
+            drush sql-drop -y
             drush sql-sync @govcms-prod @self $sync_opts -y
             common_deploy
         else
@@ -57,6 +58,7 @@ if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "producti
         # @see comments for GOVCMS_TEST_CANARY above.
         if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
             echo "GOVCMS_TEST_CANARY is set, syncing the database."
+            drush sql-drop -y
             drush sql-sync @govcms-prod @self $sync_opts -y
         fi
         common_deploy

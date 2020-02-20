@@ -7,3 +7,6 @@ command:
     exit-status: 0
     stdout:
       - "client_max_body_size  256M;"
+file:
+  /etc/nginx/conf.d/drupal/favicon.conf:
+    exists: true

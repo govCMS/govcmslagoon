@@ -49,6 +49,12 @@ jobs:
             else
               echo "Redis success: Redis contains $redisKeys keys."
             fi
+      - run:
+          name: Test nginx configuration
+          command: |
+            docker-compose exec nginx nginx -t
+            composer install -d .docker/images/nginx/tests
+            .docker/images/nginx/tests/vendor/bin/phpunit -c .docker/images/nginx/tests/phpunit.xml
 workflows:
   version: 2
   main:
