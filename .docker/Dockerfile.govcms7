@@ -38,9 +38,6 @@ RUN apk add --no-cache python findutils \
     lagoon_logs-7.x-1.0 \
     redis-7.x-3.17 \
     stage_file_proxy-7.x-1.9 \
-    && wget https://www.drupal.org/files/issues/drupal-500_exception_on_exception-12221055-6.patch \
-    && patch -p1 < drupal-500_exception_on_exception-12221055-6.patch \
-    && rm drupal-500_exception_on_exception-12221055-6.patch \
     && mkdir -p /app/sites/default/files/private \
     && fix-permissions /home/.drush \
     && chmod +x /app/sanitize.sh \

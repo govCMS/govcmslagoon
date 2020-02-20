@@ -1,3 +1,7 @@
 ---
 gossfile:
   sanitise.yaml: {}
+
+file:
+  /etc/nginx/conf.d/drupal/favicon.conf:
+    exists: true

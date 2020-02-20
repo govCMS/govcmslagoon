@@ -13,7 +13,7 @@ if (!class_exists('DrupalFakeCache')) {
 // Rely on the external cache for page caching.
 $conf['cache_class_cache_page'] = 'DrupalFakeCache';
 $conf['cache'] = 1;
-$conf['page_cache_maximum_age'] = 3600;
+$conf['page_cache_maximum_age'] = 900;
 if (is_numeric($max_age=GETENV('CACHE_MAX_AGE'))) {
   $conf['page_cache_maximum_age']= $max_age;
 }
