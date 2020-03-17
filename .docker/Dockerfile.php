@@ -12,6 +12,8 @@ RUN apk add --no-cache gmp gmp-dev \
 RUN apk add --no-cache --update clamav clamav-libunrar \
     && freshclam
 
+COPY .docker/images/php/00-govcms.ini /usr/local/etc/php/conf.d/
+
 COPY --from=cli /app /app
 
 RUN /app/sanitize.sh \
