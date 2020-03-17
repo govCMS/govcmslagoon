@@ -5,9 +5,6 @@ FROM ${CLI_IMAGE} as cli
 
 FROM amazeeio/php:${PHP_IMAGE_VERSION}-fpm-${LAGOON_IMAGE_VERSION}
 
-RUN apk add --no-cache gmp gmp-dev \
-    && docker-php-ext-install gmp \
-    && docker-php-ext-configure gmp
 
 RUN apk add --no-cache --update clamav clamav-libunrar \
     && freshclam
