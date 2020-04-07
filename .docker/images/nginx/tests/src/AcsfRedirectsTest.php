@@ -7,19 +7,6 @@ use PHPUnit\Framework\TestCase;
 class AcsfRedirectsTest extends TestCase {
 
   /**
-   * A list of common ACSF paths.
-   *
-   * @return array
-   *   A list of paths.
-   */
-  public function provideAcsfPaths() {
-    return [
-      ['/sites/g/files/net12409/themes/site/mysite/autotest.jpg'],
-      ['/sites/g/files/net1234/f/autotest.jpg'],
-    ];
-  }
-
-  /**
    * Make sure the ACSF images are in valid locations.
    */
   public function setUp(): void {
@@ -35,19 +22,32 @@ class AcsfRedirectsTest extends TestCase {
   }
 
   /**
+   * A list of common ACSF paths.
+   *
+   * @return array
+   *   A list of paths.
+   */
+  public function providerRedirectPath() {
+    return [
+      ['/sites/g/files/net12409/themes/site/mysite/autotest.jpg'],
+      ['/sites/g/files/net1234/f/autotest.jpg'],
+    ];
+  }
+
+  /**
    * Ensure that ACSF paths correctly redirect to new locations.
    *
-   * @dataProvider provideAcsfPaths
+   * @dataProvider providerRedirectPath
    */
-  public function testRedirect($acsf_path): void {
-    $headers = \get_curl_headers($acsf_path);
+  public function testRedirectPath($path) {
+    $headers = \get_curl_headers($path);
     $this->assertEquals(301, $headers['Status']);
   }
 
   /**
    * Ensure that a private file returns a 403.
    */
-  public function testPrivateACSFFiles(): void {
+  public function testPrivateACSFFiles() {
     $headers = \get_curl_headers('/sites/g/files/net123/f/private/backups/backup.sql');
     $this->assertEquals(403, $headers['Status']);
     $headers = \get_curl_headers('/sites/g/files/net123/f/private/backups/backup.sql.tar.gz');
