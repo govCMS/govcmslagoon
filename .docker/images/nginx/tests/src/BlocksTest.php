@@ -15,7 +15,7 @@ class BlocksTest extends TestCase {
    * @return array
    *   List of user agents.
    */
-  public function provideAggressiveAgents() {
+  public function providerAggressiveAgents() {
     return [
       ['8LEGS'],
       // ['AhfresBot'], # This 500s?
@@ -37,7 +37,7 @@ class BlocksTest extends TestCase {
    * @return array
    *    List of user agents.
    */
-  public function provideMicrosoftAgents() {
+  public function providerMicrosoftAgents() {
     return [
       ['Skype.for.Business'],
       ['Microsoft.Office'],
@@ -50,7 +50,7 @@ class BlocksTest extends TestCase {
    * @return array
    *   List of paths.
    */
-  public function provideWordpressPaths() {
+  public function providerWordpressPaths() {
     return [
       ['/wp-admin'],
       // ['/wp-admin/index.php'], # 500s
@@ -71,7 +71,7 @@ class BlocksTest extends TestCase {
    * @return array
    *    List of query strings.
    */
-  public function provideQueryStrings() {
+  public function providerQueryStrings() {
     return [
       ['?q=node/add'],
       ['?q=user/register'],
@@ -81,36 +81,35 @@ class BlocksTest extends TestCase {
   /**
    * Ensure that aggressive bots are blocked.
    *
-   * @dataProvider provideAggressiveAgents
+   * @dataProvider providerAggressiveAgents
    */
   public function testAggressiveCrawlerBlock($ua) {
-    $headers = \get_curl_headers("/", "--user-agent '{$ua}'");
+    $headers = \get_curl_headers('/', "--user-agent '{$ua}'");
     $this->assertEquals(403, $headers['Status']);
   }
 
   /**
    * Ensure that Microsofts home check is prevented.
    *
-   * @dataProvider provideMicrosoftAgents
+   * @dataProvider providerMicrosoftAgents
    */
   public function testMicrosoftHomeCall($ua) {
-    $headers = \get_curl_headers("/", "--user-agent '{$ua}'");
+    $headers = \get_curl_headers('/', "--user-agent '{$ua}'");
     $this->assertEquals(403, $headers['Status']);
-
   }
 
   /**
    * Ensure the autodiscover.xml files are restricted.
    */
   public function testAutodiscover() {
-    $headers = \get_curl_headers("/autodiscover.xml");
+    $headers = \get_curl_headers('/autodiscover.xml');
     $this->assertEquals(403, $headers['Status']);
   }
 
   /**
    * Ensure that wordpress-like paths are blocked.
    *
-   * @dataProvider provideWordpressPaths
+   * @dataProvider providerWordpressPaths
    */
   public function testWordpressAttacks($path) {
     $headers = \get_curl_headers($path);
@@ -120,7 +119,7 @@ class BlocksTest extends TestCase {
   /**
    * Ensure common query strings vectors are restricted.
    *
-   * @dataProvider provideQueryStrings
+   * @dataProvider providerQueryStrings
    */
   public function testQueryStringBlock($query) {
     $headers = \get_curl_headers($query);
