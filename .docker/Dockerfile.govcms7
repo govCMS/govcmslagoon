@@ -15,7 +15,7 @@ RUN rm -rf /app \
         echo "includes[] = drupal-org-core.make"; \
         echo "projects[govcms][type] = profile"; \
         echo "projects[govcms][download][type] = git"; \
-        echo "projects[govcms][download][url] = https://github.com/govCMS/GovCMS7"; \
+        echo "projects[govcms][download][url] = https://github.com/govCMS/GovCMS7.git"; \
         echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
     } | tee -a "/src/build-govcms.make" \
     && drush make /src/build-govcms.make /app --contrib-destination \
