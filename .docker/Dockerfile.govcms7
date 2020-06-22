@@ -8,14 +8,14 @@ RUN rm -rf /app \
     && mkdir /src \
     && cd /src \
     && echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/memory.ini \
-    && wget https://raw.githubusercontent.com/govcms/govCMS/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
+    && wget https://raw.githubusercontent.com/govCMS/GovCMS7/$GOVCMS_PROJECT_VERSION/drupal-org-core.make -O /src/drupal-org-core.make \
     && { \
         echo "core = 7.x"; \
         echo "api = 2"; \
         echo "includes[] = drupal-org-core.make"; \
         echo "projects[govcms][type] = profile"; \
         echo "projects[govcms][download][type] = git"; \
-        echo "projects[govcms][download][url] = https://github.com/govcms/govCMS.git"; \
+        echo "projects[govcms][download][url] = https://github.com/govCMS/GovCMS7.git"; \
         echo "projects[govcms][download][branch] = $GOVCMS_PROJECT_VERSION"; \
     } | tee -a "/src/build-govcms.make" \
     && drush make /src/build-govcms.make /app --contrib-destination \
