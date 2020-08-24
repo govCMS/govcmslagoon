@@ -42,7 +42,7 @@ class AcsfRedirectsTest extends TestCase {
   public function testRedirectPath($path) {
     $headers = \get_curl_headers($path);
     $this->assertEquals(301, $headers['Status']);
-    $this->assertTrue(preg_match('#^https://#', $headers['Location']));
+    $this->assertEquals(preg_match('#^https://#', $headers['Location']), 1);
   }
 
   /**
