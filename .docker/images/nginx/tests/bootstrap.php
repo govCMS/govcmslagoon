@@ -40,17 +40,17 @@ function get_curl_headers($path = '/', $opts = NULL) {
   $response = array_map('trim', $response);
 
   foreach ($response as $line) {
-    if (strpos($line, 'HTTP') !== FALSE) {
+    if (strpos($line, 'HTTP') === 0) {
       $part = explode(' ', $line);
       $headers['Status'] = trim($part[1]);
       continue;
     }
 
     $part = explode(':', $line);
+    $key = array_shift($part);
+    $value = implode(':', $part);
 
-    if (count($part) == 2) {
-      $headers[$part[0]] = trim($part[1]);
-    }
+    $headers[$key] = trim($value);
   }
 
   return $headers;
