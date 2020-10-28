@@ -53,6 +53,6 @@ test:module_scanning:
     - build:containers
   artifacts:
     paths:
-      - modules.csv
+      - $CSV_LOCATION
   only:
     - schedules
