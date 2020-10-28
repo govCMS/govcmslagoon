@@ -1,0 +1,58 @@
+---
+
+image: govcms/govcms-ci:latest
+
+services:
+  - "docker:dind"
+
+stages:
+  - validate
+  - build
+  - test
+
+.before_script_common: &before_script_common |-
+  cp .env.default .env
+
+.variables: &vars
+  DOCKERHUB_NAMESPACE: "govcmslagoon"
+  IMAGE_VERSION_TAG_PREFIX: ""
+  IMAGE_VERSION_TAG: ""
+  IMAGE_TAG_EDGE: $CI_COMMIT_SHA
+
+.test: &test
+  variables:
+    << : *vars
+  before_script:
+    - *before_script_common
+    - docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
+    - ahoy build
+    - docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 1m
+
+validate:containers:
+  stage: validate
+  script:
+    - docker-compose config -q
+
+build:containers:
+  stage: build
+  before_script:
+    - *before_script_common
+  script:
+    - docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
+    - ahoy -v build
+  needs:
+    - validate:containers
+
+test:module_scanning:
+  << : *test
+  stage: test
+  script:
+    - ahoy -v install
+    - /govcms/vendor/bin/govcms-module_verify
+  needs:
+    - build:containers
+  artifacts:
+    paths:
+      - modules.csv
+  only:
+    - schedules
