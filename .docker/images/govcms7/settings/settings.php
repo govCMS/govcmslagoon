@@ -193,9 +193,9 @@ if (getenv('LAGOON')) {
   $conf['file_temporary_path'] = 'sites/default/files/private/tmp';
 }
 
-// Non-deterministic hash salt.
+// Hash Salt
 if (getenv('LAGOON')) {
-  $drupal_hash_salt = hash('sha256', getenv('MARIADB_HOST'));
+  $drupal_hash_salt = getenv('DRUPAL_HASH_SALT') ?: hash('sha256', getenv('LAGOON_PROJECT'));
 }
 
 // Disable HTTP request status check in docker.
