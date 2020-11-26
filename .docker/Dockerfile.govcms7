@@ -29,6 +29,7 @@ COPY .docker/sanitize.sh /app/sanitize.sh
 COPY .docker/images/govcms7/scripts /usr/bin/
 COPY .docker/images/govcms7/aliases.drushrc.php /home/.drush/site-aliases/
 COPY .docker/images/govcms7/mariadb-client.cnf /etc/my.cnf.d
+RUN chmod 0644 /etc/my.cnf.d/mariadb-client.cnf
 
 # findutils can be removed after amazeeio/lagoon PR1077
 RUN apk add --no-cache python findutils \
