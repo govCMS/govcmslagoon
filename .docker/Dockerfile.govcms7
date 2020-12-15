@@ -1,6 +1,6 @@
 ARG LAGOON_IMAGE_VERSION
 ARG PHP_IMAGE_VERSION
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION} as builder
+FROM uselagoon/php-${PHP_IMAGE_VERSION}-cli-drupal:${LAGOON_IMAGE_VERSION} as builder
 
 ARG GOVCMS_PROJECT_VERSION
 
@@ -21,7 +21,7 @@ RUN rm -rf /app \
     && drush make /src/build-govcms.make /app --contrib-destination \
     && echo "version = \"$GOVCMS_PROJECT_VERSION\"" >> /app/profiles/govcms/govcms.info
 
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION}
+FROM uselagoon/php-${PHP_IMAGE_VERSION}-cli-drupal:${LAGOON_IMAGE_VERSION}
 
 COPY --from=builder /app /app
 COPY .docker/sanitize.sh /app/sanitize.sh
