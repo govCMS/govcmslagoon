@@ -10,6 +10,11 @@
 # @todo this variable will get a new name, since it is part of a bigger piece of work around types of environments.
 GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 
+# Default deploy levers.
+GOVCMS_SKIP_CACHE_REBUILD=${GOVCMS_SKIP_CACHE_REBUILD:-}
+GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}
+GOVCMS_SKIP_DATABASE_BACKUP=${GOVCMS_SKIP_DATABASE_BACKUP:-}
+
 # Database options to configure the remote to use the read replica when
 # performing read operations.
 sync_opts=""
@@ -29,8 +34,21 @@ mkdir -p /app/sites/default/files/private/tmp/
 
 # Database updates, cache rebuild.
 common_deploy () {
-    drush updb -y
-    drush cc all -y
+
+    if [ "$GOVCMS_DEPLOY_UPDB" != "true" ]; then
+      # Skip the database updates for this deploy.
+      echo "[skip]: Environment variable is set to skip."
+    else
+      echo "[info]: Preparing database update."
+      drush updb -y
+    fi
+
+    if [ -n "${GOVCMS_SKIP_CACHE_REBUILD}" ]; then
+      echo "[skip]: Cache rebuild disabled."
+    else
+      echo "[info]: Running cache rebuild."
+      drush cc all -y
+    fi
 
     # Non production environments.
     if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
@@ -66,7 +84,14 @@ if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "producti
 # Production environments.
 else
     if tables=$(drush sqlq 'show tables;') && [ -n "$tables" ]; then
-        mkdir -p /app/sites/default/files/private/backups/ && drush sql-dump --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
+        mkdir -p /app/sites/default/files/private/backups/
+
+        if [ -n "${GOVCMS_SKIP_DATABASE_BACKUP}" ]; then
+          echo "[skip]: Skipping database backup."
+        else
+          drush sql-dump --extra=--no-tablespaces --gzip --result-file=/app/sites/default/files/private/backups/pre-deploy-dump.sql
+        fi
+
         common_deploy
         drush en -y govcms_lagoon && drush dis -y govcms_lagoon; drush pmu -y govcms_lagoon;
     else
