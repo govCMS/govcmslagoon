@@ -40,5 +40,11 @@ RUN git clone --single-branch --branch=$SITE_AUDIT_VERSION https://github.com/go
     && apk --no-cache add findutils
 # findutils can be removed after amazeeio/lagoon PR1077
 
+# Install the R3 intermediary for LE.
+RUN mkdir -p /usr/share/ca-certificates/letsencrypt \
+  && curl -o /usr/share/ca-certificates/letsencrypt/lets-encrypt-r3.crt https://letsencrypt.org/certs/lets-encrypt-r3.pem \
+  && echo -e "\nletsencrypt/lets-encrypt-r3.crt" >> /etc/ca-certificates.conf \
+  && update-ca-certificates
+
 # Add custom drutiny profiles into test for local testing
 COPY .docker/images/test/*.yml /app/sites/all/drutiny/Profiles
