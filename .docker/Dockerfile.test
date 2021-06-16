@@ -3,7 +3,7 @@ ARG LAGOON_IMAGE_VERSION
 ARG PHP_IMAGE_VERSION
 FROM ${CLI_IMAGE} as cli
 
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-cli-drupal-${LAGOON_IMAGE_VERSION}
+FROM uselagoon/php-${PHP_IMAGE_VERSION}-cli-drupal:${LAGOON_IMAGE_VERSION}
 
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
@@ -39,6 +39,12 @@ RUN git clone --single-branch --branch=$SITE_AUDIT_VERSION https://github.com/go
     && chmod +x /usr/bin/drutiny \
     && apk --no-cache add findutils
 # findutils can be removed after amazeeio/lagoon PR1077
+
+# Install the R3 intermediary for LE.
+RUN mkdir -p /usr/share/ca-certificates/letsencrypt \
+  && curl -o /usr/share/ca-certificates/letsencrypt/lets-encrypt-r3.crt https://letsencrypt.org/certs/lets-encrypt-r3.pem \
+  && echo -e "\nletsencrypt/lets-encrypt-r3.crt" >> /etc/ca-certificates.conf \
+  && update-ca-certificates
 
 # Add custom drutiny profiles into test for local testing
 COPY .docker/images/test/*.yml /app/sites/all/drutiny/Profiles

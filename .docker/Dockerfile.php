@@ -3,7 +3,7 @@ ARG LAGOON_IMAGE_VERSION
 ARG PHP_IMAGE_VERSION
 FROM ${CLI_IMAGE} as cli
 
-FROM amazeeio/php:${PHP_IMAGE_VERSION}-fpm-${LAGOON_IMAGE_VERSION}
+FROM uselagoon/php-${PHP_IMAGE_VERSION}-fpm:${LAGOON_IMAGE_VERSION}
 
 
 RUN apk add --no-cache --update clamav clamav-libunrar --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -15,3 +15,9 @@ COPY --from=cli /app /app
 
 RUN /app/sanitize.sh \
   && rm -rf /app/sanitize.sh
+
+# Install the R3 intermediary for LE.
+RUN mkdir -p /usr/share/ca-certificates/letsencrypt \
+  && curl -o /usr/share/ca-certificates/letsencrypt/lets-encrypt-r3.crt https://letsencrypt.org/certs/lets-encrypt-r3.pem \
+  && echo -e "\nletsencrypt/lets-encrypt-r3.crt" >> /etc/ca-certificates.conf \
+  && update-ca-certificates
