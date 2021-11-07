@@ -1,11 +1,5 @@
 version: '3.0'
 
-x-environment:
-  &default-environment
-    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
-    X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
-    CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
-
 services:
 
   cli:
