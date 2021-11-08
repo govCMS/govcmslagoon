@@ -53,7 +53,10 @@ workflow:
 
 .before_script_build: &before_script_build
   before_script:
-    - *before_script_common
+    - if [ -z "$DEPLOY_TAG" ]; then echo "DEPLOY_TAG must be set for an actionable build."; exit 1; fi
+    - cp .env.default .env
+    - sed -i -e "s/^GOVCMS_RELEASE_TAG.*/GOVCMS_RELEASE_TAG=$DEPLOY_TAG/" .env
+    - cat .env
     - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
     - export $(grep -v '^#' .env | xargs)
     - docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
@@ -61,34 +64,43 @@ workflow:
     - ahoy build y
     - docker image list
 
-.test: &test
+validate:images:
   variables:
-    << : *vars
-  before_script:
-    - *before_script_build
-  script:
-    - docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 1m
-
-validate:containers:
+    << : *variables
   stage: validate
   script:
     - docker-compose config -q
 
-build:containers:
+build:images:
   stage: build
-  before_script:
-    - *before_script_build
+  variables:
+    <<: *variables
+    DOCKER_REGISTRY_HOST: $CI_REGISTRY/
+  <<: *before_script_build
+  script:
+    - echo "Build successful"
   needs:
-    - validate:containers
+    - validate:images
+
+test:ahoy: &test
+  stage: test
+  variables:
+    <<: *variables
+  <<: *before_script_build
+  script:
+    - ahoy up
+    - ahoy -v install
+    - ahoy test
+  needs:
+    - build:images
 
 test:module_scanning:
   << : *test
   stage: test
   script:
-    - ahoy -v install
     - /govcms/vendor/bin/govcms-module_verify
   needs:
-    - build:containers
+    - build:images
   artifacts:
     paths:
       - $CSV_LOCATION
