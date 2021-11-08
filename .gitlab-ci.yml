@@ -85,7 +85,8 @@ test:ahoy: &test
   script:
     - ahoy up
     - ahoy -v install || true
-    - ahoy test
+    - ahoy test-phpunit
+    - ahoy drush status
   needs:
     - build:images
 
