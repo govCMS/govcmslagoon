@@ -94,6 +94,8 @@ test:module_scanning:
   << : *test
   stage: test
   script:
+    - ahoy up
+    - ahoy -v install || true
     - /govcms/vendor/bin/govcms-module_verify
   needs:
     - build:images
