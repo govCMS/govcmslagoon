@@ -87,7 +87,7 @@ commands:
 
   lint:
     usage: Lint code
-    cmd: docker-compose exec test lint-govcms
+    cmd: docker-compose exec -T test lint-govcms
 
   test:
     usage: Run all tests.
@@ -97,11 +97,11 @@ commands:
 
   test-behat:
     usage: Run Behat tests.
-    cmd: docker-compose exec test behat "$@"
+    cmd: docker-compose exec -T test behat "$@"
 
   test-phpunit:
     usage: Run PHPUnit tests.
-    cmd: docker-compose exec test phpunit "$@"
+    cmd: docker-compose exec -T test phpunit "$@"
 
   pull:
     usage: Pull latest docker images.
