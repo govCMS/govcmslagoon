@@ -37,12 +37,6 @@ workflow:
 
     - when: always # Run the pipeline in other cases
 
-.before_script_common: &before_script_common |-
-  if [ -z "$DEPLOY_TAG" ]; then echo "DEPLOY_TAG must be set for an actionable build."; exit 1; fi
-  cp .env.default .env
-  sed -i -e "s/^GOVCMS_RELEASE_TAG.*/GOVCMS_RELEASE_TAG=$DEPLOY_TAG/" .env
-  cat .env
-
 # ---
 # Alias definitions.
 # ---
@@ -89,7 +83,7 @@ test:ahoy: &test
   <<: *before_script_build
   script:
     - ahoy up
-    - ahoy -v install
+    - ahoy -v install || true
     - ahoy test
   needs:
     - build:images
@@ -106,3 +100,26 @@ test:module_scanning:
       - $CSV_LOCATION
   only:
     - schedules
+
+deploy:multiarch:
+  stage: deploy
+  variables:
+    <<: *variables
+  script:
+    - cp .env.default .env
+    - sed -i -e "s/^GOVCMS_RELEASE_TAG.*/GOVCMS_RELEASE_TAG=$DEPLOY_TAG/" .env
+    - cat .env
+    - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
+    - docker buildx create --name govcms-amd-arm --platform linux/amd64,linux/arm64 tcp://localhost:2375
+    - docker buildx ls
+    - export $(grep -v '^#' .env | xargs)
+    - docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+    - ahoy publish y
+  only:
+    - feature/multiarch-apple-silicon
+    - develop
+    - master
+    - tags
+  needs:
+  - test:ahoy
