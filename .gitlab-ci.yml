@@ -9,6 +9,7 @@ stages:
   - validate
   - build
   - test
+  - deploy
 
 # ---
 # Common workflow rules.
