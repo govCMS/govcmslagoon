@@ -1,15 +1,4 @@
-version: '2.3'
-
-x-volumes:
-  &default-volumes
-    volumes:
-      - ./files:/app/sites/default/files:delegated
-
-x-environment:
-  &default-environment
-    LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
-    X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
-    CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
+version: '3.0'
 
 services:
 
@@ -21,10 +10,11 @@ services:
         GOVCMS_PROJECT_VERSION: ${GOVCMS_PROJECT_VERSION:-7.x-3.x}
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.4}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-    << : *default-volumes
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7:${GOVCMS_RELEASE_TAG:-latest}
     environment:
-      << : *default-environment
+      LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
+      X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
+      CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
 
   test:
     build:
@@ -35,12 +25,13 @@ services:
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.4}
         SITE_AUDIT_VERSION: ${SITE_AUDIT_VERSION:-7.x-3.x}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test
-    << : *default-volumes
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/test:${GOVCMS_RELEASE_TAG:-latest}
     depends_on:
       - cli
     environment:
-      << : *default-environment
+      LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
+      X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
+      CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
 
   nginx:
     build:
@@ -49,10 +40,11 @@ services:
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/nginx-drupal
-    << : *default-volumes
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/nginx-drupal:${GOVCMS_RELEASE_TAG:-latest}
     environment:
-      << : *default-environment
+      LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
+      X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
+      CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
       LAGOON_LOCALDEV_URL: ${LOCALDEV_URL_NGINX:-http://govcms-lagoon-nginx.docker.amazee.io}
     networks:
       - amazeeio-network
@@ -66,10 +58,11 @@ services:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION:-7.4}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php
-    << : *default-volumes
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/php:${GOVCMS_RELEASE_TAG:-latest}
     environment:
-      << : *default-environment
+      LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
+      X_FRAME_OPTIONS: ${X_FRAME_OPTIONS:-SameOrigin}
+      CACHE_MAX_AGE: ${CACHE_MAX_AGE:-3600}
 
   mariadb:
     build:
@@ -77,11 +70,9 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.mariadb-drupal
       args:
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/mariadb-drupal
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/mariadb-drupal:${GOVCMS_RELEASE_TAG:-latest}
     ports:
       - "3306" # Find port on host with `docker-compose port mariadb 3306`
-    environment:
-      << : *default-environment
 
   redis:
     build:
@@ -89,9 +80,7 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.redis
       args:
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/redis
-    environment:
-      << : *default-environment
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/redis:${GOVCMS_RELEASE_TAG:-latest}
 
   solr:
     build:
@@ -99,11 +88,9 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.solr
       args:
         CLI_IMAGE: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/govcms7
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/solr
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/solr:${GOVCMS_RELEASE_TAG:-latest}
     ports:
       - "8983" # Find port on host with `docker-compose port solr 8983`
-    environment:
-      << : *default-environment
 
   varnish:
     build:
@@ -111,9 +98,9 @@ services:
       dockerfile: $PWD/.docker/Dockerfile.varnish-drupal
       args:
         LAGOON_IMAGE_VERSION: ${LAGOON_IMAGE_VERSION:-latest}
-    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/varnish-drupal
+    image: ${DOCKERHUB_NAMESPACE:-govcmslagoon}/varnish-drupal:${GOVCMS_RELEASE_TAG:-latest}
     environment:
-      << : *default-environment
+      LAGOON_ROUTE: ${LOCALDEV_URL:-http://govcmslagoon.docker.amazee.io}
       VARNISH_BYPASS: "true"
     networks:
       - amazeeio-network
@@ -127,8 +114,9 @@ services:
     shm_size: '1gb'
     depends_on:
       - test
-    << : *default-volumes
 
 networks:
   amazeeio-network:
     external: true
+  default:
+    external: false

@@ -4,15 +4,50 @@ ahoyapi: v2
 commands:
   up:
     usage: Build project.
-    cmd: docker-compose up -d "$@"
+    cmd: |
+      docker-compose up -d "$@" &&
+      docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m;
 
   down:
     usage: Delete project.
     cmd: docker-compose down
 
   build:
-    usage: Build project.
-    cmd: docker-compose build --no-cache; docker-compose up -d "$@"
+    usage: Build project locally (single-local architecture only).
+    cmd: |
+      cat .env | grep -v "#" | grep -v -e '^$'
+      if [ "$1" == "y" ]; then
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml --no-cache cli --load
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml --load
+        docker-compose up -d
+        docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m
+      else
+        ahoy confirm "Are you sure environment variables are correct? Update .env if not." &&
+        # Run this if confirm returns true
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml --no-cache cli --load &&
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml --load &&
+          docker-compose up -d "$@" &&
+          docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m ||
+        # Run this if confirm returns false
+        echo "OK, nothing to do."
+      fi
+
+  # Compile
+  publish:
+    usage: Build multi-arch images and publish to dockerhub.
+    cmd: |
+      cat .env | grep -v "#" | grep -v -e '^$'
+      if [ "$1" == "y" ]; then
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml -f bake.hcl --builder govcms-amd-arm --push cli
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml -f bake.hcl --builder govcms-amd-arm --push
+      else
+        ahoy confirm "Running this command will build multi-arch images and publish to dockerhub. Are you sure environment variables are correct?" &&
+        # Run this if confirm returns true
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml -f bake.hcl --builder govcms-amd-arm --push cli &&
+        env $(cat .env | grep -v "#" | xargs) docker buildx bake -f docker-compose.yml -f bake.hcl --builder govcms-amd-arm --push ||
+        # Run this if confirm returns false
+        echo "OK, probably a wise choice..."
+      fi
 
   cli:
     usage: Start a shell inside TEST container.
@@ -52,7 +87,7 @@ commands:
 
   lint:
     usage: Lint code
-    cmd: docker-compose exec test lint-govcms
+    cmd: docker-compose exec -T test lint-govcms
 
   test:
     usage: Run all tests.
@@ -62,28 +97,21 @@ commands:
 
   test-behat:
     usage: Run Behat tests.
-    cmd: docker-compose exec test behat "$@"
+    cmd: docker-compose exec -T test behat "$@"
 
   test-phpunit:
     usage: Run PHPUnit tests.
-    cmd: docker-compose exec test phpunit "$@"
+    cmd: docker-compose exec -T test phpunit "$@"
 
   pull:
     usage: Pull latest docker images.
     cmd: docker image ls --format \"{{.Repository}}:{{.Tag}}\" | grep govcmsdev/ | grep -v none | xargs -n1 docker pull | cat
 
-  push:
-    usage: Push all docker images.
-    cmd: |
-      export $(grep -v '^#' .env.default | xargs)
-      . .docker/push.sh
-
-  release:
-    usage: Push all docker images.
-    cmd: |
-      export $(grep -v '^#' .env.default | xargs)
-      . .docker/release.sh
-
   audit-site:
     usage: Run site audit
     cmd: docker-compose exec -T cli drutiny profile:run d7-full @self "$@"
+
+  confirm:
+    cmd: read -r -p "${@} [y/N] " response; [ ${response} = "y" ]
+    hide: true
+
