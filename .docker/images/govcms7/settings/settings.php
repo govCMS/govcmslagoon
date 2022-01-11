@@ -219,6 +219,14 @@ if (getenv('LAGOON')) {
   }
 }
 
+// Configure environment indicator.
+$conf['environment_indicator_overwrite'] = TRUE;
+$conf['environment_indicator_overwritten_color'] = '#FFA500';
+$conf['environment_indicator_overwritten_name'] = 'Branch Development';
+if (getenv('LOCALDEV_URL') !== FALSE) {
+  $conf['environment_indicator_overwritten_name'] = 'Local Development';
+}
+
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
   include __DIR__ . '/all.settings.php';
