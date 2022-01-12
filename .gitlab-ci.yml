@@ -118,9 +118,9 @@ deploy:multiarch:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
     - ahoy publish y
   only:
-    - feature/multiarch-apple-silicon
     - develop
     - master
+    - /^release\//
     - tags
   needs:
   - test:ahoy
