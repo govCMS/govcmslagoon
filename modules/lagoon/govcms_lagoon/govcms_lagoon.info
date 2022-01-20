@@ -8,3 +8,4 @@ dependencies[] = fast_404
 dependencies[] = clamav
 dependencies[] = robotstxt
 dependencies[] = lagoon_logs
+dependencies[] = govcms_security
