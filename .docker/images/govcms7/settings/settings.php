@@ -239,8 +239,17 @@ if (file_exists(__DIR__ . '/settings.local.php')) {
 // Stage file proxy URL from production URL.
 if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
 
+   switch (getenv('GOVCMS_PROJECT_TYPE')) {
+     case 'paas':
+       $cluster = 'govcms6';
+       break;
+     default:
+       $cluster = 'govcms5';
+       break;
+   }
+  
   if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
+    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . "-master.{$cluster}.amazee.io";
     $conf['stage_file_proxy_origin'] = $origin;
   }
 
