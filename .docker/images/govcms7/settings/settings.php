@@ -219,6 +219,13 @@ if (getenv('LAGOON')) {
   }
 }
 
+// Ensure that shield is configured correctly.
+if (getenv('LAGOON') && (getenv('DRUPAL_SHIELD_USER') && getenv('DRUPAL_SHIELD_PASS'))) {
+  $conf['shield_enabled'] = 1;
+  $conf['shield_user'] = getenv('DRUPAL_SHIELD_USER');
+  $conf['shield_pass'] = getenv('DRUPAL_SHIELD_PASS');
+}
+
 // Loading settings for all environment types.
 if (file_exists(__DIR__ . '/all.settings.php')) {
   include __DIR__ . '/all.settings.php';
