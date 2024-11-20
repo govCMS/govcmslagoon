@@ -1,4 +1,4 @@
-# GovCMS Lagoon project - Drupal 7
+# GovCMS Lagoon project - Drupal 7 - ARCHIVED
 
 ## Overview
 
